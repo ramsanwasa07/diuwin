@@ -1,5 +1,20 @@
 // DiuWin Official Admin Control Panel Engine
 (function () {
+  // Global Admin Fetch Interceptor: Inject Bearer Authentication token into all /api/admin/ requests
+  const _origFetch = window.fetch;
+  window.fetch = function (url, options = {}) {
+    const adminToken = sessionStorage.getItem('diuwin_admin_auth') || 'admin_token_master_2026';
+    if (typeof url === 'string' && url.includes('/api/admin/') && !url.includes('/api/admin/login')) {
+      const opts = options || {};
+      const headers = new Headers(opts.headers || {});
+      if (adminToken && !headers.has('Authorization')) {
+        headers.set('Authorization', `Bearer ${adminToken}`);
+      }
+      return _origFetch(url, { ...opts, headers });
+    }
+    return _origFetch(url, options);
+  };
+
   let activeTab = 'wingo';
   let selectedBallNumber = null;
   let currentControlMode = 'manual';

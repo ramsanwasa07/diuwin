@@ -199,7 +199,22 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // User Session & Balance Sync
 async function initUser() {
-  if (currentToken) {
+  if (!currentToken) {
+    try {
+      const gRes = await fetch(`${API_BASE}/api/auth/guest`, { method: 'POST' });
+      const gData = await gRes.json();
+      if (gData && gData.success && gData.token) {
+        currentToken = gData.token;
+        localStorage.setItem('diuwin_token', currentToken);
+        if (gData.user) {
+          currentUser = gData.user;
+          localStorage.setItem('diuwin_balance', currentUser.balance);
+          updateBalanceDisplay(currentUser.balance);
+          return;
+        }
+      }
+    } catch (e) {}
+  } else {
     try {
       const res = await fetch(`${API_BASE}/api/user/profile`, {
         headers: { 'Authorization': `Bearer ${currentToken}` }
@@ -215,7 +230,7 @@ async function initUser() {
 
   // Fallback guest session
   const storedBal = localStorage.getItem('diuwin_balance');
-  currentUser = { id: 'usr_guest', name: 'Demo Player', balance: storedBal ? parseFloat(storedBal) : 973.70 };
+  currentUser = { id: 'usr_guest_demo', name: 'Demo Player', balance: storedBal ? parseFloat(storedBal) : 973.70 };
   updateBalanceDisplay(currentUser.balance);
 }
 

@@ -140,7 +140,20 @@ async function initUser() {
     balance: defaultBalance
   };
 
-  if (currentToken) {
+  if (!currentToken) {
+    try {
+      const gRes = await fetch(`${API_BASE}/api/auth/guest`, { method: 'POST' });
+      const gData = await gRes.json();
+      if (gData && gData.success && gData.token) {
+        currentToken = gData.token;
+        localStorage.setItem('diuwin_token', currentToken);
+        if (gData.user) {
+          currentUser = gData.user;
+          localStorage.setItem('diuwin_balance', currentUser.balance);
+        }
+      }
+    } catch (e) {}
+  } else {
     try {
       const res = await fetch(`${API_BASE}/api/user/profile`, {
         headers: { 'Authorization': `Bearer ${currentToken}` }
