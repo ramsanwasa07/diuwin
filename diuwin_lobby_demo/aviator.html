@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="prevent-reload.js"></script>
+  <title>DiuWin Aviator - Official Crash Game</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="aviator.css">
+</head>
+<body>
+  <div class="aviator-app-shell">
+    <!-- Top Header Bar -->
+    <header class="aviator-header">
+      <div class="header-left">
+        <!-- Red Aviator Logo -->
+        <div class="aviator-brand-logo">
+          <svg class="aviator-plane-svg" viewBox="0 0 64 64" fill="none">
+            <path d="M12 40L36 28L54 36L48 40L34 34L26 48L20 48L22 38L12 40Z" fill="#ff2442"/>
+            <circle cx="54" cy="36" r="3" fill="#ffffff"/>
+          </svg>
+          <span class="aviator-brand-text">Aviator</span>
+        </div>
+      </div>
+
+      <!-- Live History Multiplier Pills -->
+      <div class="header-history-bar" id="historyPillsBar">
+        <span class="hist-pill purple">4.68x</span>
+        <span class="hist-pill blue">1.61x</span>
+        <span class="hist-pill blue">1.79x</span>
+        <span class="hist-pill purple">9.26x</span>
+        <span class="hist-pill purple">6.43x</span>
+        <span class="hist-pill purple">3.42x</span>
+        <span class="hist-pill blue">1.51x</span>
+        <span class="hist-pill purple">9.52x</span>
+        <span class="hist-pill blue">1.17x</span>
+        <span class="hist-pill blue">1.76x</span>
+        <span class="hist-pill blue">1.07x</span>
+        <span class="hist-pill blue">1.54x</span>
+        <span class="hist-pill purple">3.13x</span>
+        <span class="hist-pill blue">1.06x</span>
+        <span class="hist-pill purple">2.67x</span>
+        <span class="hist-pill blue">1.11x</span>
+        <span class="hist-pill purple">2.08x</span>
+        <span class="hist-pill blue">1.03x</span>
+        <span class="hist-pill purple">4.02x</span>
+        <span class="hist-pill blue">1.93x</span>
+      </div>
+
+      <!-- Header Right: Balance & Exit -->
+      <div class="header-right">
+        <div class="balance-capsule" id="headerBalancePill">
+          <i class="fa fa-wallet"></i>
+          <span id="userBalanceDisplay">₹1,173.70</span>
+        </div>
+        <button class="exit-btn" id="btnExitToLobby">Exit</button>
+        <button class="chat-btn" id="btnChatToggle" title="Live Players Chat">
+          <i class="fa fa-commenting-o"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Game Workspace (Split: Left Arena + Right Sidebar) -->
+    <div class="aviator-body-layout">
+      <!-- Left Column: Flight Arena Canvas & Dual Bet Stations -->
+      <div class="flight-arena-column">
+        <!-- Canvas Stage -->
+        <div class="canvas-stage-wrapper">
+          <canvas id="flightCanvas"></canvas>
+          
+          <!-- Big Multiplier Display Overlay -->
+          <div class="multiplier-center-overlay" id="multiplierOverlay">
+            <div class="big-mult-number" id="bigMultiplierText">1.00x</div>
+            <div class="flight-status-subtext" id="flightStatusText">WAITING FOR NEXT ROUND</div>
+            <div class="countdown-progress-bar" id="countdownBarWrap" style="display: none;">
+              <div class="countdown-progress-fill" id="countdownFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dual Bet Stations -->
+        <div class="dual-bet-stations">
+          <!-- Bet Station #1 -->
+          <div class="bet-station-box" id="station1">
+            <div class="station-top-bar">
+              <span class="station-title">BET STATION #1</span>
+              <div class="auto-cashout-wrap">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="autoCashoutToggle1">
+                  <span class="slider"></span>
+                </label>
+                <span class="label-auto">Auto Cash Out</span>
+                <input type="number" id="autoCashoutInput1" class="auto-input" value="2.00" step="0.10" min="1.05" style="display: none;">
+              </div>
+            </div>
+
+            <div class="station-controls-row">
+              <div class="amt-adjuster">
+                <button class="adj-btn" id="s1_minus">-</button>
+                <input type="number" id="s1_betInput" class="amt-val-input" value="10.00" min="10" step="10">
+                <button class="adj-btn" id="s1_plus">+</button>
+              </div>
+              <button class="action-bet-btn" id="s1_actionBtn">
+                <span class="btn-main-label" id="s1_btnText">BET</span>
+                <span class="btn-amt-label" id="s1_btnAmt">₹10.00</span>
+              </button>
+            </div>
+
+            <div class="station-presets-row">
+              <button class="preset-chip" data-amt="10" data-station="1">10</button>
+              <button class="preset-chip" data-amt="50" data-station="1">50</button>
+              <button class="preset-chip" data-amt="100" data-station="1">100</button>
+              <button class="preset-chip" data-amt="500" data-station="1">500</button>
+            </div>
+          </div>
+
+          <!-- Bet Station #2 -->
+          <div class="bet-station-box" id="station2">
+            <div class="station-top-bar">
+              <span class="station-title">BET STATION #2</span>
+              <div class="auto-cashout-wrap">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="autoCashoutToggle2">
+                  <span class="slider"></span>
+                </label>
+                <span class="label-auto">Auto Cash Out</span>
+                <input type="number" id="autoCashoutInput2" class="auto-input" value="5.00" step="0.10" min="1.05" style="display: none;">
+              </div>
+            </div>
+
+            <div class="station-controls-row">
+              <div class="amt-adjuster">
+                <button class="adj-btn" id="s2_minus">-</button>
+                <input type="number" id="s2_betInput" class="amt-val-input" value="50.00" min="10" step="10">
+                <button class="adj-btn" id="s2_plus">+</button>
+              </div>
+              <button class="action-bet-btn" id="s2_actionBtn">
+                <span class="btn-main-label" id="s2_btnText">BET</span>
+                <span class="btn-amt-label" id="s2_btnAmt">₹50.00</span>
+              </button>
+            </div>
+
+            <div class="station-presets-row">
+              <button class="preset-chip" data-amt="10" data-station="2">10</button>
+              <button class="preset-chip" data-amt="50" data-station="2">50</button>
+              <button class="preset-chip" data-amt="100" data-station="2">100</button>
+              <button class="preset-chip" data-amt="500" data-station="2">500</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Live Bets Sidebar -->
+      <div class="live-bets-sidebar">
+        <div class="sidebar-tabs-header">
+          <button class="side-tab active" id="tabAllBets">All Bets</button>
+          <button class="side-tab" id="tabMyBets">My Bets</button>
+        </div>
+
+        <div class="bets-sub-header">
+          <span>User / Time</span>
+          <span>Bet (₹)</span>
+          <span>Mult</span>
+          <span>Cash Out</span>
+        </div>
+
+        <div class="bets-scroll-list" id="liveBetsContainer">
+          <!-- Dynamic real-time bets list -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="aviator-toast" id="aviatorToast">Message</div>
+
+  <script src="aviator.js"></script>
+</body>
+</html>

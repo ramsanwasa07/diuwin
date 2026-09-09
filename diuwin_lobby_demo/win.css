@@ -1,0 +1,1015 @@
+/* ==================== DIUWIN OFFICIAL WIN GO GAME ENGINE STYLES ==================== */
+:root {
+  --theme-blue: #1e40af;
+  --theme-blue-light: #2563eb;
+  --theme-blue-gradient: linear-gradient(180deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
+  --theme-bg: #f1f5f9;
+  --card-bg: #ffffff;
+  --color-green: #16a34a;
+  --color-violet: #9333ea;
+  --color-red: #dc2626;
+  --color-gold: #d97706;
+  --color-blue-btn: #2563eb;
+  --text-dark: #1e293b;
+  --text-muted: #64748b;
+  --border-light: #e2e8f0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: #0f172a;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-dark);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+/* Centered Mobile Shell Frame */
+.wingo-page-wrapper {
+  width: 100%;
+  max-width: 440px;
+  height: 100vh;
+  background: var(--theme-bg);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.wingo-phone-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ==================== 1. TOP HEADER ==================== */
+.wingo-top-nav {
+  height: 52px;
+  background: #1e40af;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  color: #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  z-index: 20;
+}
+
+.nav-back-circle-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  background: transparent;
+  color: #ffffff;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.nav-back-circle-btn:active {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(0.95);
+}
+
+.header-center-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.brand-wing-logo {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.brand-text-diu {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.brand-text-win {
+  color: #ffffff;
+  font-weight: 900;
+}
+
+.header-right-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.head-tool-circle-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  background: transparent;
+  color: #ffffff;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.head-tool-circle-btn:active {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(0.95);
+}
+
+/* ==================== SCROLLABLE MAIN ==================== */
+.wingo-main-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 24px;
+}
+
+/* Blue Upper Banner Section */
+.wingo-top-banner {
+  background: linear-gradient(180deg, #1e40af 0%, #2563eb 60%, #3b82f6 100%);
+  padding-top: 8px;
+  padding-bottom: 12px;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 14px rgba(30, 64, 175, 0.2);
+}
+
+/* ==================== 2. BALANCE CARD ==================== */
+.wallet-balance-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 14px 16px 16px;
+  margin: 0 14px 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wallet-card-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wallet-left-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wallet-red-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wallet-text-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.wallet-title-main {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.wallet-right-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wallet-currency-sym {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.wallet-amount-val {
+  font-size: 20px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.wallet-refresh-circle-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 4px;
+  transition: transform 0.4s ease;
+  outline: none;
+}
+
+.wallet-refresh-circle-btn:active {
+  transform: rotate(180deg);
+}
+
+.wallet-card-bottom-row {
+  display: flex;
+  gap: 12px;
+}
+
+.wallet-pill-btn {
+  flex: 1;
+  height: 38px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wallet-pill-btn.withdraw {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.3);
+}
+
+.wallet-pill-btn.withdraw:active {
+  background: #1d4ed8;
+  transform: scale(0.98);
+}
+
+.wallet-pill-btn.recharge {
+  background: #ffffff;
+  color: #2563eb;
+  border: 1.5px solid #2563eb;
+}
+
+.wallet-pill-btn.recharge:active {
+  background: #eff6ff;
+  transform: scale(0.98);
+}
+
+/* ==================== 3. TIME PERIOD SELECTOR ==================== */
+.timer-mode-pill-card {
+  margin: 0 14px 4px;
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 8px 6px 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.timer-rail-steps {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.timer-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1.5px solid transparent;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.timer-step.active {
+  background: #eff6ff;
+  border-color: #2563eb;
+}
+
+.step-num-badge {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #16a34a;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 3px;
+}
+
+.stopwatch-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clock-svg {
+  transition: transform 0.2s;
+}
+
+.timer-step.active .clock-svg {
+  transform: scale(1.06);
+}
+
+.timer-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  margin-top: 3px;
+}
+
+.timer-step.active .timer-label {
+  color: #1e40af;
+}
+
+/* ==================== 4. GAME TIMER / PERIOD CARD ==================== */
+.period-countdown-split-card {
+  position: relative;
+  background: linear-gradient(135deg, #1e3a8a 0%, #1d4480 100%);
+  border-radius: 14px;
+  padding: 12px 18px;
+  margin: 0 14px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 14px rgba(29, 68, 128, 0.25);
+  overflow: visible;
+}
+
+.period-left-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.period-badge-outline {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 11px;
+  color: #93c5fd;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.period-number-digits {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.period-center-divider {
+  position: relative;
+  width: 1px;
+  height: 48px;
+  border-right: 1px dashed rgba(255, 255, 255, 0.45);
+  margin: 0 10px;
+}
+
+.period-center-divider::before {
+  content: '';
+  position: absolute;
+  top: -18px;
+  left: -6px;
+  width: 14px;
+  height: 14px;
+  background: var(--theme-bg);
+  border-radius: 50%;
+}
+
+.period-center-divider::after {
+  content: '';
+  position: absolute;
+  bottom: -18px;
+  left: -6px;
+  width: 14px;
+  height: 14px;
+  background: var(--theme-bg);
+  border-radius: 50%;
+}
+
+.countdown-right-pane {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.time-left-label {
+  font-size: 12px;
+  color: #93c5fd;
+  font-weight: 600;
+}
+
+.digital-timer-digits {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  user-select: none;
+}
+
+.digit-box {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 4px 7px;
+  min-width: 22px;
+  text-align: center;
+  font-size: 19px;
+  font-weight: 800;
+  color: #ffffff;
+  font-family: 'Outfit', monospace;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+  transition: all 0.2s ease;
+}
+
+.digit-box.warning {
+  background: #7f1d1d;
+  border-color: #ef4444;
+  color: #fee2e2;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.colon-box {
+  font-size: 20px;
+  font-weight: 800;
+  color: #93c5fd;
+  margin: 0 2px;
+  line-height: 1;
+}
+
+/* ==================== 5-8. INTERACTIVE BETTING ARENA ==================== */
+.betting-board-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 14px;
+  margin: 0 14px 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 5. Color Choice Buttons (GREEN | VIOLET | RED) */
+.colors-row-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.color-choice-btn {
+  height: 46px;
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.color-choice-btn:active {
+  transform: scale(0.97);
+  filter: brightness(0.92);
+}
+
+.color-choice-btn.green {
+  background: #16a34a;
+}
+
+.color-choice-btn.violet {
+  background: #9333ea;
+}
+
+.color-choice-btn.red {
+  background: #dc2626;
+}
+
+/* 6. Number Selection Area (Light pink container, 2 rows: 0-4 and 5-9) */
+.numbers-lottery-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px 4px;
+  justify-items: center;
+  background: #fdf2f2;
+  border: 1px solid #fee2e2;
+  border-radius: 16px;
+  padding: 14px 8px;
+}
+
+.num-ball {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
+
+.num-ball:active {
+  transform: scale(1.12);
+}
+
+.lottery-ball-svg {
+  width: 52px;
+  height: 52px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+}
+
+/* 7. Multipliers & Random */
+.multiplier-chips-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 0;
+}
+
+.multiplier-chips-row::-webkit-scrollbar {
+  display: none;
+}
+
+.chip-rand {
+  background: #ffffff;
+  border: 1.5px solid #dc2626;
+  color: #dc2626;
+  border-radius: 8px;
+  height: 32px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.chip-rand:active {
+  background: #fee2e2;
+  transform: scale(0.96);
+}
+
+.chip-x {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  border-radius: 8px;
+  height: 32px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.chip-x:active {
+  transform: scale(0.96);
+}
+
+.chip-x.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+/* 8. Big / Small Joined Toggle Bar */
+.big-small-joined-bar {
+  display: flex;
+  border-radius: 24px;
+  overflow: hidden;
+  height: 46px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.big-small-btn {
+  flex: 1;
+  border: none;
+  font-size: 18px;
+  font-weight: 800;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.big-small-btn.big {
+  background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+}
+
+.big-small-btn.small {
+  background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.big-small-btn:active {
+  filter: brightness(0.92);
+  transform: scale(0.98);
+}
+
+/* ==================== 9-10. HISTORY & MY BETS ==================== */
+.history-section-wrap {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 14px;
+  margin: 0 14px 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+/* 9. Tabs: Game History | My Bets */
+.history-toggle-header {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.hist-tab-btn {
+  flex: 1;
+  height: 38px;
+  border-radius: 20px;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.hist-tab-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+/* 10. History Table */
+.history-table-container {
+  overflow-x: auto;
+}
+
+.wingo-data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: center;
+}
+
+.wingo-data-table th {
+  background: #1e3a8a;
+  color: #93c5fd;
+  padding: 10px 6px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.wingo-data-table th:first-child {
+  border-top-left-radius: 10px;
+}
+
+.wingo-data-table th:last-child {
+  border-top-right-radius: 10px;
+}
+
+.wingo-data-table td {
+  padding: 10px 6px;
+  font-size: 13px;
+  font-weight: 600;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.td-period {
+  color: #475569;
+  font-family: monospace;
+  font-size: 13.5px;
+}
+
+.td-num-ball {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 13px;
+  color: #ffffff;
+}
+
+.td-num-ball.green {
+  background: #16a34a;
+}
+
+.td-num-ball.red {
+  background: #dc2626;
+}
+
+.td-num-ball.split-violet-red {
+  background: conic-gradient(#dc2626 0deg 180deg, #9333ea 180deg 360deg);
+}
+
+.td-num-ball.split-violet-green {
+  background: conic-gradient(#16a34a 0deg 180deg, #9333ea 180deg 360deg);
+}
+
+.td-color-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.color-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.color-dot.green {
+  background: #16a34a;
+}
+
+.color-dot.red {
+  background: #dc2626;
+}
+
+.color-dot.violet {
+  background: #9333ea;
+}
+
+/* Pagination */
+.table-pagination-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.page-arrow {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.page-number-indicator {
+  font-size: 13px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+/* My Bets List */
+.empty-bets-msg {
+  text-align: center;
+  color: #94a3b8;
+  padding: 24px 0;
+  font-size: 13px;
+}
+
+.my-bets-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==================== BET DRAWER MODAL ==================== */
+.bet-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 100;
+}
+
+.bet-modal-backdrop.show {
+  display: flex;
+}
+
+.bet-drawer-content {
+  width: 100%;
+  max-width: 440px;
+  background: #ffffff;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  padding: 16px 18px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: slideUpDrawer 0.25s ease-out forwards;
+}
+
+@keyframes slideUpDrawer {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.drawer-header {
+  text-align: center;
+}
+
+.selected-choice-badge {
+  background: #eff6ff;
+  color: #2563eb;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 14px;
+  display: inline-block;
+}
+
+.contract-money-group,
+.quantity-stepper-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.drawer-field-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.base-money-chips {
+  display: flex;
+  gap: 8px;
+}
+
+.base-chip {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #1e293b;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.base-chip.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.stepper-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.step-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.step-input {
+  width: 50px;
+  height: 32px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.drawer-multipliers-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.d-chip {
+  flex: 1;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.d-chip.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.drawer-rules-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.rules-link {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.drawer-bottom-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.drawer-btn {
+  flex: 1;
+  height: 42px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+}
+
+.drawer-btn.cancel {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.drawer-btn.confirm {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* Toast */
+.wingo-toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: rgba(15, 23, 42, 0.92);
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.2s ease;
+  z-index: 200;
+}
+
+.wingo-toast.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}

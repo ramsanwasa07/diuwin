@@ -1,0 +1,26 @@
+{
+  "name": "diuwin-gaming-lobby",
+  "version": "2.0.0",
+  "description": "Standard DiuWin Gaming Lobby with complete Node.js backend, live game engine, wallet system, and real-time wins stream.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node test/api.test.js",
+    "test:api": "node test/api.test.js",
+    "open": "powershell Start-Process 'http://localhost:3000'"
+  },
+  "keywords": [
+    "diuwin",
+    "gaming-lobby",
+    "casino-demo",
+    "live-games",
+    "nodejs-backend"
+  ],
+  "author": "DiuWin Pro",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}

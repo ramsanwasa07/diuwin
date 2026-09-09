@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="prevent-reload.js"></script>
+  <title>DiuWin Mines - Official 5x5 Diamond Grid</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="mines.css">
+</head>
+<body>
+  <div class="mines-app-shell">
+    <!-- Top Navigation Header -->
+    <header class="mines-header">
+      <div class="header-left">
+        <button class="lobby-btn" id="btnBackToLobby">
+          <i class="fa fa-angle-left"></i> Lobby
+        </button>
+        <div class="brand-title-wrap">
+          <div class="brand-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 3h12l4 6-10 12L2 9z" fill="#06b6d4" stroke="#22d3ee"/>
+            </svg>
+          </div>
+          <span class="brand-name">MINES</span>
+          <span class="live-wallet-tag">LIVE WALLET</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="wallet-balance-box">
+          <div class="wallet-label-row">
+            <span>WALLET BALANCE</span>
+            <button class="refresh-bal-btn" id="btnRefreshBalance" title="Refresh Balance">
+              <i class="fa fa-refresh"></i>
+            </button>
+          </div>
+          <div class="wallet-amount" id="headerUserBalance">₹973.70</div>
+        </div>
+        <button class="deposit-btn" id="btnHeaderDeposit">
+          <i class="fa fa-plus-circle"></i> Deposit
+        </button>
+        <button class="sound-btn" id="btnToggleSound" title="Toggle Sound">
+          <i class="fa fa-volume-up"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Game Arena Layout -->
+    <div class="mines-main-layout">
+      <!-- Left Panel: Betting Controls -->
+      <aside class="betting-controls-card">
+        <div class="controls-header">
+          <div class="title-with-icon">
+            <i class="fa fa-bolt"></i>
+            <span>BETTING CONTROLS</span>
+          </div>
+          <span class="risk-badge medium" id="riskBadge">Medium Risk</span>
+        </div>
+
+        <!-- Bet Amount Group -->
+        <div class="control-group">
+          <div class="group-label-row">
+            <label>BET AMOUNT</label>
+            <span class="limits-text">LIMITS: ₹10.00 - ₹50,000.00</span>
+          </div>
+          <div class="input-with-actions">
+            <span class="currency-symbol">₹</span>
+            <input type="number" id="betAmountInput" value="100" min="10" max="50000" step="10">
+            <div class="inline-multiplier-btns">
+              <button class="half-btn" id="btnHalfBet">½</button>
+              <button class="double-btn" id="btnDoubleBet">2×</button>
+            </div>
+          </div>
+          <div class="chips-row">
+            <button class="chip-preset" data-val="min">MIN</button>
+            <button class="chip-preset active" data-val="100">₹100</button>
+            <button class="chip-preset" data-val="500">₹500</button>
+            <button class="chip-preset" data-val="max">MAX</button>
+          </div>
+        </div>
+
+        <!-- Number of Mines Group -->
+        <div class="control-group" style="margin-top: 14px;">
+          <div class="group-label-row">
+            <label>NUMBER OF MINES</label>
+            <span class="mines-summary" id="minesSummaryText">5 MINES (20 DIAMONDS)</span>
+          </div>
+          <div class="stepper-box">
+            <button class="step-btn minus" id="btnMinesMinus">-</button>
+            <div class="stepper-val" id="minesCountDisplay">5</div>
+            <button class="step-btn plus" id="btnMinesPlus">+</button>
+          </div>
+          <div class="chips-row" id="minesChipsRow">
+            <button class="chip-mine" data-mines="1">1</button>
+            <button class="chip-mine" data-mines="3">3</button>
+            <button class="chip-mine active" data-mines="5">5</button>
+            <button class="chip-mine" data-mines="10">10</button>
+            <button class="chip-mine" data-mines="20">20</button>
+            <button class="chip-mine" data-mines="24">24</button>
+          </div>
+        </div>
+
+        <!-- Action Button (Bet & Start / Cashout) -->
+        <button class="main-action-btn" id="btnMainGameAction">
+          BET & START GAME
+        </button>
+      </aside>
+
+      <!-- Right Area: Stat Cards + 5x5 Grid Stage -->
+      <section class="game-stage-area">
+        <!-- 4 Top Stat Cards -->
+        <div class="stats-top-grid">
+          <!-- Card 1: GEMS LEFT -->
+          <div class="stat-card">
+            <div class="stat-icon-wrap cyan">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 3h12l4 6-10 12L2 9z" fill="#06b6d4" stroke="#22d3ee"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-title">GEMS LEFT</span>
+              <div class="stat-value" id="statGemsLeft">20 / 20</div>
+            </div>
+          </div>
+
+          <!-- Card 2: CURRENT MULTIPLIER -->
+          <div class="stat-card">
+            <div class="stat-icon-wrap blue">
+              <i class="fa fa-line-chart"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-title">CURRENT MULTIPLIER</span>
+              <div class="stat-value highlight-cyan" id="statCurrentMult">1.00x</div>
+            </div>
+          </div>
+
+          <!-- Card 3: EXPLOSION RISK -->
+          <div class="stat-card">
+            <div class="stat-icon-wrap red">
+              <i class="fa fa-fire"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-title">EXPLOSION RISK</span>
+              <div class="stat-value highlight-red" id="statExplosionRisk">20.0%</div>
+            </div>
+          </div>
+
+          <!-- Card 4: POTENTIAL PROFIT -->
+          <div class="stat-card">
+            <div class="stat-icon-wrap gold">
+              <i class="fa fa-dollar"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-title">POTENTIAL PROFIT</span>
+              <div class="stat-value" id="statPotentialProfit">₹0.00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5x5 Mines Grid Board -->
+        <div class="grid-board-card">
+          <!-- Next Pick Multiplier Pill -->
+          <div class="next-pick-tag" id="nextPickTag">Next Pick: 1.18x</div>
+
+          <!-- 25 Tiles Grid -->
+          <div class="mines-grid-25" id="minesGrid">
+            <!-- Dynamically populated 25 tiles -->
+          </div>
+
+          <!-- Ready to Play Overlay (Before Game Start) -->
+          <div class="grid-overlay-prompt" id="gridReadyOverlay">
+            <div class="overlay-gem-circle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 3h12l4 6-10 12L2 9z" fill="#06b6d4" stroke="#22d3ee"/>
+              </svg>
+            </div>
+            <h3>Ready to Play?</h3>
+            <p>Select your bet amount and mine count in the panel, then click <b>Bet & Start Game</b>.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Bottom: Recent Games History -->
+    <footer class="recent-history-section">
+      <div class="history-header">
+        <div class="history-title-left">
+          <i class="fa fa-refresh"></i>
+          <span>RECENT GAMES HISTORY</span>
+        </div>
+        <span class="showing-count" id="historyCountText">Showing last 2 games</span>
+      </div>
+
+      <div class="history-badges-row" id="historyBadgesRow">
+        <div class="history-badge loss">
+          <i class="fa fa-times-circle"></i>
+          <span class="badge-mult">1.18x (5M)</span>
+          <span class="badge-sep">|</span>
+          <span class="badge-amt">₹100.00</span>
+          <i class="fa fa-question-circle-o badge-info"></i>
+        </div>
+        <div class="history-badge loss">
+          <i class="fa fa-times-circle"></i>
+          <span class="badge-mult">1.00x (5M)</span>
+          <span class="badge-sep">|</span>
+          <span class="badge-amt">₹100.00</span>
+          <i class="fa fa-question-circle-o badge-info"></i>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="mines-toast" id="minesToast">Message</div>
+
+  <script src="mines.js"></script>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="prevent-reload.js"></script>
+  <title>DiuWin Games - K3 Lottery</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="k3.css">
+  <link rel="stylesheet" href="outcome-modal.css">
+</head>
+<body>
+  <div class="k3-page-wrapper">
+    <div class="k3-phone-container">
+      <!-- Top Navigation Bar -->
+      <header class="k3-top-nav">
+        <button class="nav-back-icon" id="btnBackToLobby" title="Back to Lobby">
+          <i class="fa fa-angle-left"></i>
+        </button>
+        <div class="header-center-logo" id="brandLogoHome">
+          <img src="images/logo.png" alt="DiuWin" class="brand-mini-img" onerror="this.style.display='none'">
+          <span class="brand-text-diu">Diu<strong class="brand-text-win">Win</strong></span>
+        </div>
+        <div class="header-right-tools">
+          <button class="head-tool-btn" id="btnCustomerSupport" title="Customer Support">
+            <i class="fa fa-headphones"></i>
+          </button>
+          <button class="head-tool-btn" id="btnNotifications" title="Sound / Alerts">
+            <i class="fa fa-bell-o"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Scrollable Content -->
+      <main class="k3-main-scroll">
+        <!-- 1. Total Balance Card -->
+        <section class="wallet-balance-card">
+          <div class="wallet-col-left">
+            <div class="wallet-icon-row">
+              <span class="wallet-emoji-icon">👛</span>
+              <div class="wallet-title-stack">
+                <span class="wallet-main-lbl">Total</span>
+                <span class="wallet-sub-lbl">Balance</span>
+              </div>
+            </div>
+            <button class="wallet-action-btn withdraw" id="btnWithdrawModal">Withdraw</button>
+          </div>
+
+          <div class="wallet-col-right">
+            <div class="wallet-amount-row">
+              <span class="wallet-currency-sym">₹</span>
+              <span class="wallet-live-amt" id="userWalletBalance">973.70</span>
+              <button class="wallet-refresh-btn" id="btnRefreshWallet" title="Refresh Balance">
+                <i class="fa fa-refresh"></i>
+              </button>
+            </div>
+            <button class="wallet-action-btn recharge" id="btnRechargeModal">Recharge</button>
+          </div>
+        </section>
+
+        <!-- 2. Timer Mode Tabs (1 min, 3 min, 5 min, 10 min) -->
+        <section class="timer-modes-container">
+          <div class="modes-track-line"></div>
+          <div class="timer-modes-grid">
+            <div class="time-tab active" data-time="1">
+              <span class="tab-help-icon">❓</span>
+              <div class="timer-clock-icon-wrap">
+                <i class="fa fa-clock-o"></i>
+              </div>
+              <span class="arrow-indicator">▼</span>
+              <span class="time-tab-title red">1 min</span>
+            </div>
+
+            <div class="time-tab" data-time="3">
+              <span class="tab-help-icon">❓</span>
+              <div class="timer-clock-icon-wrap">
+                <i class="fa fa-clock-o"></i>
+              </div>
+              <span class="arrow-indicator">▼</span>
+              <span class="time-tab-title green">3 min</span>
+            </div>
+
+            <div class="time-tab" data-time="5">
+              <span class="tab-help-icon">❓</span>
+              <div class="timer-clock-icon-wrap">
+                <i class="fa fa-clock-o"></i>
+              </div>
+              <span class="arrow-indicator">▼</span>
+              <span class="time-tab-title">5 min</span>
+            </div>
+
+            <div class="time-tab" data-time="10">
+              <span class="tab-help-icon">❓</span>
+              <div class="timer-clock-icon-wrap">
+                <i class="fa fa-clock-o"></i>
+              </div>
+              <span class="arrow-indicator">▼</span>
+              <span class="time-tab-title">10 min</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Period & Live Countdown Header -->
+        <section class="period-timer-header">
+          <div class="period-side">
+            <span class="period-sub-lbl">Lottery Period</span>
+            <span class="period-id-txt" id="k3PeriodNumber">2026090310925</span>
+          </div>
+
+          <div class="timer-side">
+            <span class="timer-sub-lbl">Time Left</span>
+            <div class="green-digital-timer" id="k3DigitalTimer">
+              <span class="d-digit" id="k3MinTen">0</span>
+              <span class="d-digit" id="k3MinOne">0</span>
+              <span class="d-colon">:</span>
+              <span class="d-digit" id="k3SecTen">4</span>
+              <span class="d-digit" id="k3SecOne">4</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. 3D Dice Felt Tray Stage -->
+        <section class="dice-felt-tray-box">
+          <div class="dice-container" id="diceContainer">
+            <!-- Die 1 -->
+            <div class="dice-cube" id="die1" data-val="3">
+              <div class="die-face">
+                <span class="pip pip-tl"></span>
+                <span class="pip pip-center"></span>
+                <span class="pip pip-br"></span>
+              </div>
+            </div>
+            <!-- Die 2 -->
+            <div class="dice-cube" id="die2" data-val="3">
+              <div class="die-face">
+                <span class="pip pip-tl"></span>
+                <span class="pip pip-center"></span>
+                <span class="pip pip-br"></span>
+              </div>
+            </div>
+            <!-- Die 3 -->
+            <div class="dice-cube" id="die3" data-val="1">
+              <div class="die-face">
+                <span class="pip pip-center gold-pip"></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. K3 Betting Board (Total, 2 Same, 3 Same, Different) -->
+        <section class="k3-betting-board">
+          <!-- Total Odds Grid (Numbers 3 to 18) -->
+          <div class="numbers-odds-grid" id="totalNumbersGrid">
+            <div class="odds-card" data-choice="3" data-odds="207.36">
+              <span class="card-num">3</span>
+              <span class="card-odds">Odds207.36</span>
+            </div>
+            <div class="odds-card" data-choice="4" data-odds="69.12">
+              <span class="card-num">4</span>
+              <span class="card-odds">Odds69.12</span>
+            </div>
+            <div class="odds-card" data-choice="5" data-odds="34.56">
+              <span class="card-num">5</span>
+              <span class="card-odds">Odds34.56</span>
+            </div>
+            <div class="odds-card" data-choice="6" data-odds="20.74">
+              <span class="card-num">6</span>
+              <span class="card-odds">Odds20.74</span>
+            </div>
+            <div class="odds-card" data-choice="7" data-odds="13.83">
+              <span class="card-num">7</span>
+              <span class="card-odds">Odds13.83</span>
+            </div>
+            <div class="odds-card" data-choice="8" data-odds="9.88">
+              <span class="card-num">8</span>
+              <span class="card-odds">Odds9.88</span>
+            </div>
+            <div class="odds-card" data-choice="9" data-odds="8.3">
+              <span class="card-num">9</span>
+              <span class="card-odds">Odds8.3</span>
+            </div>
+            <div class="odds-card" data-choice="10" data-odds="7.68">
+              <span class="card-num">10</span>
+              <span class="card-odds">Odds7.68</span>
+            </div>
+            <div class="odds-card" data-choice="11" data-odds="7.68">
+              <span class="card-num">11</span>
+              <span class="card-odds">Odds7.68</span>
+            </div>
+            <div class="odds-card" data-choice="12" data-odds="8.3">
+              <span class="card-num">12</span>
+              <span class="card-odds">Odds8.3</span>
+            </div>
+            <div class="odds-card" data-choice="13" data-odds="9.88">
+              <span class="card-num">13</span>
+              <span class="card-odds">Odds9.88</span>
+            </div>
+            <div class="odds-card" data-choice="14" data-odds="13.83">
+              <span class="card-num">14</span>
+              <span class="card-odds">Odds13.83</span>
+            </div>
+            <div class="odds-card" data-choice="15" data-odds="20.74">
+              <span class="card-num">15</span>
+              <span class="card-odds">Odds20.74</span>
+            </div>
+            <div class="odds-card" data-choice="16" data-odds="34.56">
+              <span class="card-num">16</span>
+              <span class="card-odds">Odds34.56</span>
+            </div>
+            <div class="odds-card" data-choice="17" data-odds="69.12">
+              <span class="card-num">17</span>
+              <span class="card-odds">Odds69.12</span>
+            </div>
+            <div class="odds-card" data-choice="18" data-odds="207.36">
+              <span class="card-num">18</span>
+              <span class="card-odds">Odds207.36</span>
+            </div>
+          </div>
+
+          <!-- Big / Small / Odd / Even Row -->
+          <div class="prop-odds-row" id="propOddsRow">
+            <div class="prop-card" data-choice="Big" data-odds="1.92">
+              <span class="prop-lbl">Big</span>
+              <span class="prop-odds">Odds1.92</span>
+            </div>
+            <div class="prop-card" data-choice="Small" data-odds="1.92">
+              <span class="prop-lbl">Small</span>
+              <span class="prop-odds">Odds1.92</span>
+            </div>
+            <div class="prop-card" data-choice="Odd" data-odds="1.92">
+              <span class="prop-lbl">Odd</span>
+              <span class="prop-odds">Odds1.92</span>
+            </div>
+            <div class="prop-card" data-choice="Even" data-odds="1.92">
+              <span class="prop-lbl">Even</span>
+              <span class="prop-odds">Odds1.92</span>
+            </div>
+          </div>
+
+          <!-- Category Sub-Tabs (Total, 2 Same, 3 Same, Different) -->
+          <div class="k3-category-tabs">
+            <button class="cat-tab active" data-cat="total">Total</button>
+            <button class="cat-tab" data-cat="2same">2 Same</button>
+            <button class="cat-tab" data-cat="3same">3 Same</button>
+            <button class="cat-tab" data-cat="different">Different</button>
+          </div>
+        </section>
+
+        <!-- 6. History Section (Game History / My Bet) -->
+        <section class="history-section-wrap">
+          <div class="history-toggle-header">
+            <button class="hist-tab-btn active" id="tabGameHistory">Game History</button>
+            <button class="hist-tab-btn" id="tabMyBet">My Bet</button>
+          </div>
+
+          <!-- Game History Table -->
+          <div class="history-table-wrap" id="historyTableWrap">
+            <table class="k3-data-table">
+              <thead>
+                <tr>
+                  <th>Period</th>
+                  <th>Sum</th>
+                  <th>Big/Small</th>
+                  <th>Odd/Even</th>
+                  <th>Results</th>
+                </tr>
+              </thead>
+              <tbody id="k3HistoryTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+
+            <!-- Pagination Footer -->
+            <div class="pagination-footer-row">
+              <button class="page-btn prev" id="btnPagePrev"><i class="fa fa-angle-left"></i></button>
+              <span class="page-counter">1/1</span>
+              <button class="page-btn next" id="btnPageNext"><i class="fa fa-angle-right"></i></button>
+            </div>
+          </div>
+
+          <!-- My Bet Container -->
+          <div class="my-bets-wrap" id="myBetsWrap" style="display: none;">
+            <div class="empty-msg" id="emptyBetsMsg">No bet records found for this session.</div>
+            <div class="bets-list" id="myBetsList"></div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Bet Placement Drawer / Modal -->
+      <div class="bet-modal-backdrop" id="betModal">
+        <div class="bet-drawer-content" id="betDrawerContent">
+          <div class="drawer-header">
+            <div class="selected-choice-badge" id="drawerChoiceBadge">K3 1 Min: Total 7 (Odds 13.83)</div>
+          </div>
+
+          <div class="contract-money-group">
+            <label class="drawer-field-label">Balance</label>
+            <div class="base-money-chips">
+              <button class="base-chip active" data-base="10">10</button>
+              <button class="base-chip" data-base="100">100</button>
+              <button class="base-chip" data-base="1000">1000</button>
+            </div>
+          </div>
+
+          <div class="quantity-stepper-group">
+            <label class="drawer-field-label">Quantity</label>
+            <div class="stepper-actions">
+              <button class="step-btn minus" id="btnQtyMinus">-</button>
+              <input type="number" class="step-input" id="qtyInput" value="1" min="1" max="999">
+              <button class="step-btn plus" id="btnQtyPlus">+</button>
+            </div>
+          </div>
+
+          <div class="drawer-multipliers-row">
+            <button class="d-chip active" data-mult="1">X1</button>
+            <button class="d-chip" data-mult="5">X5</button>
+            <button class="d-chip" data-mult="10">X10</button>
+            <button class="d-chip" data-mult="20">X20</button>
+            <button class="d-chip" data-mult="50">X50</button>
+            <button class="d-chip" data-mult="100">X100</button>
+          </div>
+
+          <div class="drawer-rules-checkbox">
+            <input type="checkbox" id="chkPreSaleRules" checked>
+            <label for="chkPreSaleRules">I agree to <span class="rules-link">《Pre-sale rules》</span></label>
+          </div>
+
+          <div class="drawer-bottom-actions">
+            <button class="drawer-btn cancel" id="btnCancelBet">Cancel</button>
+            <button class="drawer-btn confirm" id="btnConfirmBet">
+              <span>Total amount <strong id="drawerTotalAmount">₹10.00</strong></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unified Game Outcome Celebration & Notice Modal -->
+      <div class="game-outcome-modal-backdrop" id="gameOutcomeModal">
+        <div class="outcome-sunburst" id="outcomeSunburst"></div>
+        <div class="outcome-particles" id="outcomeParticles"></div>
+        <div class="outcome-card" id="outcomeCard">
+          <button class="outcome-close-x" id="btnCloseOutcomeX" title="Close">×</button>
+          <div class="outcome-badge-wrap">
+            <div class="outcome-badge-icon" id="outcomeBadgeIcon">🏆</div>
+          </div>
+          <h2 class="outcome-title" id="outcomeTitle">CONGRATULATIONS!</h2>
+          <p class="outcome-subtitle" id="outcomeSubtitle">Round Winner</p>
+          <div class="outcome-amount-box" id="outcomeAmountBox">
+            <span class="outcome-amount-label" id="outcomeAmountLabel">Total Prize Won</span>
+            <div class="outcome-amount-value" id="outcomeAmountValue">+₹0.00</div>
+          </div>
+          <div class="outcome-details-plate" id="outcomeDetailsPlate"></div>
+          <div class="outcome-actions">
+            <button class="outcome-action-btn primary" id="btnCloseOutcomeModal">Continue</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toast -->
+      <div class="k3-toast" id="k3Toast">Message</div>
+    </div>
+  </div>
+
+  <script src="outcome-modal.js"></script>
+  <script src="k3.js"></script>
+  <script src="upi-recharge.js"></script>
+</body>
+</html>

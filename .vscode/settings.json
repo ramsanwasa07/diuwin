@@ -1,0 +1,12 @@
+{
+  "liveServer.settings.NoReload": true,
+  "liveServer.settings.donotShowInfoMsg": true,
+  "liveServer.settings.donotVerifyTags": true,
+  "liveServer.settings.ignoreFiles": [
+    "**/*",
+    "**",
+    "*"
+  ],
+  "livePreview.autoRefreshPreview": "Never",
+  "livePreview.notifyOnPreviewCrossOriginNavigation": false
+}

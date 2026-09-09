@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="prevent-reload.js"></script>
+  <title>DiuWin Games - Win Go</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="win.css?v=5">
+  <link rel="stylesheet" href="outcome-modal.css">
+</head>
+<body>
+  <div class="wingo-page-wrapper">
+    <div class="wingo-phone-container">
+      
+      <!-- 1. TOP HEADER (Blue background, circular back, DiuWin logo with leaf, two right action icons) -->
+      <header class="wingo-top-nav">
+        <button class="nav-back-circle-btn" id="btnBackToLobby" title="Back to Lobby">
+          <i class="fa fa-angle-left"></i>
+        </button>
+        
+        <div class="header-center-logo" id="headerCenterLogo">
+          <svg class="brand-wing-logo" viewBox="0 0 40 24" width="34" height="22">
+            <path d="M4 14 Q14 2 28 8 Q36 12 38 7 Q28 20 12 18 Z" fill="#22c55e"/>
+            <path d="M10 16 Q20 8 32 12 Q24 22 8 18 Z" fill="#16a34a"/>
+          </svg>
+          <span class="brand-text-diu">Diu<strong class="brand-text-win">Win</strong></span>
+        </div>
+
+        <div class="header-right-tools">
+          <button class="head-tool-circle-btn" id="btnCustomerSupport" title="Customer Support">
+            <i class="fa fa-headphones"></i>
+          </button>
+          <button class="head-tool-circle-btn" id="btnAudioToggle" title="Audio Toggle">
+            <i class="fa fa-volume-up" id="audioToggleIcon"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Scrollable Main Content -->
+      <main class="wingo-main-scroll">
+
+        <!-- Top Section with Deep Blue Background containing Balance Card & Timer Mode Rail -->
+        <div class="wingo-top-banner">
+          <!-- 2. BALANCE CARD (White rounded card, wallet icon, Total Balance, amount, refresh, Withdraw & Recharge) -->
+          <section class="wallet-balance-card">
+            <div class="wallet-card-top-row">
+              <div class="wallet-left-group">
+                <div class="wallet-red-badge">
+                  <svg width="36" height="30" viewBox="0 0 38 30" fill="none">
+                    <rect width="38" height="30" rx="7" fill="#e11d48"/>
+                    <rect x="2" y="2" width="34" height="26" rx="5" fill="#f43f5e"/>
+                    <path d="M24 9 H38 V21 H24 A6 6 0 0 1 24 9 Z" fill="#be123c"/>
+                    <circle cx="31" cy="15" r="2.8" fill="#fef08a"/>
+                  </svg>
+                </div>
+                <div class="wallet-text-stack">
+                  <span class="wallet-title-main">Total Balance</span>
+                </div>
+              </div>
+
+              <div class="wallet-right-group">
+                <span class="wallet-currency-sym">₹</span>
+                <span class="wallet-amount-val" id="userWalletBalance">557.00</span>
+                <button class="wallet-refresh-circle-btn" id="btnRefreshWallet" title="Refresh Balance">
+                  <i class="fa fa-refresh"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="wallet-card-bottom-row">
+              <button class="wallet-pill-btn withdraw" id="btnWithdrawModal">Withdraw</button>
+              <button class="wallet-pill-btn recharge" id="btnRechargeModal">Recharge</button>
+            </div>
+          </section>
+
+          <!-- 3. TIME PERIOD SELECTOR (Horizontal card, 4 options: 1 min, 3 min, 5 min, 10 min with green badges) -->
+          <section class="timer-mode-pill-card">
+            <div class="timer-rail-steps">
+              
+              <!-- 1 min (Active by default) -->
+              <div class="timer-step active time-tab" data-time="1">
+                <div class="step-num-badge">1</div>
+                <div class="stopwatch-icon-wrap">
+                  <svg class="clock-svg active" viewBox="0 0 40 40" width="34" height="34">
+                    <circle cx="20" cy="20" r="16" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+                    <rect x="18" y="0" width="4" height="3" rx="1" fill="#2563eb"/>
+                    <line x1="20" y1="20" x2="20" y2="9" stroke="#1e40af" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="20" y1="20" x2="26" y2="20" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round"/>
+                    <circle cx="20" cy="20" r="2.2" fill="#1e40af"/>
+                  </svg>
+                </div>
+                <span class="timer-label">1 min</span>
+              </div>
+
+              <!-- 3 min -->
+              <div class="timer-step time-tab" data-time="3">
+                <div class="step-num-badge">3</div>
+                <div class="stopwatch-icon-wrap">
+                  <svg class="clock-svg inactive" viewBox="0 0 40 40" width="34" height="34">
+                    <circle cx="20" cy="20" r="16" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5"/>
+                    <rect x="18" y="0" width="4" height="3" rx="1" fill="#94a3b8"/>
+                    <line x1="20" y1="20" x2="20" y2="10" stroke="#64748b" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="20" y1="20" x2="25" y2="20" stroke="#64748b" stroke-width="1.8" stroke-linecap="round"/>
+                    <circle cx="20" cy="20" r="2.2" fill="#64748b"/>
+                  </svg>
+                </div>
+                <span class="timer-label">3 min</span>
+              </div>
+
+              <!-- 5 min -->
+              <div class="timer-step time-tab" data-time="5">
+                <div class="step-num-badge">5</div>
+                <div class="stopwatch-icon-wrap">
+                  <svg class="clock-svg inactive" viewBox="0 0 40 40" width="34" height="34">
+                    <circle cx="20" cy="20" r="16" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5"/>
+                    <rect x="18" y="0" width="4" height="3" rx="1" fill="#94a3b8"/>
+                    <line x1="20" y1="20" x2="20" y2="10" stroke="#64748b" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="20" y1="20" x2="25" y2="20" stroke="#64748b" stroke-width="1.8" stroke-linecap="round"/>
+                    <circle cx="20" cy="20" r="2.2" fill="#64748b"/>
+                  </svg>
+                </div>
+                <span class="timer-label">5 min</span>
+              </div>
+
+              <!-- 10 min -->
+              <div class="timer-step time-tab" data-time="10">
+                <div class="step-num-badge">10</div>
+                <div class="stopwatch-icon-wrap">
+                  <svg class="clock-svg inactive" viewBox="0 0 40 40" width="34" height="34">
+                    <circle cx="20" cy="20" r="16" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5"/>
+                    <rect x="18" y="0" width="4" height="3" rx="1" fill="#94a3b8"/>
+                    <line x1="20" y1="20" x2="20" y2="10" stroke="#64748b" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="20" y1="20" x2="25" y2="20" stroke="#64748b" stroke-width="1.8" stroke-linecap="round"/>
+                    <circle cx="20" cy="20" r="2.2" fill="#64748b"/>
+                  </svg>
+                </div>
+                <span class="timer-label">10 min</span>
+              </div>
+
+            </div>
+          </section>
+        </div>
+
+        <!-- 4. GAME TIMER / PERIOD CARD (Dark blue rounded card, badge, period number, dotted center divider, countdown digits) -->
+        <section class="period-countdown-split-card">
+          <div class="period-left-pane">
+            <div class="period-badge-outline" id="currentPeriodModeTag">1 Minute</div>
+            <div class="period-number-digits" id="currentPeriodNumber">146</div>
+          </div>
+
+          <div class="period-center-divider"></div>
+
+          <div class="countdown-right-pane">
+            <div class="time-left-label">Time Left</div>
+            <div class="digital-timer-digits" id="digitalTimerDisplay">
+              <span class="digit-box" id="minTen">0</span>
+              <span class="digit-box" id="minOne">0</span>
+              <span class="colon-box">:</span>
+              <span class="digit-box" id="secTen">4</span>
+              <span class="digit-box" id="secOne">5</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5-8. INTERACTIVE BETTING ARENA -->
+        <section class="betting-board-card">
+          <!-- 5. COLOR BETTING BUTTONS: GREEN | VIOLET | RED -->
+          <div class="colors-row-3">
+            <button class="color-choice-btn green" data-choice="green" data-multiplier="2">Green</button>
+            <button class="color-choice-btn violet" data-choice="violet" data-multiplier="4.5">Violet</button>
+            <button class="color-choice-btn red" data-choice="red" data-multiplier="2">Red</button>
+          </div>
+
+          <!-- 6. NUMBER SELECTION AREA (Light pink rounded container, 2 rows: 0-4 and 5-9 with circular casino chips) -->
+          <div class="numbers-lottery-grid">
+            <svg width="0" height="0" style="position:absolute;visibility:hidden;">
+              <defs>
+                <!-- Green Radial Gradient -->
+                <radialGradient id="gradGreenDisc" cx="38%" cy="32%" r="62%">
+                  <stop offset="0%" stop-color="#bbf7d0"/>
+                  <stop offset="55%" stop-color="#22c55e"/>
+                  <stop offset="100%" stop-color="#15803d"/>
+                </radialGradient>
+
+                <!-- Red Radial Gradient -->
+                <radialGradient id="gradRedDisc" cx="38%" cy="32%" r="62%">
+                  <stop offset="0%" stop-color="#fecdd3"/>
+                  <stop offset="55%" stop-color="#ef4444"/>
+                  <stop offset="100%" stop-color="#b91c1c"/>
+                </radialGradient>
+
+                <!-- Violet Radial Gradient -->
+                <radialGradient id="gradVioletDisc" cx="38%" cy="32%" r="62%">
+                  <stop offset="0%" stop-color="#e9d5ff"/>
+                  <stop offset="55%" stop-color="#a855f7"/>
+                  <stop offset="100%" stop-color="#6b21a8"/>
+                </radialGradient>
+
+                <!-- Ball 0: Split Violet/Red Gradients -->
+                <linearGradient id="splitVR_border" x1="100%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="50%" stop-color="#dc2626"/>
+                  <stop offset="50%" stop-color="#9333ea"/>
+                </linearGradient>
+                <linearGradient id="splitVR_bg" x1="100%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="50%" stop-color="#fee2e2"/>
+                  <stop offset="50%" stop-color="#f3e8ff"/>
+                </linearGradient>
+
+                <!-- Ball 5: Split Green/Violet Gradients -->
+                <linearGradient id="splitVG_border" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="50%" stop-color="#16a34a"/>
+                  <stop offset="50%" stop-color="#9333ea"/>
+                </linearGradient>
+                <linearGradient id="splitVG_bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="50%" stop-color="#dcfce7"/>
+                  <stop offset="50%" stop-color="#f3e8ff"/>
+                </linearGradient>
+                <linearGradient id="splitVG_inner" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="50%" stop-color="#22c55e"/>
+                  <stop offset="50%" stop-color="#a855f7"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            
+            <!-- Chip 0: Violet / Red -->
+            <button class="num-ball" data-choice="0" data-num="0">
+              <svg viewBox="0 0 60 60" width="52" height="52" class="lottery-ball-svg">
+                <circle cx="30" cy="30" r="27" fill="url(#splitVR_bg)" stroke="url(#splitVR_border)" stroke-width="2.4"/>
+                <path d="M 20.5 9.2 A 23 23 0 0 1 39.5 9.2" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 50.8 20.5 A 23 23 0 0 1 50.8 39.5" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 39.5 50.8 A 23 23 0 0 1 20.5 50.8" fill="none" stroke="#9333ea" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 9.2 39.5 A 23 23 0 0 1 9.2 20.5" fill="none" stroke="#9333ea" stroke-width="3.8" stroke-linecap="round"/>
+                <circle cx="30" cy="30" r="19" fill="url(#gradVioletDisc)" stroke="#9333ea" stroke-width="1.2"/>
+                <text x="30" y="38" font-family="'Outfit', sans-serif" font-size="24" font-weight="900" text-anchor="middle" fill="#ffffff">0</text>
+              </svg>
+            </button>
+
+            <!-- Chip 1: Green -->
+            <button class="num-ball" data-choice="1" data-num="1">
+              <svg viewBox="0 0 60 60" width="52" height="52" class="lottery-ball-svg">
+                <circle cx="30" cy="30" r="27" fill="#dcfce7" stroke="#16a34a" stroke-width="2.4"/>
+                <path d="M 20.5 9.2 A 23 23 0 0 1 39.5 9.2" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 50.8 20.5 A 23 23 0 0 1 50.8 39.5" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 39.5 50.8 A 23 23 0 0 1 20.5 50.8" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 9.2 39.5 A 23 23 0 0 1 9.2 20.5" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <circle cx="30" cy="30" r="19" fill="url(#gradGreenDisc)" stroke="#15803d" stroke-width="1.2"/>
+                <text x="30" y="38" font-family="'Outfit', sans-serif" font-size="24" font-weight="900" text-anchor="middle" fill="#ffffff">1</text>
+              </svg>
+            </button>
+
+            <!-- Chip 2: Red -->
+            <button class="num-ball" data-choice="2" data-num="2">
+              <svg viewBox="0 0 60 60" width="52" height="52" class="lottery-ball-svg">
+                <circle cx="30" cy="30" r="27" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4"/>
+                <path d="M 20.5 9.2 A 23 23 0 0 1 39.5 9.2" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 50.8 20.5 A 23 23 0 0 1 50.8 39.5" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 39.5 50.8 A 23 23 0 0 1 20.5 50.8" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 9.2 39.5 A 23 23 0 0 1 9.2 20.5" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <circle cx="30" cy="30" r="19" fill="url(#gradRedDisc)" stroke="#b91c1c" stroke-width="1.2"/>
+                <text x="30" y="38" font-family="'Outfit', sans-serif" font-size="24" font-weight="900" text-anchor="middle" fill="#ffffff">2</text>
+              </svg>
+            </button>
+
+            <!-- Chip 3: Green -->
+            <button class="num-ball" data-choice="3" data-num="3">
+              <svg viewBox="0 0 60 60" width="52" height="52" class="lottery-ball-svg">
+                <circle cx="30" cy="30" r="27" fill="#dcfce7" stroke="#16a34a" stroke-width="2.4"/>
+                <path d="M 20.5 9.2 A 23 23 0 0 1 39.5 9.2" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 50.8 20.5 A 23 23 0 0 1 50.8 39.5" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 39.5 50.8 A 23 23 0 0 1 20.5 50.8" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 9.2 39.5 A 23 23 0 0 1 9.2 20.5" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <circle cx="30" cy="30" r="19" fill="url(#gradGreenDisc)" stroke="#15803d" stroke-width="1.2"/>
+                <text x="30" y="38" font-family="'Outfit', sans-serif" font-size="24" font-weight="900" text-anchor="middle" fill="#ffffff">3</text>
+              </svg>
+            </button>
+
+            <!-- Chip 4: Red -->
+            <button class="num-ball" data-choice="4" data-num="4">
+              <svg viewBox="0 0 60 60" width="52" height="52" class="lottery-ball-svg">
+                <circle cx="30" cy="30" r="27" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4"/>
+                <path d="M 20.5 9.2 A 23 23 0 0 1 39.5 9.2" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 50.8 20.5 A 23 23 0 0 1 50.8 39.5" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 39.5 50.8 A 23 23 0 0 1 20.5 50.8" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 9.2 39.5 A 23 23 0 0 1 9.2 20.5" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <circle cx="30" cy="30" r="19" fill="url(#gradRedDisc)" stroke="#b91c1c" stroke-width="1.2"/>
+                <text x="30" y="38" font-family="'Outfit', sans-serif" font-size="24" font-weight="900" text-anchor="middle" fill="#ffffff">4</text>
+              </svg>
+            </button>
+
+            <!-- Chip 5: Green / Violet -->
+            <button class="num-ball" data-choice="5" data-num="5">
+              <svg viewBox="0 0 60 60" width="52" height="52" class="lottery-ball-svg">
+                <circle cx="30" cy="30" r="27" fill="url(#splitVG_bg)" stroke="url(#splitVG_border)" stroke-width="2.4"/>
+                <path d="M 20.5 9.2 A 23 23 0 0 1 39.5 9.2" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 9.2 39.5 A 23 23 0 0 1 9.2 20.5" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 39.5 50.8 A 23 23 0 0 1 20.5 50.8" fill="none" stroke="#9333ea" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 50.8 20.5 A 23 23 0 0 1 50.8 39.5" fill="none" stroke="#9333ea" stroke-width="3.8" stroke-linecap="round"/>
+                <circle cx="30" cy="30" r="19" fill="url(#splitVG_inner)" stroke="#9333ea" stroke-width="1.2"/>
+                <text x="30" y="38" font-family="'Outfit', sans-serif" font-size="24" font-weight="900" text-anchor="middle" fill="#ffffff">5</text>
+              </svg>
+            </button>
+
+            <!-- Chip 6: Red -->
+            <button class="num-ball" data-choice="6" data-num="6">
+              <svg viewBox="0 0 60 60" width="52" height="52" class="lottery-ball-svg">
+                <circle cx="30" cy="30" r="27" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4"/>
+                <path d="M 20.5 9.2 A 23 23 0 0 1 39.5 9.2" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 50.8 20.5 A 23 23 0 0 1 50.8 39.5" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 39.5 50.8 A 23 23 0 0 1 20.5 50.8" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 9.2 39.5 A 23 23 0 0 1 9.2 20.5" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <circle cx="30" cy="30" r="19" fill="url(#gradRedDisc)" stroke="#b91c1c" stroke-width="1.2"/>
+                <text x="30" y="38" font-family="'Outfit', sans-serif" font-size="24" font-weight="900" text-anchor="middle" fill="#ffffff">6</text>
+              </svg>
+            </button>
+
+            <!-- Chip 7: Green -->
+            <button class="num-ball" data-choice="7" data-num="7">
+              <svg viewBox="0 0 60 60" width="52" height="52" class="lottery-ball-svg">
+                <circle cx="30" cy="30" r="27" fill="#dcfce7" stroke="#16a34a" stroke-width="2.4"/>
+                <path d="M 20.5 9.2 A 23 23 0 0 1 39.5 9.2" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 50.8 20.5 A 23 23 0 0 1 50.8 39.5" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 39.5 50.8 A 23 23 0 0 1 20.5 50.8" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 9.2 39.5 A 23 23 0 0 1 9.2 20.5" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <circle cx="30" cy="30" r="19" fill="url(#gradGreenDisc)" stroke="#15803d" stroke-width="1.2"/>
+                <text x="30" y="38" font-family="'Outfit', sans-serif" font-size="24" font-weight="900" text-anchor="middle" fill="#ffffff">7</text>
+              </svg>
+            </button>
+
+            <!-- Chip 8: Red -->
+            <button class="num-ball" data-choice="8" data-num="8">
+              <svg viewBox="0 0 60 60" width="52" height="52" class="lottery-ball-svg">
+                <circle cx="30" cy="30" r="27" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4"/>
+                <path d="M 20.5 9.2 A 23 23 0 0 1 39.5 9.2" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 50.8 20.5 A 23 23 0 0 1 50.8 39.5" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 39.5 50.8 A 23 23 0 0 1 20.5 50.8" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 9.2 39.5 A 23 23 0 0 1 9.2 20.5" fill="none" stroke="#dc2626" stroke-width="3.8" stroke-linecap="round"/>
+                <circle cx="30" cy="30" r="19" fill="url(#gradRedDisc)" stroke="#b91c1c" stroke-width="1.2"/>
+                <text x="30" y="38" font-family="'Outfit', sans-serif" font-size="24" font-weight="900" text-anchor="middle" fill="#ffffff">8</text>
+              </svg>
+            </button>
+
+            <!-- Chip 9: Green -->
+            <button class="num-ball" data-choice="9" data-num="9">
+              <svg viewBox="0 0 60 60" width="52" height="52" class="lottery-ball-svg">
+                <circle cx="30" cy="30" r="27" fill="#dcfce7" stroke="#16a34a" stroke-width="2.4"/>
+                <path d="M 20.5 9.2 A 23 23 0 0 1 39.5 9.2" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 50.8 20.5 A 23 23 0 0 1 50.8 39.5" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 39.5 50.8 A 23 23 0 0 1 20.5 50.8" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <path d="M 9.2 39.5 A 23 23 0 0 1 9.2 20.5" fill="none" stroke="#16a34a" stroke-width="3.8" stroke-linecap="round"/>
+                <circle cx="30" cy="30" r="19" fill="url(#gradGreenDisc)" stroke="#15803d" stroke-width="1.2"/>
+                <text x="30" y="38" font-family="'Outfit', sans-serif" font-size="24" font-weight="900" text-anchor="middle" fill="#ffffff">9</text>
+              </svg>
+            </button>
+          </div>
+
+          <!-- 7. MULTIPLIER BUTTONS: Random | X1 | X5 | X10 | X20 | X50 | X100 -->
+          <div class="multiplier-chips-row">
+            <button class="chip-rand" id="btnRandomPick">Random</button>
+            <button class="chip-x active" data-x="1">X1</button>
+            <button class="chip-x" data-x="5">X5</button>
+            <button class="chip-x" data-x="10">X10</button>
+            <button class="chip-x" data-x="20">X20</button>
+            <button class="chip-x" data-x="50">X50</button>
+            <button class="chip-x" data-x="100">X100</button>
+          </div>
+
+          <!-- 8. BIG / SMALL SELECTOR (Full width pill-shaped toggle: BIG golden, SMALL blue) -->
+          <div class="big-small-joined-bar">
+            <button class="big-small-btn big" data-choice="big" data-multiplier="2">Big</button>
+            <button class="big-small-btn small" data-choice="small" data-multiplier="2">Small</button>
+          </div>
+        </section>
+
+        <!-- 9-10. GAME HISTORY / MY BETS -->
+        <section class="history-section-wrap">
+          <!-- 9. Two Tabs: Game History | My Bets -->
+          <div class="history-toggle-header">
+            <button class="hist-tab-btn active" id="tabGameHistory">Game History</button>
+            <button class="hist-tab-btn" id="tabMyBets">My Bets</button>
+          </div>
+
+          <!-- 10. HISTORY TABLE: Period | Number | Big/Small | Colour -->
+          <div class="history-table-container" id="gameHistoryTableWrap">
+            <table class="wingo-data-table">
+              <thead>
+                <tr>
+                  <th>Period</th>
+                  <th>Number</th>
+                  <th>Big/Small</th>
+                  <th>Colour</th>
+                </tr>
+              </thead>
+              <tbody id="gameHistoryTableBody">
+                <!-- Dynamically populated via local state -->
+              </tbody>
+            </table>
+
+            <!-- Pagination Row -->
+            <div class="table-pagination-row">
+              <button class="page-arrow prev" id="btnPagePrev"><i class="fa fa-angle-left"></i></button>
+              <span class="page-number-indicator" id="pageNumberIndicator">1 / 1</span>
+              <button class="page-arrow next" id="btnPageNext"><i class="fa fa-angle-right"></i></button>
+            </div>
+          </div>
+
+          <!-- My Bets Container -->
+          <div class="my-bets-container" id="myBetsContainer" style="display: none;">
+            <div class="empty-bets-msg" id="emptyBetsMsg">No bet records found for this session.</div>
+            <div class="my-bets-list" id="myBetsList"></div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Bet Placement Drawer / Modal -->
+      <div class="bet-modal-backdrop" id="betModal">
+        <div class="bet-drawer-content" id="betDrawerContent">
+          <!-- Drawer Header -->
+          <div class="drawer-header" id="drawerHeader">
+            <div class="selected-choice-badge" id="drawerChoiceBadge">Win Go 1 Min: Select Green</div>
+          </div>
+
+          <!-- Contract Money Base Row -->
+          <div class="contract-money-group">
+            <label class="drawer-field-label">Balance</label>
+            <div class="base-money-chips">
+              <button class="base-chip active" data-base="10">10</button>
+              <button class="base-chip" data-base="100">100</button>
+              <button class="base-chip" data-base="1000">1000</button>
+            </div>
+          </div>
+
+          <!-- Quantity Stepper Row -->
+          <div class="quantity-stepper-group">
+            <label class="drawer-field-label">Quantity</label>
+            <div class="stepper-actions">
+              <button class="step-btn minus" id="btnQtyMinus">-</button>
+              <input type="number" class="step-input" id="qtyInput" value="1" min="1" max="999">
+              <button class="step-btn plus" id="btnQtyPlus">+</button>
+            </div>
+          </div>
+
+          <!-- Multiplier Chips inside Drawer -->
+          <div class="drawer-multipliers-row">
+            <button class="d-chip active" data-mult="1">X1</button>
+            <button class="d-chip" data-mult="5">X5</button>
+            <button class="d-chip" data-mult="10">X10</button>
+            <button class="d-chip" data-mult="20">X20</button>
+            <button class="d-chip" data-mult="50">X50</button>
+            <button class="d-chip" data-mult="100">X100</button>
+          </div>
+
+          <!-- Pre-sale Rules Agreement -->
+          <div class="drawer-rules-checkbox">
+            <input type="checkbox" id="chkPreSaleRules" checked>
+            <label for="chkPreSaleRules">I agree to <span class="rules-link">《Pre-sale rules》</span></label>
+          </div>
+
+          <!-- Drawer Bottom Buttons -->
+          <div class="drawer-bottom-actions">
+            <button class="drawer-btn cancel" id="btnCancelBet">Cancel</button>
+            <button class="drawer-btn confirm" id="btnConfirmBet">
+              <span>Total amount <strong id="drawerTotalAmount">₹10.00</strong></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unified Game Outcome Celebration Modal -->
+      <div class="game-outcome-modal-backdrop" id="gameOutcomeModal">
+        <div class="outcome-sunburst" id="outcomeSunburst"></div>
+        <div class="outcome-particles" id="outcomeParticles"></div>
+        <div class="outcome-card" id="outcomeCard">
+          <button class="outcome-close-x" id="btnCloseOutcomeX" title="Close">×</button>
+          <div class="outcome-badge-wrap">
+            <div class="outcome-badge-icon" id="outcomeBadgeIcon">🏆</div>
+          </div>
+          <h2 class="outcome-title" id="outcomeTitle">CONGRATULATIONS!</h2>
+          <p class="outcome-subtitle" id="outcomeSubtitle">Round Winner</p>
+          <div class="outcome-amount-box" id="outcomeAmountBox">
+            <span class="outcome-amount-label" id="outcomeAmountLabel">Total Prize Won</span>
+            <div class="outcome-amount-value" id="outcomeAmountValue">+₹0.00</div>
+          </div>
+          <div class="outcome-details-plate" id="outcomeDetailsPlate"></div>
+          <div class="outcome-actions">
+            <button class="outcome-action-btn primary" id="btnCloseOutcomeModal">Continue</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toast -->
+      <div class="wingo-toast" id="wingoToast">Message</div>
+    </div>
+  </div>
+
+  <script src="outcome-modal.js"></script>
+  <script src="win.js"></script>
+  <script src="upi-recharge.js"></script>
+</body>
+</html>

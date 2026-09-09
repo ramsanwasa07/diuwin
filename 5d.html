@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="prevent-reload.js"></script>
+  <title>DiuWin Games - 5D Lottery</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="5d.css">
+  <link rel="stylesheet" href="outcome-modal.css">
+</head>
+<body>
+  <div class="fived-page-wrapper">
+    <div class="fived-phone-container">
+      <!-- Top Navigation Bar -->
+      <header class="fived-top-nav">
+        <button class="nav-back-icon" id="btnBackToLobby" title="Back to Lobby">
+          <i class="fa fa-angle-left"></i>
+        </button>
+        <div class="header-center-logo" id="brandLogoHome">
+          <img src="images/logo.png" alt="DiuWin" class="brand-mini-img" onerror="this.style.display='none'">
+          <span class="brand-text-diu">Diu<strong class="brand-text-win">Win</strong></span>
+        </div>
+        <div class="header-right-tools">
+          <button class="head-tool-btn" id="btnCustomerSupport" title="Customer Support">
+            <i class="fa fa-headphones"></i>
+          </button>
+          <button class="head-tool-btn" id="btnNotifications" title="Sound / Alerts">
+            <i class="fa fa-bell-o"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Scrollable Content -->
+      <main class="fived-main-scroll">
+        <!-- 1. Total Balance Card -->
+        <section class="wallet-balance-card">
+          <div class="wallet-col-left">
+            <div class="wallet-icon-row">
+              <span class="wallet-emoji-icon">👛</span>
+              <div class="wallet-title-stack">
+                <span class="wallet-main-lbl">Total</span>
+                <span class="wallet-sub-lbl">Balance</span>
+              </div>
+            </div>
+            <button class="wallet-action-btn withdraw" id="btnWithdrawModal">Withdraw</button>
+          </div>
+
+          <div class="wallet-col-right">
+            <div class="wallet-amount-row">
+              <span class="wallet-currency-sym">₹</span>
+              <span class="wallet-live-amt" id="userWalletBalance">973.70</span>
+              <button class="wallet-refresh-btn" id="btnRefreshWallet" title="Refresh Balance">
+                <i class="fa fa-refresh"></i>
+              </button>
+            </div>
+            <button class="wallet-action-btn recharge" id="btnRechargeModal">Recharge</button>
+          </div>
+        </section>
+
+        <!-- 2. Timer Mode Tabs (1 min, 3 min, 5 min, 10 min) -->
+        <section class="timer-modes-container">
+          <div class="modes-track-line"></div>
+          <div class="timer-modes-grid">
+            <div class="time-tab active" data-time="1">
+              <span class="tab-help-icon">❓</span>
+              <div class="timer-clock-icon-wrap">
+                <i class="fa fa-clock-o"></i>
+              </div>
+              <span class="arrow-indicator">▼</span>
+              <span class="time-tab-title red">1 min</span>
+            </div>
+
+            <div class="time-tab" data-time="3">
+              <span class="tab-help-icon">❓</span>
+              <div class="timer-clock-icon-wrap">
+                <i class="fa fa-clock-o"></i>
+              </div>
+              <span class="arrow-indicator">▼</span>
+              <span class="time-tab-title green">3 min</span>
+            </div>
+
+            <div class="time-tab" data-time="5">
+              <span class="tab-help-icon">❓</span>
+              <div class="timer-clock-icon-wrap">
+                <i class="fa fa-clock-o"></i>
+              </div>
+              <span class="arrow-indicator">▼</span>
+              <span class="time-tab-title">5 min</span>
+            </div>
+
+            <div class="time-tab" data-time="10">
+              <span class="tab-help-icon">❓</span>
+              <div class="timer-clock-icon-wrap">
+                <i class="fa fa-clock-o"></i>
+              </div>
+              <span class="arrow-indicator">▼</span>
+              <span class="time-tab-title">10 min</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Previous Result Balls Row -->
+        <section class="prev-result-balls-row">
+          <span class="res-row-lbl">Result</span>
+          <div class="balls-set">
+            <div class="res-ball-item"><span class="ball-c" id="ballA">0</span><span class="ball-pos">A</span></div>
+            <div class="res-ball-item"><span class="ball-c" id="ballB">0</span><span class="ball-pos">B</span></div>
+            <div class="res-ball-item"><span class="ball-c" id="ballC">0</span><span class="ball-pos">C</span></div>
+            <div class="res-ball-item"><span class="ball-c" id="ballD">0</span><span class="ball-pos">D</span></div>
+            <div class="res-ball-item"><span class="ball-c" id="ballE">0</span><span class="ball-pos">E</span></div>
+            <span class="equal-sign">=</span>
+            <div class="res-ball-item"><span class="ball-c sum-red" id="ballSum">0</span></div>
+          </div>
+        </section>
+
+        <!-- 4. Draw Info & Left Time Header -->
+        <section class="draw-timer-header">
+          <div class="draw-side">
+            <span class="draw-sub-lbl">Draw</span>
+            <span class="draw-id-txt" id="fivedPeriodNumber">2026090310925</span>
+          </div>
+
+          <div class="timer-side">
+            <span class="timer-sub-lbl">Left Time</span>
+            <div class="green-digital-timer" id="fivedDigitalTimer">
+              <span class="d-digit" id="fivedMinTen">0</span>
+              <span class="d-digit" id="fivedMinOne">0</span>
+              <span class="d-colon">:</span>
+              <span class="d-digit" id="fivedSecTen">4</span>
+              <span class="d-digit" id="fivedSecOne">4</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. 5D Mechanical Cylindrical Slot Display -->
+        <section class="slot-reels-tray-box">
+          <div class="reels-container" id="reelsContainer">
+            <!-- Reel A (Green Highlight) -->
+            <div class="reel-cylinder active-reel" id="reelA">
+              <div class="cylinder-curve top"></div>
+              <div class="reel-digit" id="digitA">0</div>
+              <div class="cylinder-curve bottom"></div>
+            </div>
+            <!-- Reel B -->
+            <div class="reel-cylinder" id="reelB">
+              <div class="cylinder-curve top"></div>
+              <div class="reel-digit" id="digitB">0</div>
+              <div class="cylinder-curve bottom"></div>
+            </div>
+            <!-- Reel C -->
+            <div class="reel-cylinder" id="reelC">
+              <div class="cylinder-curve top"></div>
+              <div class="reel-digit" id="digitC">0</div>
+              <div class="cylinder-curve bottom"></div>
+            </div>
+            <!-- Reel D -->
+            <div class="reel-cylinder" id="reelD">
+              <div class="cylinder-curve top"></div>
+              <div class="reel-digit" id="digitD">0</div>
+              <div class="cylinder-curve bottom"></div>
+            </div>
+            <!-- Reel E -->
+            <div class="reel-cylinder" id="reelE">
+              <div class="cylinder-curve top"></div>
+              <div class="reel-digit" id="digitE">0</div>
+              <div class="cylinder-curve bottom"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. Betting Position Selector Tabs (A, B, C, D, E, Total) -->
+        <section class="fived-betting-board">
+          <div class="position-tabs-row">
+            <button class="pos-tab active" data-pos="A">A</button>
+            <button class="pos-tab" data-pos="B">B</button>
+            <button class="pos-tab" data-pos="C">C</button>
+            <button class="pos-tab" data-pos="D">D</button>
+            <button class="pos-tab" data-pos="E">E</button>
+            <button class="pos-tab" data-pos="Total">Total</button>
+          </div>
+
+          <!-- Big / Small / Odd / Even Row -->
+          <div class="props-row-4">
+            <div class="prop-card" data-choice="Big" data-odds="2">
+              <span class="prop-lbl">Big</span>
+              <span class="prop-odds">2</span>
+            </div>
+            <div class="prop-card" data-choice="Small" data-odds="2">
+              <span class="prop-lbl">Small</span>
+              <span class="prop-odds">2</span>
+            </div>
+            <div class="prop-card" data-choice="Odd" data-odds="2">
+              <span class="prop-lbl">Odd</span>
+              <span class="prop-odds">2</span>
+            </div>
+            <div class="prop-card" data-choice="Even" data-odds="2">
+              <span class="prop-lbl">Even</span>
+              <span class="prop-odds">2</span>
+            </div>
+          </div>
+
+          <!-- Number Balls 0 to 9 in 2 Rows -->
+          <div class="number-balls-grid">
+            <div class="fived-ball" data-choice="0" data-odds="9">
+              <span class="fived-ball-digit">0</span>
+              <span class="fived-ball-odds">9</span>
+            </div>
+            <div class="fived-ball" data-choice="1" data-odds="9">
+              <span class="fived-ball-digit">1</span>
+              <span class="fived-ball-odds">9</span>
+            </div>
+            <div class="fived-ball" data-choice="2" data-odds="9">
+              <span class="fived-ball-digit">2</span>
+              <span class="fived-ball-odds">9</span>
+            </div>
+            <div class="fived-ball" data-choice="3" data-odds="9">
+              <span class="fived-ball-digit">3</span>
+              <span class="fived-ball-odds">9</span>
+            </div>
+            <div class="fived-ball" data-choice="4" data-odds="9">
+              <span class="fived-ball-digit">4</span>
+              <span class="fived-ball-odds">9</span>
+            </div>
+            <div class="fived-ball" data-choice="5" data-odds="9">
+              <span class="fived-ball-digit">5</span>
+              <span class="fived-ball-odds">9</span>
+            </div>
+            <div class="fived-ball" data-choice="6" data-odds="9">
+              <span class="fived-ball-digit">6</span>
+              <span class="fived-ball-odds">9</span>
+            </div>
+            <div class="fived-ball" data-choice="7" data-odds="9">
+              <span class="fived-ball-digit">7</span>
+              <span class="fived-ball-odds">9</span>
+            </div>
+            <div class="fived-ball" data-choice="8" data-odds="9">
+              <span class="fived-ball-digit">8</span>
+              <span class="fived-ball-odds">9</span>
+            </div>
+            <div class="fived-ball" data-choice="9" data-odds="9">
+              <span class="fived-ball-digit">9</span>
+              <span class="fived-ball-odds">9</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. History Section (Game History / My Bets) -->
+        <section class="history-section-wrap">
+          <div class="history-toggle-header">
+            <button class="hist-tab-btn active" id="tabGameHistory">Game History</button>
+            <button class="hist-tab-btn" id="tabMyBets">My Bets</button>
+          </div>
+
+          <!-- History Table -->
+          <div class="history-table-wrap" id="historyTableWrap">
+            <table class="fived-data-table">
+              <thead>
+                <tr>
+                  <th>Periods</th>
+                  <th>Result</th>
+                  <th>Sum</th>
+                </tr>
+              </thead>
+              <tbody id="fivedHistoryTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+
+            <!-- Pagination Footer -->
+            <div class="pagination-footer-row">
+              <button class="page-btn prev" id="btnPagePrev"><i class="fa fa-angle-left"></i></button>
+              <button class="page-btn next" id="btnPageNext"><i class="fa fa-angle-right"></i></button>
+            </div>
+          </div>
+
+          <!-- My Bets Container -->
+          <div class="my-bets-wrap" id="myBetsWrap" style="display: none;">
+            <div class="empty-msg" id="emptyBetsMsg">No bet records found for this session.</div>
+            <div class="bets-list" id="myBetsList"></div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Bet Drawer / Modal -->
+      <div class="bet-modal-backdrop" id="betModal">
+        <div class="bet-drawer-content" id="betDrawerContent">
+          <div class="drawer-header">
+            <div class="selected-choice-badge" id="drawerChoiceBadge">5D 1 Min: Position A - Number 0 (Odds 9)</div>
+          </div>
+
+          <div class="contract-money-group">
+            <label class="drawer-field-label">Balance</label>
+            <div class="base-money-chips">
+              <button class="base-chip active" data-base="10">10</button>
+              <button class="base-chip" data-base="100">100</button>
+              <button class="base-chip" data-base="1000">1000</button>
+            </div>
+          </div>
+
+          <div class="quantity-stepper-group">
+            <label class="drawer-field-label">Quantity</label>
+            <div class="stepper-actions">
+              <button class="step-btn minus" id="btnQtyMinus">-</button>
+              <input type="number" class="step-input" id="qtyInput" value="1" min="1" max="999">
+              <button class="step-btn plus" id="btnQtyPlus">+</button>
+            </div>
+          </div>
+
+          <div class="drawer-multipliers-row">
+            <button class="d-chip active" data-mult="1">X1</button>
+            <button class="d-chip" data-mult="5">X5</button>
+            <button class="d-chip" data-mult="10">X10</button>
+            <button class="d-chip" data-mult="20">X20</button>
+            <button class="d-chip" data-mult="50">X50</button>
+            <button class="d-chip" data-mult="100">X100</button>
+          </div>
+
+          <div class="drawer-rules-checkbox">
+            <input type="checkbox" id="chkPreSaleRules" checked>
+            <label for="chkPreSaleRules">I agree to <span class="rules-link">《Pre-sale rules》</span></label>
+          </div>
+
+          <div class="drawer-bottom-actions">
+            <button class="drawer-btn cancel" id="btnCancelBet">Cancel</button>
+            <button class="drawer-btn confirm" id="btnConfirmBet">
+              <span>Total amount <strong id="drawerTotalAmount">₹10.00</strong></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unified Game Outcome Celebration & Notice Modal -->
+      <div class="game-outcome-modal-backdrop" id="gameOutcomeModal">
+        <div class="outcome-sunburst" id="outcomeSunburst"></div>
+        <div class="outcome-particles" id="outcomeParticles"></div>
+        <div class="outcome-card" id="outcomeCard">
+          <button class="outcome-close-x" id="btnCloseOutcomeX" title="Close">×</button>
+          <div class="outcome-badge-wrap">
+            <div class="outcome-badge-icon" id="outcomeBadgeIcon">🏆</div>
+          </div>
+          <h2 class="outcome-title" id="outcomeTitle">CONGRATULATIONS!</h2>
+          <p class="outcome-subtitle" id="outcomeSubtitle">Round Winner</p>
+          <div class="outcome-amount-box" id="outcomeAmountBox">
+            <span class="outcome-amount-label" id="outcomeAmountLabel">Total Prize Won</span>
+            <div class="outcome-amount-value" id="outcomeAmountValue">+₹0.00</div>
+          </div>
+          <div class="outcome-details-plate" id="outcomeDetailsPlate"></div>
+          <div class="outcome-actions">
+            <button class="outcome-action-btn primary" id="btnCloseOutcomeModal">Continue</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toast -->
+      <div class="fived-toast" id="fivedToast">Message</div>
+    </div>
+  </div>
+
+  <script src="outcome-modal.js"></script>
+  <script src="5d.js"></script>
+  <script src="upi-recharge.js"></script>
+</body>
+</html>

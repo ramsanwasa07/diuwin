@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="prevent-reload.js"></script>
+  <title>DiuWin Game Master Admin Control</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="admin-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-header">
+        <div class="admin-logo-mark">
+          <i class="fa fa-shield"></i>
+        </div>
+        <div class="admin-brand-title">
+          <span>DiuWin</span>
+          <small>MASTER CONTROL</small>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-category">GAME CONTROLLERS</div>
+        <button class="nav-item active" data-tab="tab-wingo">
+          <i class="fa fa-gamepad"></i>
+          <span>WinGo Controller</span>
+          <span class="live-pill">LIVE</span>
+        </button>
+        <button class="nav-item" data-tab="tab-k3">
+          <i class="fa fa-cube"></i>
+          <span>K3 Dice Controller</span>
+          <span class="live-pill">LIVE</span>
+        </button>
+        <button class="nav-item" data-tab="tab-5d">
+          <i class="fa fa-th-large"></i>
+          <span>5D Lottery Control</span>
+          <span class="live-pill">LIVE</span>
+        </button>
+        <button class="nav-item" data-tab="tab-aviator">
+          <i class="fa fa-plane"></i>
+          <span>Aviator Multiplier</span>
+          <span class="live-pill">LIVE</span>
+        </button>
+        <button class="nav-item" data-tab="tab-mines">
+          <i class="fa fa-bomb"></i>
+          <span>Mines Trap Control</span>
+          <span class="live-pill">LIVE</span>
+        </button>
+        <button class="nav-item" data-tab="tab-chicken">
+          <i class="fa fa-road"></i>
+          <span>Chicken Road Control</span>
+          <span class="live-pill">LIVE</span>
+        </button>
+
+        <div class="sidebar-category">AUDIT & PROFIT LOG</div>
+        <button class="nav-item" data-tab="tab-master-history">
+          <i class="fa fa-history"></i>
+          <span>Master History Log</span>
+          <span class="period-pill">P#1</span>
+        </button>
+
+        <div class="sidebar-category">PLATFORM ADMIN</div>
+        <button class="nav-item" data-tab="tab-users">
+          <i class="fa fa-users"></i>
+          <span>User Management</span>
+        </button>
+        <button class="nav-item" data-tab="tab-finance">
+          <i class="fa fa-credit-card"></i>
+          <span>Deposits & Payouts</span>
+        </button>
+        <button class="nav-item" data-tab="tab-overview">
+          <i class="fa fa-line-chart"></i>
+          <span>Financial Analytics</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="win.html" target="_blank" class="btn-player-portal">
+          <i class="fa fa-external-link"></i>
+          <span>Open Player Game</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="admin-main">
+      
+      <!-- Top Header -->
+      <header class="admin-topbar">
+        <div class="topbar-left">
+          <h1 id="pageTitle">WinGo Outcome Controller</h1>
+          <span class="server-status-tag"><span class="pulse-dot"></span> Engine Online</span>
+        </div>
+        <div class="topbar-right">
+          <div class="round-ticker-badge">
+            <span>Period: <strong id="topbarPeriodId">---</strong></span>
+            <span class="ticker-divider">•</span>
+            <span>Countdown: <strong id="topbarCountdown">00s</strong></span>
+          </div>
+          <div class="admin-profile-pill">
+            <i class="fa fa-user-circle"></i>
+            <span id="activeAdminName">Admin</span>
+          </div>
+          <button class="btn-refresh-manual" id="btnManualRefresh" title="Refresh Live Data">
+            <i class="fa fa-refresh"></i>
+          </button>
+          <button class="btn-admin-logout" id="btnAdminLogout" title="Logout from Admin Panel">
+            <i class="fa fa-power-off"></i> <span>Logout</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- TAB 1: WinGo Game Controller -->
+      <section class="tab-pane active" id="tab-wingo">
+        
+        <!-- Live Round Banner -->
+        <div class="round-summary-grid">
+          <div class="stat-box primary">
+            <div class="stat-label">CURRENT ACTIVE PERIOD</div>
+            <div class="stat-value" id="currentRoundId">Loading...</div>
+            <div class="stat-sub">1-Minute WinGo Server Cycle</div>
+          </div>
+          <div class="stat-box timer-box">
+            <div class="stat-label">TIME REMAINING IN ROUND</div>
+            <div class="stat-value countdown-glow" id="roundTimerVal">-- : --</div>
+            <div class="stat-sub" id="roundStatusNote">Bets are currently open</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">ACTIVE ROUND BETS</div>
+            <div class="stat-value" id="activeBetsCount">0</div>
+            <div class="stat-sub">Players actively wagering</div>
+          </div>
+          <div class="stat-box success">
+            <div class="stat-label">TOTAL ROUND POOL</div>
+            <div class="stat-value" id="totalPoolAmount">₹0.00</div>
+            <div class="stat-sub">Wagered in current period</div>
+          </div>
+        </div>
+
+        <!-- OUTCOME CONTROL CONSOLE -->
+        <div class="control-console-card">
+          <div class="card-header">
+            <div>
+              <h2><i class="fa fa-sliders"></i> WinGo Outcome Manipulation Console</h2>
+              <p>Control the winning number and color for the active round before countdown finishes.</p>
+            </div>
+            <div class="mode-pills-wrap">
+              <span class="mode-indicator" id="currentActiveModeBadge">Mode: MANUAL</span>
+            </div>
+          </div>
+
+          <!-- Mode Selector Buttons -->
+          <div class="algorithm-modes-grid">
+            <button class="mode-card-btn active" id="btnModeManual" data-mode="manual">
+              <div class="mode-icon"><i class="fa fa-hand-pointer-o"></i></div>
+              <div class="mode-text">
+                <strong>Manual Result Override</strong>
+                <span>You select the exact number (0-9) that will win this round.</span>
+              </div>
+            </button>
+
+            <button class="mode-card-btn" id="btnModeLeastBet" data-mode="least_bet_profit">
+              <div class="mode-icon"><i class="fa fa-shield"></i></div>
+              <div class="mode-text">
+                <strong>Smart Profit Mode (Least Bet Winner)</strong>
+                <span>Picks the outcome with lowest payout liability. Guaranteed profit for platform!</span>
+              </div>
+            </button>
+
+            <button class="mode-card-btn" id="btnModeRandom" data-mode="random">
+              <div class="mode-icon"><i class="fa fa-random"></i></div>
+              <div class="mode-text">
+                <strong>Random Natural Mode</strong>
+                <span>Unmodified statistical randomness based on certified random generator.</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- 10 Ball Selector for Manual Mode -->
+          <div class="manual-selector-area" id="manualSelectorArea">
+            <div class="area-heading">
+              <span>Select Winning Number for Period <strong id="targetPeriodId">---</strong>:</span>
+              <span class="selection-status-badge" id="selectionStatusMsg">Select a ball below</span>
+            </div>
+
+            <div class="balls-selector-row">
+              <button class="admin-ball-btn ball-0" data-val="0">
+                <span class="ball-digit">0</span>
+                <span class="ball-tag">Red+Violet</span>
+              </button>
+              <button class="admin-ball-btn ball-1" data-val="1">
+                <span class="ball-digit">1</span>
+                <span class="ball-tag">Green</span>
+              </button>
+              <button class="admin-ball-btn ball-2" data-val="2">
+                <span class="ball-digit">2</span>
+                <span class="ball-tag">Red</span>
+              </button>
+              <button class="admin-ball-btn ball-3" data-val="3">
+                <span class="ball-digit">3</span>
+                <span class="ball-tag">Green</span>
+              </button>
+              <button class="admin-ball-btn ball-4" data-val="4">
+                <span class="ball-digit">4</span>
+                <span class="ball-tag">Red</span>
+              </button>
+              <button class="admin-ball-btn ball-5" data-val="5">
+                <span class="ball-digit">5</span>
+                <span class="ball-tag">Green+Violet</span>
+              </button>
+              <button class="admin-ball-btn ball-6" data-val="6">
+                <span class="ball-digit">6</span>
+                <span class="ball-tag">Red</span>
+              </button>
+              <button class="admin-ball-btn ball-7" data-val="7">
+                <span class="ball-digit">7</span>
+                <span class="ball-tag">Green</span>
+              </button>
+              <button class="admin-ball-btn ball-8" data-val="8">
+                <span class="ball-digit">8</span>
+                <span class="ball-tag">Red</span>
+              </button>
+              <button class="admin-ball-btn ball-9" data-val="9">
+                <span class="ball-digit">9</span>
+                <span class="ball-tag">Green</span>
+              </button>
+            </div>
+
+            <!-- Estimated Profit Calculation Preview -->
+            <div class="impact-preview-bar" id="impactPreviewBar">
+              <div class="preview-item">
+                <span class="lbl">Selected Number:</span>
+                <strong class="val" id="prevNum">None</strong>
+              </div>
+              <div class="preview-item">
+                <span class="lbl">Winning Colors:</span>
+                <strong class="val" id="prevColors">---</strong>
+              </div>
+              <div class="preview-item">
+                <span class="lbl">Total Payout Liability:</span>
+                <strong class="val liability" id="prevLiability">₹0.00</strong>
+              </div>
+              <div class="preview-item">
+                <span class="lbl">Estimated Platform Profit:</span>
+                <strong class="val profit" id="prevProfit">₹0.00</strong>
+              </div>
+              <button class="btn-lock-result" id="btnLockOutcome">
+                <i class="fa fa-check-circle"></i> Apply & Force Winning Outcome
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Live Betting Pools & Liability Monitor -->
+        <div class="pools-grid-two">
+          
+          <!-- Betting Pools by Category -->
+          <div class="admin-card">
+            <div class="card-header">
+              <h3><i class="fa fa-pie-chart"></i> Live Betting Pools Breakdown</h3>
+            </div>
+            
+            <div class="pools-bars-group">
+              <!-- Colors -->
+              <div class="pool-row">
+                <span class="pool-name green-text">Green Pool</span>
+                <div class="pool-progress-bar">
+                  <div class="fill green-fill" id="barGreen" style="width: 0%"></div>
+                </div>
+                <span class="pool-amount" id="valGreen">₹0.00</span>
+              </div>
+
+              <div class="pool-row">
+                <span class="pool-name violet-text">Violet Pool</span>
+                <div class="pool-progress-bar">
+                  <div class="fill violet-fill" id="barViolet" style="width: 0%"></div>
+                </div>
+                <span class="pool-amount" id="valViolet">₹0.00</span>
+              </div>
+
+              <div class="pool-row">
+                <span class="pool-name red-text">Red Pool</span>
+                <div class="pool-progress-bar">
+                  <div class="fill red-fill" id="barRed" style="width: 0%"></div>
+                </div>
+                <span class="pool-amount" id="valRed">₹0.00</span>
+              </div>
+
+              <!-- Big / Small -->
+              <div class="divider-sub"></div>
+              
+              <div class="pool-row">
+                <span class="pool-name gold-text">Big (5-9)</span>
+                <div class="pool-progress-bar">
+                  <div class="fill gold-fill" id="barBig" style="width: 0%"></div>
+                </div>
+                <span class="pool-amount" id="valBig">₹0.00</span>
+              </div>
+
+              <div class="pool-row">
+                <span class="pool-name blue-text">Small (0-4)</span>
+                <div class="pool-progress-bar">
+                  <div class="fill blue-fill" id="barSmall" style="width: 0%"></div>
+                </div>
+                <span class="pool-amount" id="valSmall">₹0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Numbers Pool Liability Matrix -->
+          <div class="admin-card">
+            <div class="card-header">
+              <h3><i class="fa fa-calculator"></i> Payout Liability by Ball Number</h3>
+              <small>If ball wins, platform will payout:</small>
+            </div>
+            <div class="liability-matrix-grid" id="liabilityMatrix">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Live Bets Placed This Round -->
+        <div class="admin-card mt-16">
+          <div class="card-header">
+            <h3><i class="fa fa-list"></i> Real-time Bets Placed (Active Round)</h3>
+            <span class="badge" id="activeBetsBadge">0 Bets</span>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Player</th>
+                  <th>Period</th>
+                  <th>Type</th>
+                  <th>Selection</th>
+                  <th>Bet Amount</th>
+                </tr>
+              </thead>
+              <tbody id="activeBetsTableBody">
+                <tr>
+                  <td colspan="6" class="text-center empty-td">No bets placed yet in current period.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- TAB: K3 Controller -->
+      <section class="tab-pane" id="tab-k3">
+        <div class="round-summary-grid">
+          <div class="stat-box primary">
+            <div class="stat-label">CURRENT ACTIVE PERIOD</div>
+            <div class="stat-value" id="k3RoundId">#1</div>
+            <div class="stat-sub">K3 Dice 1-Minute Lottery</div>
+          </div>
+          <div class="stat-box timer-box">
+            <div class="stat-label">TIME REMAINING IN ROUND</div>
+            <div class="stat-value countdown-glow" id="k3Countdown">00 : 00</div>
+            <div class="stat-sub" id="k3StatusNote">Bets are currently open</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">ACTIVE BETS COUNT</div>
+            <div class="stat-value" id="k3ActiveBets">0</div>
+            <div class="stat-sub">Players in round</div>
+          </div>
+          <div class="stat-box success">
+            <div class="stat-label">TOTAL POOL WAGERED</div>
+            <div class="stat-value" id="k3TotalPool">₹0.00</div>
+            <div class="stat-sub">Current round liability pool</div>
+          </div>
+        </div>
+
+        <div class="control-console-card">
+          <div class="card-header">
+            <div>
+              <h2><i class="fa fa-cube"></i> K3 Dice Outcome Manipulation Console</h2>
+              <p>Select exact dice values (1-6) for Dice 1, Dice 2, and Dice 3 to force the period outcome.</p>
+            </div>
+            <div class="mode-pills-wrap">
+              <span class="mode-indicator" id="k3ActiveModeBadge">Mode: MANUAL</span>
+            </div>
+          </div>
+
+          <!-- K3 Modes -->
+          <div class="algorithm-modes-grid">
+            <button class="mode-card-btn active" id="btnK3ModeManual" data-mode="manual">
+              <div class="mode-icon"><i class="fa fa-hand-pointer-o"></i></div>
+              <div class="mode-text">
+                <strong>Manual Dice Selection</strong>
+                <span>Directly pick the 3 dice faces (1-6) below.</span>
+              </div>
+            </button>
+            <button class="mode-card-btn" id="btnK3ModeLeast" data-mode="least_bet">
+              <div class="mode-icon"><i class="fa fa-shield"></i></div>
+              <div class="mode-text">
+                <strong>Smart Profit Mode (Least Bet)</strong>
+                <span>Automatically settles on the combination with lowest player winnings.</span>
+              </div>
+            </button>
+            <button class="mode-card-btn" id="btnK3ModeRandom" data-mode="random">
+              <div class="mode-icon"><i class="fa fa-random"></i></div>
+              <div class="mode-text">
+                <strong>Random Natural Mode</strong>
+                <span>Random 3 dice roll without admin override.</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- Dice Pickers -->
+          <div class="dice-selector-container mt-20">
+            <div class="dice-pickers-row">
+              <div class="dice-picker-col">
+                <div class="dice-col-title">DICE 1</div>
+                <div class="dice-btn-group" id="k3Dice1Group">
+                  <button type="button" class="k3-dice-btn active" data-die="1" data-val="1"><i class="fa fa-circle"></i></button>
+                  <button type="button" class="k3-dice-btn" data-die="1" data-val="2">2</button>
+                  <button type="button" class="k3-dice-btn" data-die="1" data-val="3">3</button>
+                  <button type="button" class="k3-dice-btn" data-die="1" data-val="4">4</button>
+                  <button type="button" class="k3-dice-btn" data-die="1" data-val="5">5</button>
+                  <button type="button" class="k3-dice-btn" data-die="1" data-val="6">6</button>
+                </div>
+              </div>
+
+              <div class="dice-picker-col">
+                <div class="dice-col-title">DICE 2</div>
+                <div class="dice-btn-group" id="k3Dice2Group">
+                  <button type="button" class="k3-dice-btn" data-die="2" data-val="1">1</button>
+                  <button type="button" class="k3-dice-btn active" data-die="2" data-val="2">2</button>
+                  <button type="button" class="k3-dice-btn" data-die="2" data-val="3">3</button>
+                  <button type="button" class="k3-dice-btn" data-die="2" data-val="4">4</button>
+                  <button type="button" class="k3-dice-btn" data-die="2" data-val="5">5</button>
+                  <button type="button" class="k3-dice-btn" data-die="2" data-val="6">6</button>
+                </div>
+              </div>
+
+              <div class="dice-picker-col">
+                <div class="dice-col-title">DICE 3</div>
+                <div class="dice-btn-group" id="k3Dice3Group">
+                  <button type="button" class="k3-dice-btn" data-die="3" data-val="1">1</button>
+                  <button type="button" class="k3-dice-btn" data-die="2" data-val="2">2</button>
+                  <button type="button" class="k3-dice-btn active" data-die="3" data-val="3">3</button>
+                  <button type="button" class="k3-dice-btn" data-die="3" data-val="4">4</button>
+                  <button type="button" class="k3-dice-btn" data-die="3" data-val="5">5</button>
+                  <button type="button" class="k3-dice-btn" data-die="3" data-val="6">6</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dice Outcome Live Calculation Preview -->
+            <div class="impact-preview-bar mt-16">
+              <div class="preview-item">
+                <span class="lbl">Selected Dice:</span>
+                <strong class="val" id="k3DicePrev">[ 1, 2, 3 ]</strong>
+              </div>
+              <div class="preview-item">
+                <span class="lbl">Total Sum:</span>
+                <strong class="val text-gold" id="k3SumPrev">6</strong>
+              </div>
+              <div class="preview-item">
+                <span class="lbl">Size & Parity:</span>
+                <strong class="val" id="k3SizeParityPrev">Small (≤10) • Even</strong>
+              </div>
+              <div class="preview-item">
+                <span class="lbl">Special Pattern:</span>
+                <strong class="val" id="k3PatternPrev">Unique (3 Different)</strong>
+              </div>
+              <button class="btn-lock-result" id="btnLockK3">
+                <i class="fa fa-check-circle"></i> Apply & Force K3 Outcome
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: 5D Controller -->
+      <section class="tab-pane" id="tab-5d">
+        <div class="round-summary-grid">
+          <div class="stat-box primary">
+            <div class="stat-label">CURRENT ACTIVE PERIOD</div>
+            <div class="stat-value" id="fivedRoundId">#1</div>
+            <div class="stat-sub">5D 5-Digit Lottery</div>
+          </div>
+          <div class="stat-box timer-box">
+            <div class="stat-label">TIME REMAINING IN ROUND</div>
+            <div class="stat-value countdown-glow" id="fivedCountdown">00 : 00</div>
+            <div class="stat-sub" id="fivedStatusNote">Bets are currently open</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">ACTIVE BETS COUNT</div>
+            <div class="stat-value" id="fivedActiveBets">0</div>
+            <div class="stat-sub">Wagers in 5D round</div>
+          </div>
+          <div class="stat-box success">
+            <div class="stat-label">TOTAL POOL WAGERED</div>
+            <div class="stat-value" id="fivedTotalPool">₹0.00</div>
+            <div class="stat-sub">Current round pool</div>
+          </div>
+        </div>
+
+        <div class="control-console-card">
+          <div class="card-header">
+            <div>
+              <h2><i class="fa fa-th-large"></i> 5D Lottery Outcome Manipulation Console</h2>
+              <p>Specify the exact 5 winning digits for positions A, B, C, D, and E (0-9).</p>
+            </div>
+            <div class="mode-pills-wrap">
+              <span class="mode-indicator" id="fivedActiveModeBadge">Mode: MANUAL</span>
+            </div>
+          </div>
+
+          <!-- 5D Modes -->
+          <div class="algorithm-modes-grid">
+            <button class="mode-card-btn active" id="btn5dModeManual" data-mode="manual">
+              <div class="mode-icon"><i class="fa fa-hand-pointer-o"></i></div>
+              <div class="mode-text">
+                <strong>Manual 5D Digits</strong>
+                <span>Set exact digits for A, B, C, D, E.</span>
+              </div>
+            </button>
+            <button class="mode-card-btn" id="btn5dModeLeast" data-mode="least_bet">
+              <div class="mode-icon"><i class="fa fa-shield"></i></div>
+              <div class="mode-text">
+                <strong>Smart Profit Mode</strong>
+                <span>Lowest payout liability across all bet positions.</span>
+              </div>
+            </button>
+            <button class="mode-card-btn" id="btn5dModeRandom" data-mode="random">
+              <div class="mode-icon"><i class="fa fa-random"></i></div>
+              <div class="mode-text">
+                <strong>Random Natural Mode</strong>
+                <span>Pure random generation for all 5 positions.</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- 5D 5-Digit Selector Rows -->
+          <div class="fived-digits-container mt-20">
+            <div class="fived-positions-grid">
+              <div class="fived-pos-card" data-pos="A">
+                <div class="pos-badge">Position A</div>
+                <input type="number" min="0" max="9" class="fived-digit-input" id="digitA" value="1">
+              </div>
+              <div class="fived-pos-card" data-pos="B">
+                <div class="pos-badge">Position B</div>
+                <input type="number" min="0" max="9" class="fived-digit-input" id="digitB" value="3">
+              </div>
+              <div class="fived-pos-card" data-pos="C">
+                <div class="pos-badge">Position C</div>
+                <input type="number" min="0" max="9" class="fived-digit-input" id="digitC" value="5">
+              </div>
+              <div class="fived-pos-card" data-pos="D">
+                <div class="pos-badge">Position D</div>
+                <input type="number" min="0" max="9" class="fived-digit-input" id="digitD" value="7">
+              </div>
+              <div class="fived-pos-card" data-pos="E">
+                <div class="pos-badge">Position E</div>
+                <input type="number" min="0" max="9" class="fived-digit-input" id="digitE" value="9">
+              </div>
+            </div>
+
+            <!-- Preview -->
+            <div class="impact-preview-bar mt-16">
+              <div class="preview-item">
+                <span class="lbl">Selected Digits:</span>
+                <strong class="val" id="fivedPrevDigits">[ 1, 3, 5, 7, 9 ]</strong>
+              </div>
+              <div class="preview-item">
+                <span class="lbl">Total Sum:</span>
+                <strong class="val text-gold" id="fivedPrevSum">25</strong>
+              </div>
+              <div class="preview-item">
+                <span class="lbl">Sum Size & Parity:</span>
+                <strong class="val" id="fivedPrevAttributes">Big (≥23) • Odd</strong>
+              </div>
+              <button class="btn-lock-result" id="btnLock5d">
+                <i class="fa fa-check-circle"></i> Apply & Force 5D Outcome
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: Aviator Multiplier Controller -->
+      <section class="tab-pane" id="tab-aviator">
+        <div class="round-summary-grid">
+          <div class="stat-box primary">
+            <div class="stat-label">CURRENT ACTIVE PERIOD</div>
+            <div class="stat-value" id="aviatorRoundId">#1</div>
+            <div class="stat-sub">Aviator Spribe Style Engine</div>
+          </div>
+          <div class="stat-box timer-box">
+            <div class="stat-label">CURRENT FLIGHT STATUS</div>
+            <div class="stat-value text-gold" id="aviatorStatus">FLYING</div>
+            <div class="stat-sub" id="aviatorMultiplierLive">1.00x</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">SCHEDULED CRASH MULTIPLIER</div>
+            <div class="stat-value text-red" id="aviatorCurrentCrashPoint">2.50x</div>
+            <div class="stat-sub">Flight will terminate at this point</div>
+          </div>
+          <div class="stat-box success">
+            <div class="stat-label">TOTAL FLIGHT BETS</div>
+            <div class="stat-value" id="aviatorTotalBets">₹0.00</div>
+            <div class="stat-sub">Active stakes in air</div>
+          </div>
+        </div>
+
+        <div class="control-console-card">
+          <div class="card-header">
+            <div>
+              <h2><i class="fa fa-plane"></i> Aviator Crash Multiplier Override</h2>
+              <p>Dictate exactly at what multiplier the plane crashes, or trigger an emergency instant crash.</p>
+            </div>
+            <div class="mode-pills-wrap">
+              <span class="mode-indicator" id="aviatorModeBadge">Target: 2.50x</span>
+            </div>
+          </div>
+
+          <!-- Quick Multiplier Chips -->
+          <div class="quick-chips-wrapper mt-16">
+            <label class="control-label">Quick Set Target Crash Multiplier:</label>
+            <div class="crash-chips-grid">
+              <button type="button" class="crash-chip-btn text-red-chip" data-mult="1.10">1.10x (Quick Platform Trap)</button>
+              <button type="button" class="crash-chip-btn text-red-chip" data-mult="1.25">1.25x</button>
+              <button type="button" class="crash-chip-btn" data-mult="1.50">1.50x</button>
+              <button type="button" class="crash-chip-btn" data-mult="2.00">2.00x</button>
+              <button type="button" class="crash-chip-btn" data-mult="3.50">3.50x</button>
+              <button type="button" class="crash-chip-btn text-gold-chip" data-mult="5.00">5.00x</button>
+              <button type="button" class="crash-chip-btn text-gold-chip" data-mult="10.00">10.00x</button>
+              <button type="button" class="crash-chip-btn text-purple-chip" data-mult="50.00">50.00x</button>
+            </div>
+          </div>
+
+          <div class="aviator-actions-row mt-20">
+            <div class="custom-mult-input-box">
+              <label class="control-label">Or Custom Exact Multiplier (e.g. 1.85, 4.20, 15.00):</label>
+              <div class="input-with-action">
+                <input type="number" step="0.01" min="1.01" max="1000" id="aviatorCustomInput" value="2.50" class="admin-input-box">
+                <button type="button" class="btn-primary" id="btnApplyAviatorCrash">
+                  <i class="fa fa-check"></i> Set Next Crash Target
+                </button>
+              </div>
+            </div>
+
+            <div class="emergency-crash-box">
+              <label class="control-label">Emergency Intervention:</label>
+              <button type="button" class="btn-danger-emergency" id="btnInstantCrashAviator">
+                <i class="fa fa-fire"></i> CRASH PLANE IMMEDIATELY NOW!
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: Mines Trap Controller -->
+      <section class="tab-pane" id="tab-mines">
+        <div class="round-summary-grid">
+          <div class="stat-box primary">
+            <div class="stat-label">CURRENT ACTIVE SESSION</div>
+            <div class="stat-value" id="minesRoundId">#1</div>
+            <div class="stat-sub">5x5 Grid Mines Engine</div>
+          </div>
+          <div class="stat-box timer-box">
+            <div class="stat-label">ACTIVE TRAP SETTING</div>
+            <div class="stat-value text-gold" id="minesActiveTrapMode">BALANCED</div>
+            <div class="stat-sub">Controls tile trigger behavior</div>
+          </div>
+          <div class="stat-box success">
+            <div class="stat-label">PLATFORM RTP PROFILE</div>
+            <div class="stat-value">94.5%</div>
+            <div class="stat-sub">Guaranteed platform edge</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">TOTAL MINES PLAYED</div>
+            <div class="stat-value" id="minesSessionCount">0</div>
+            <div class="stat-sub">Player mine runs</div>
+          </div>
+        </div>
+
+        <div class="control-console-card">
+          <div class="card-header">
+            <div>
+              <h2><i class="fa fa-bomb"></i> Mines Grid Outcome & Trap Controller</h2>
+              <p>Force the player's next click to hit a bomb for platform profit, or grant a gem to foster trust.</p>
+            </div>
+          </div>
+
+          <div class="algorithm-modes-grid mt-16">
+            <button class="mode-card-btn" id="btnMinesForceBomb" data-trap="force_bomb">
+              <div class="mode-icon text-red"><i class="fa fa-bomb"></i></div>
+              <div class="mode-text">
+                <strong class="text-red">FORCE BOMB (Immediate Player Loss)</strong>
+                <span>Next user tile reveal will always detonate a bomb. Platform takes entire bet.</span>
+              </div>
+            </button>
+
+            <button class="mode-card-btn" id="btnMinesForceGem" data-trap="force_gem">
+              <div class="mode-icon text-emerald"><i class="fa fa-diamond"></i></div>
+              <div class="mode-text">
+                <strong class="text-emerald">FORCE GEM (Reward Win)</strong>
+                <span>Guarantees next tile is a safe gem diamond for excitement.</span>
+              </div>
+            </button>
+
+            <button class="mode-card-btn active" id="btnMinesBalanced" data-trap="balanced">
+              <div class="mode-icon"><i class="fa fa-balance-scale"></i></div>
+              <div class="mode-text">
+                <strong>Natural Balanced Mode</strong>
+                <span>Generates authentic minefield layout according to selected mine count.</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: Chicken Road Controller -->
+      <section class="tab-pane" id="tab-chicken">
+        <div class="round-summary-grid">
+          <div class="stat-box primary">
+            <div class="stat-label">CURRENT ACTIVE SESSION</div>
+            <div class="stat-value" id="chickenRoundId">#1</div>
+            <div class="stat-sub">Road Crossing Survival Engine</div>
+          </div>
+          <div class="stat-box timer-box">
+            <div class="stat-label">FORCED CRASH STEP</div>
+            <div class="stat-value text-red" id="chickenCrashStepDisplay">Step 3</div>
+            <div class="stat-sub">Vehicle collision trigger point</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">DIFFICULTY MULTIPLIER</div>
+            <div class="stat-value text-gold">HARD (1.68x/step)</div>
+            <div class="stat-sub">Scale curve</div>
+          </div>
+          <div class="stat-box success">
+            <div class="stat-label">TOTAL CHICKEN ROUNDS</div>
+            <div class="stat-value" id="chickenRoundsCount">0</div>
+            <div class="stat-sub">Rounds logged</div>
+          </div>
+        </div>
+
+        <div class="control-console-card">
+          <div class="card-header">
+            <div>
+              <h2><i class="fa fa-road"></i> Chicken Road Collision Controller</h2>
+              <p>Dictate exactly which step (1-20) the chicken will get hit by a car, ending the game.</p>
+            </div>
+          </div>
+
+          <div class="quick-chips-wrapper mt-16">
+            <label class="control-label">Select Trap Collision Step:</label>
+            <div class="crash-chips-grid">
+              <button type="button" class="crash-chip-btn text-red-chip" data-step="1">Step 1 (Instant Trap)</button>
+              <button type="button" class="crash-chip-btn text-red-chip" data-step="2">Step 2</button>
+              <button type="button" class="crash-chip-btn text-red-chip active" data-step="3">Step 3 (Early Trap)</button>
+              <button type="button" class="crash-chip-btn" data-step="4">Step 4</button>
+              <button type="button" class="crash-chip-btn" data-step="5">Step 5 (Mid Highway)</button>
+              <button type="button" class="crash-chip-btn" data-step="7">Step 7</button>
+              <button type="button" class="crash-chip-btn" data-step="10">Step 10 (Late Collision)</button>
+              <button type="button" class="crash-chip-btn text-emerald-chip" data-step="20">Step 20 (Allow Golden Victory)</button>
+            </div>
+          </div>
+
+          <div class="custom-mult-input-box mt-20">
+            <label class="control-label">Or Custom Exact Step (1 - 20):</label>
+            <div class="input-with-action">
+              <input type="number" min="1" max="20" id="chickenCustomStepInput" value="3" class="admin-input-box">
+              <button type="button" class="btn-primary" id="btnApplyChickenStep">
+                <i class="fa fa-check"></i> Force Chicken Collision Step
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: Master History Log -->
+      <section class="tab-pane" id="tab-master-history">
+        <div class="admin-card">
+          <div class="card-header flex-wrap">
+            <div>
+              <h2><i class="fa fa-history"></i> Unified Master Game Audit & Settlement History</h2>
+              <p>Every round across all 6 games recorded chronologically starting from <strong>Period 1</strong>.</p>
+            </div>
+            <div class="history-filter-pills" id="historyFilters">
+              <button type="button" class="filter-btn active" data-game="ALL">ALL GAMES</button>
+              <button type="button" class="filter-btn" data-game="WinGo">WinGo</button>
+              <button type="button" class="filter-btn" data-game="K3">K3 Dice</button>
+              <button type="button" class="filter-btn" data-game="5D">5D Lottery</button>
+              <button type="button" class="filter-btn" data-game="Aviator">Aviator</button>
+              <button type="button" class="filter-btn" data-game="Mines">Mines</button>
+              <button type="button" class="filter-btn" data-game="Chicken">Chicken Road</button>
+            </div>
+          </div>
+
+          <!-- History Table -->
+          <div class="table-responsive mt-16">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Period #</th>
+                  <th>Game</th>
+                  <th>Timestamp</th>
+                  <th>Settled Result Details</th>
+                  <th>Total Bet (₹)</th>
+                  <th>Total Payout (₹)</th>
+                  <th>Net Platform Profit</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="masterHistoryTableBody">
+                <tr>
+                  <td colspan="8" class="text-center empty-td">Loading Master History records...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: User Management -->
+      <section class="tab-pane" id="tab-users">
+        <div class="admin-card">
+          <div class="card-header flex-wrap">
+            <div>
+              <h2><i class="fa fa-users"></i> Registered Player Accounts</h2>
+              <p>View, modify wallet balances, or restrict player accounts.</p>
+            </div>
+            <div class="search-box">
+              <i class="fa fa-search"></i>
+              <input type="text" id="userSearchInput" placeholder="Search phone or ID...">
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>User ID</th>
+                  <th>Mobile Number</th>
+                  <th>Name</th>
+                  <th>VIP Level</th>
+                  <th>Balance</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+                <tr>
+                  <td colspan="7" class="text-center empty-td">Loading user records...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: Finance & Transactions -->
+      <section class="tab-pane" id="tab-finance">
+        <div class="admin-card">
+          <div class="card-header">
+            <div>
+              <h2><i class="fa fa-credit-card"></i> Deposit & Withdrawal Requests</h2>
+              <p>Approve incoming UPI recharges or release withdrawal payouts.</p>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Transaction ID</th>
+                  <th>User ID</th>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>Details</th>
+                  <th>Time</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="txTableBody">
+                <tr>
+                  <td colspan="8" class="text-center empty-td">Loading transactions...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: Overview Analytics -->
+      <section class="tab-pane" id="tab-overview">
+        <div class="analytics-grid">
+          <div class="analytic-card">
+            <div class="an-icon blue"><i class="fa fa-users"></i></div>
+            <div class="an-info">
+              <span class="an-label">Total Registered Users</span>
+              <strong class="an-val" id="anTotalUsers">0</strong>
+            </div>
+          </div>
+          <div class="analytic-card">
+            <div class="an-icon green"><i class="fa fa-money"></i></div>
+            <div class="an-info">
+              <span class="an-label">Total Player Balances</span>
+              <strong class="an-val" id="anTotalBalance">₹0.00</strong>
+            </div>
+          </div>
+          <div class="analytic-card">
+            <div class="an-icon gold"><i class="fa fa-gamepad"></i></div>
+            <div class="an-info">
+              <span class="an-label">Total Wager Volume</span>
+              <strong class="an-val" id="anTotalBets">₹0.00</strong>
+            </div>
+          </div>
+          <div class="analytic-card">
+            <div class="an-icon emerald"><i class="fa fa-trophy"></i></div>
+            <div class="an-info">
+              <span class="an-label">Total Payouts Won</span>
+              <strong class="an-val" id="anTotalPayouts">₹0.00</strong>
+            </div>
+          </div>
+          <div class="analytic-card highlight">
+            <div class="an-icon purple"><i class="fa fa-diamond"></i></div>
+            <div class="an-info">
+              <span class="an-label">Net Platform Margin / Profit</span>
+              <strong class="an-val" id="anNetProfit">₹0.00</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Modal: Balance Adjustment -->
+  <div class="admin-modal" id="balanceModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Adjust Player Balance</h3>
+        <button class="modal-close" id="btnCloseBalanceModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>User: <strong id="modalUserLabel">---</strong></p>
+        <div class="form-group">
+          <label>Action Type</label>
+          <select id="modalActionType">
+            <option value="add">Credit Funds (Add +₹)</option>
+            <option value="subtract">Debit Funds (Subtract -₹)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Amount (₹)</label>
+          <input type="number" id="modalAmount" placeholder="Enter amount..." min="1" step="1">
+        </div>
+        <div class="form-group">
+          <label>Reason / Note</label>
+          <input type="text" id="modalReason" placeholder="e.g. Manual VIP Bonus or Correction">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btnCancelBalance">Cancel</button>
+        <button class="btn-primary" id="btnConfirmBalance">Confirm Update</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Secure Master Admin Login Gate -->
+  <div class="admin-login-overlay" id="adminLoginGate">
+    <div class="admin-login-card">
+      <div class="login-brand">
+        <div class="brand-shield"><i class="fa fa-shield"></i></div>
+        <h2>DiuWin Authority Portal</h2>
+        <p>Enter Master ID & Security Password</p>
+      </div>
+      <form id="adminLoginForm">
+        <div class="login-field">
+          <label><i class="fa fa-user"></i> Admin ID / Username</label>
+          <input type="text" id="adminIdInput" placeholder="Enter Admin ID" required autocomplete="off" value="admin">
+        </div>
+        <div class="login-field">
+          <label><i class="fa fa-lock"></i> Security Password</label>
+          <div class="password-wrap">
+            <input type="password" id="adminPassInput" placeholder="Enter Password" required value="admin123">
+            <button type="button" id="btnTogglePass" class="toggle-pass-btn"><i class="fa fa-eye"></i></button>
+          </div>
+        </div>
+        <div class="login-credentials-box">
+          <div class="cred-title"><i class="fa fa-key"></i> Authorized Credentials:</div>
+          <div class="cred-details">
+            <div>Admin ID: <code>admin</code></div>
+            <div>Password: <code>admin123</code></div>
+          </div>
+        </div>
+        <button type="submit" class="btn-admin-login" id="btnAdminSubmit">
+          <i class="fa fa-sign-in"></i> Unlock Admin Console
+        </button>
+        <div id="loginErrorMsg" class="login-error-text"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div class="admin-toast" id="adminToast">Action completed</div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

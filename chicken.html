@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="prevent-reload.js"></script>
+  <title>Chicken Road - Cross The Highway</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="chicken.css">
+</head>
+<body>
+  <div class="chicken-app-shell">
+    <!-- Top Navigation Bar -->
+    <header class="chicken-header">
+      <div class="header-left">
+        <button class="nav-back-btn" id="btnBackToLobby" title="Back to Lobby">
+          <i class="fa fa-angle-left"></i>
+        </button>
+        <div class="brand-logo-wrap" id="brandLogoHome">
+          <span class="logo-txt-chicken">CHICKEN</span>
+          <span class="logo-txt-road">ROAD</span>
+        </div>
+        <div class="header-nav-tabs">
+          <button class="h-tab active" id="tabPlay">
+            <i class="fa fa-gamepad"></i> Play
+          </button>
+          <button class="h-tab" id="tabHistory">
+            <i class="fa fa-history"></i> History
+          </button>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="header-balance-pill" id="balancePill">
+          <span class="curr-sign">₹</span>
+          <span class="balance-amt" id="userBalanceDisplay">973.70</span>
+        </div>
+        <button class="icon-tool-btn" id="btnSettings" title="Settings"><i class="fa fa-cog"></i></button>
+        <button class="icon-tool-btn" id="btnSoundToggle" title="Sound Toggle"><i class="fa fa-volume-up"></i></button>
+        <button class="icon-tool-btn" id="btnFullscreen" title="Fullscreen"><i class="fa fa-expand"></i></button>
+        <button class="icon-tool-btn" id="btnMenu" title="Menu"><i class="fa fa-bars"></i></button>
+      </div>
+    </header>
+
+    <!-- Top 20 Steps Multiplier Roadmap Bar -->
+    <div class="roadmap-steps-bar">
+      <div class="steps-left-tag">
+        <i class="fa fa-fire"></i>
+        <span>20 STEPS:</span>
+      </div>
+
+      <div class="steps-scroll-container" id="stepsRoadmapBar">
+        <div class="step-pill" data-step="1"><span class="step-lbl">L1</span><span class="step-mult">1.08x</span></div>
+        <div class="step-pill" data-step="2"><span class="step-lbl">L2</span><span class="step-mult">1.20x</span></div>
+        <div class="step-pill" data-step="3"><span class="step-lbl">L3</span><span class="step-mult">1.35x</span></div>
+        <div class="step-pill" data-step="4"><span class="step-lbl">L4</span><span class="step-mult">1.55x</span></div>
+        <div class="step-pill" data-step="5"><span class="step-lbl">L5</span><span class="step-mult">1.80x</span></div>
+        <div class="step-pill" data-step="6"><span class="step-lbl">L6</span><span class="step-mult">2.12x</span></div>
+        <div class="step-pill" data-step="7"><span class="step-lbl">L7</span><span class="step-mult">2.55x</span></div>
+        <div class="step-pill" data-step="8"><span class="step-lbl">L8</span><span class="step-mult">3.12x</span></div>
+        <div class="step-pill" data-step="9"><span class="step-lbl">L9</span><span class="step-mult">3.90x</span></div>
+        <div class="step-pill" data-step="10"><span class="step-lbl">L10</span><span class="step-mult">4.95x</span></div>
+        <div class="step-pill" data-step="11"><span class="step-lbl">L11</span><span class="step-mult">6.40x</span></div>
+        <div class="step-pill" data-step="12"><span class="step-lbl">L12</span><span class="step-mult">8.40x</span></div>
+        <div class="step-pill" data-step="13"><span class="step-lbl">L13</span><span class="step-mult">11.20x</span></div>
+        <div class="step-pill" data-step="14"><span class="step-lbl">L14</span><span class="step-mult">15.10x</span></div>
+        <div class="step-pill" data-step="15"><span class="step-lbl">L15</span><span class="step-mult">21.50x</span></div>
+        <div class="step-pill" data-step="16"><span class="step-lbl">L16</span><span class="step-mult">31.00x</span></div>
+        <div class="step-pill" data-step="17"><span class="step-lbl">L17</span><span class="step-mult">46.00x</span></div>
+        <div class="step-pill" data-step="18"><span class="step-lbl">L18</span><span class="step-mult">68.00x</span></div>
+        <div class="step-pill" data-step="19"><span class="step-lbl">L19</span><span class="step-mult">88.00x</span></div>
+        <div class="step-pill" data-step="20"><span class="step-lbl">L20</span><span class="step-mult">100.00x</span></div>
+      </div>
+
+      <div class="steps-right-max">
+        <i class="fa fa-trophy"></i>
+        <span>MAX 100.00x</span>
+      </div>
+    </div>
+
+    <!-- Main Game Highway Stage -->
+    <div class="highway-stage-container" id="highwayStage">
+      <!-- Starting Sidewalk (Safe Zone) -->
+      <div class="sidewalk-safe-zone">
+        <!-- Top Sidewalk Tools -->
+        <div class="sidewalk-top-tools">
+          <div class="sw-tool-btn" title="Sound Indicator"><i class="fa fa-volume-up"></i></div>
+          <div class="sw-tool-btn" title="Live Highway View"><i class="fa fa-eye"></i></div>
+        </div>
+
+        <div class="street-lamp"></div>
+        <div class="sidewalk-trees"></div>
+
+        <!-- Animated Chicken Character on Start Line -->
+        <div class="chicken-actor" id="chickenActor">
+          <div class="chicken-sprite" id="chickenSprite">
+            <svg viewBox="0 0 100 100" class="chicken-svg">
+              <ellipse cx="48" cy="58" rx="26" ry="22" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+              <circle cx="68" cy="40" r="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+              <!-- Comb -->
+              <path d="M60 26 Q64 16 70 24 Q76 16 80 26 Z" fill="#ef4444"/>
+              <!-- Beak -->
+              <polygon points="82,40 94,45 82,50" fill="#f59e0b"/>
+              <!-- Eye -->
+              <circle cx="74" cy="38" r="3.5" fill="#0f172a"/>
+              <circle cx="75" cy="37" r="1" fill="#ffffff"/>
+              <!-- Wing -->
+              <path d="M34 54 Q48 50 44 68 Q30 68 34 54 Z" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+              <!-- Feet -->
+              <path d="M42 78 L42 90 M36 90 L46 90" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+              <path d="M54 78 L54 90 M48 90 L58 90" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="chicken-current-mult-badge" id="chickenMultTag">1.00x</div>
+        </div>
+
+        <div class="safe-start-badge">SAFE START</div>
+      </div>
+
+      <!-- Highway Multi-Lanes (Scrollable Road) -->
+      <div class="highway-lanes-track" id="lanesTrack">
+        <div class="highway-inner-scroll" id="highwayInnerScroll">
+          <!-- Canvas for dynamic traffic (cars, police, bus, barricades) -->
+          <canvas id="trafficCanvas"></canvas>
+
+          <!-- Stepping Pads Track Overlay (20 Multiplier Stepping Pads) -->
+          <div class="stepping-pads-row" id="steppingPadsRow">
+            <!-- Dynamically populated 20 lane circles -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Betting & Controls Console -->
+    <footer class="chicken-controls-bar">
+      <!-- Stake Amount Section (Left) -->
+      <div class="console-box stake-box">
+        <div class="console-label-row">
+          <label>STAKE AMOUNT</label>
+          <span class="stake-limits">Min: ₹10 | Max: ₹10000</span>
+        </div>
+
+        <div class="stake-stepper-row">
+          <button class="stepper-btn min" id="btnStakeMin">MIN</button>
+          <button class="stepper-btn half" id="btnStakeHalf">½</button>
+          <div class="stake-input-wrap">
+            <span class="currency-prefix">₹</span>
+            <input type="number" id="stakeAmountInput" value="100" min="10" max="10000" step="10">
+          </div>
+          <button class="stepper-btn double" id="btnStakeDouble">2x</button>
+          <button class="stepper-btn max" id="btnStakeMax">MAX</button>
+        </div>
+
+        <div class="stake-preset-chips">
+          <button class="s-chip" data-amt="10">₹10</button>
+          <button class="s-chip" data-amt="50">₹50</button>
+          <button class="s-chip active" data-amt="100">₹100</button>
+          <button class="s-chip" data-amt="500">₹500</button>
+        </div>
+      </div>
+
+      <!-- Difficulty & Traps Section (Center) -->
+      <div class="console-box difficulty-box">
+        <div class="console-label-row">
+          <label>DIFFICULTY & TRAPS</label>
+        </div>
+
+        <div class="difficulty-tabs-row" id="difficultyTabsRow">
+          <button class="diff-tab" data-diff="easy">Easy</button>
+          <button class="diff-tab active" data-diff="medium">Medium</button>
+          <button class="diff-tab" data-diff="hard">Hard</button>
+          <button class="diff-tab" data-diff="hardcore">Hardcore</button>
+        </div>
+
+        <div class="auto-cashout-row">
+          <div class="auto-cashout-label">
+            <i class="fa fa-crosshairs"></i> Auto Cashout:
+          </div>
+          <select id="autoCashoutSelect" class="auto-cashout-dropdown">
+            <option value="0">Off (Manual)</option>
+            <option value="1.50">1.50x</option>
+            <option value="2.00">2.00x</option>
+            <option value="3.00">3.00x</option>
+            <option value="5.00">5.00x</option>
+            <option value="10.00">10.00x</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Action Button & Turbo (Right) -->
+      <div class="console-box action-box">
+        <div class="turbo-toggle-btn" id="btnTurboToggle">
+          <i class="fa fa-bolt"></i> Turbo: <span id="turboStatusText">OFF</span>
+        </div>
+
+        <div class="action-buttons-wrap">
+          <button type="button" class="step-go-btn" id="btnStepForward" style="display: none;">
+            <span class="step-go-title">GO 🐾 ➡️</span>
+            <span class="step-go-sub" id="stepForwardNextMult">Next: 1.08x</span>
+          </button>
+
+          <button type="button" class="main-play-btn" id="btnPlayOrCashout">
+            <span class="play-btn-txt" id="mainPlayBtnText">PLAY</span>
+            <span class="play-btn-sub" id="mainPlayBtnSub">[SPACEBAR]</span>
+          </button>
+        </div>
+      </div>
+    </footer>
+  <!-- Chicken Road History Modal -->
+  <div class="chicken-modal-overlay" id="chickenHistoryModal">
+    <div class="chicken-modal-card">
+      <div class="chicken-modal-header">
+        <div class="modal-title-wrap">
+          <i class="fa fa-history" style="color:var(--accent-gold); font-size:18px;"></i>
+          <span class="modal-title-text">CHICKEN ROAD - GAME HISTORY</span>
+        </div>
+        <button type="button" class="modal-close-btn" id="btnCloseChickenHistory">&times;</button>
+      </div>
+      <div class="chicken-modal-subtabs">
+        <button type="button" class="c-subtab active" id="btnSubtabAllRounds">
+          <i class="fa fa-globe"></i> All Draws
+        </button>
+        <button type="button" class="c-subtab" id="btnSubtabMyRuns">
+          <i class="fa fa-user"></i> My Runs
+        </button>
+      </div>
+      <div class="chicken-modal-body">
+        <div class="chicken-history-table-wrap" id="chickenAllRoundsWrap">
+          <table class="chicken-history-table">
+            <thead>
+              <tr>
+                <th>Period</th>
+                <th>Result</th>
+                <th>Multiplier</th>
+                <th>Net Profit</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="chickenRoundsTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+        <div class="chicken-history-table-wrap" id="chickenMyRunsWrap" style="display: none;">
+          <table class="chicken-history-table">
+            <thead>
+              <tr>
+                <th>Period</th>
+                <th>Stake</th>
+                <th>Payout</th>
+                <th>Status</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="chickenMyRunsTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="chicken-toast" id="chickenToast">Message</div>
+
+  <script src="chicken.js"></script>
+</body>
+</html>

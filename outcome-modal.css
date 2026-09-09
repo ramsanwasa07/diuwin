@@ -1,0 +1,461 @@
+/* ==========================================================================
+   DIUWIN OFFICIAL GAME OUTCOME MODAL (WIN & LOSS CELEBRATIONS)
+   Rich animations, sunburst rays, floating particles, and audio triggers
+   ========================================================================== */
+
+.game-outcome-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 8, 20, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.game-outcome-modal-backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ==================== SUNBURST RAYS (WIN ONLY) ==================== */
+.outcome-sunburst {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 700px;
+  height: 700px;
+  transform: translate(-50%, -50%) scale(0.8);
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(251, 191, 36, 0.22) 0deg 15deg,
+    transparent 15deg 30deg
+  );
+  mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 25%, rgba(0, 0, 0, 0) 68%);
+  -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 25%, rgba(0, 0, 0, 0) 68%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  z-index: 1;
+}
+
+.game-outcome-modal-backdrop.show.mode-win .outcome-sunburst {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  animation: spinRays 20s linear infinite;
+}
+
+@keyframes spinRays {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ==================== FLOATING PARTICLES & CONFETTI ==================== */
+.outcome-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.particle-item {
+  position: absolute;
+  user-select: none;
+  will-change: transform, opacity;
+  animation: particleFall linear forwards;
+}
+
+@keyframes particleFall {
+  0% {
+    transform: translateY(-50px) rotate(0deg) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(40px) rotate(90deg) scale(1.1);
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(105vh) rotate(540deg) scale(0.8);
+    opacity: 0;
+  }
+}
+
+/* ==================== OUTCOME CARD ==================== */
+.outcome-card {
+  position: relative;
+  z-index: 10;
+  width: 90%;
+  max-width: 370px;
+  border-radius: 26px;
+  padding: 26px 20px 22px;
+  text-align: center;
+  box-sizing: border-box;
+  transform: scale(0.65) translateY(50px);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
+  font-family: 'Outfit', sans-serif;
+}
+
+.game-outcome-modal-backdrop.show .outcome-card {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* Close 'X' Button */
+.outcome-close-x {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 20;
+}
+
+.outcome-close-x:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.1);
+}
+
+/* Badge Wrap & Icon */
+.outcome-badge-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  margin: 0 auto 12px;
+}
+
+.outcome-badge-icon {
+  font-size: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Titles */
+.outcome-title {
+  font-size: 26px;
+  font-weight: 900;
+  margin: 0 0 4px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.outcome-subtitle {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0 0 16px;
+  letter-spacing: 0.4px;
+}
+
+/* ==================== AMOUNT DISPLAY BOX ==================== */
+.outcome-amount-box {
+  border-radius: 16px;
+  padding: 12px 16px;
+  margin: 0 0 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.outcome-amount-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.outcome-amount-value {
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+}
+
+/* ==================== DETAILS PLATE ==================== */
+.outcome-details-plate {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.plate-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 600;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.plate-header-row .period-tag {
+  color: #cbd5e1;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.plate-result-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.outcome-ball {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 900;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.outcome-badge-pill {
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.outcome-dice-row {
+  display: flex;
+  gap: 8px;
+}
+
+.outcome-die {
+  font-size: 34px;
+  line-height: 1;
+  color: #fbbf24;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+}
+
+.outcome-digits-row {
+  display: flex;
+  gap: 6px;
+}
+
+.outcome-digit {
+  width: 32px;
+  height: 38px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.plate-bet-summary {
+  font-size: 12px;
+  color: #cbd5e1;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* ==================== ACTIONS ==================== */
+.outcome-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.outcome-action-btn {
+  flex: 1;
+  padding: 13px 18px;
+  font-size: 15px;
+  font-weight: 800;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.outcome-action-btn:hover {
+  transform: translateY(-2px);
+}
+
+.outcome-action-btn:active {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   WIN THEME (.mode-win)
+   ========================================================================== */
+.game-outcome-modal-backdrop.mode-win .outcome-card {
+  background: linear-gradient(180deg, #1c1938 0%, #0c0f1d 100%);
+  border: 2px solid rgba(245, 158, 11, 0.75);
+  box-shadow: 0 0 50px rgba(245, 158, 11, 0.35), 0 25px 60px rgba(0, 0, 0, 0.85);
+  animation: winCardGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes winCardGlow {
+  0% { box-shadow: 0 0 35px rgba(245, 158, 11, 0.3), 0 20px 50px rgba(0, 0, 0, 0.85); }
+  100% { box-shadow: 0 0 65px rgba(251, 191, 36, 0.55), 0 25px 70px rgba(0, 0, 0, 0.9); }
+}
+
+.game-outcome-modal-backdrop.mode-win .outcome-badge-wrap {
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.35) 0%, rgba(217, 119, 6, 0.1) 70%);
+  border: 2px solid rgba(251, 191, 36, 0.6);
+  box-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+  animation: trophyBounce 1.8s ease-in-out infinite;
+}
+
+@keyframes trophyBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.08); }
+}
+
+.game-outcome-modal-backdrop.mode-win .outcome-title {
+  background: linear-gradient(135deg, #fffbeb 0%, #fde047 30%, #f59e0b 70%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 10px rgba(245, 158, 11, 0.45));
+}
+
+.game-outcome-modal-backdrop.mode-win .outcome-subtitle {
+  color: #fde68a;
+}
+
+.game-outcome-modal-backdrop.mode-win .outcome-amount-box {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.22) 0%, rgba(16, 185, 129, 0.12) 100%);
+  border: 1.5px solid rgba(74, 222, 128, 0.65);
+  box-shadow: 0 0 25px rgba(34, 197, 94, 0.3), inset 0 0 15px rgba(34, 197, 94, 0.1);
+}
+
+.game-outcome-modal-backdrop.mode-win .outcome-amount-label {
+  color: #86efac;
+}
+
+.game-outcome-modal-backdrop.mode-win .outcome-amount-value {
+  color: #4ade80;
+  text-shadow: 0 0 20px rgba(74, 222, 128, 0.7);
+  animation: winNumberPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes winNumberPop {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.game-outcome-modal-backdrop.mode-win .outcome-action-btn.primary {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+  color: #3b1e03;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
+}
+
+.game-outcome-modal-backdrop.mode-win .outcome-action-btn.primary:hover {
+  box-shadow: 0 8px 26px rgba(245, 158, 11, 0.6);
+}
+
+/* ==========================================================================
+   LOSS THEME (.mode-loss)
+   ========================================================================== */
+.game-outcome-modal-backdrop.mode-loss .outcome-card {
+  background: linear-gradient(180deg, #2b0d16 0%, #130509 100%);
+  border: 2px solid rgba(239, 68, 68, 0.65);
+  box-shadow: 0 0 45px rgba(239, 68, 68, 0.3), 0 25px 60px rgba(0, 0, 0, 0.9);
+  animation: lossCardPulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes lossCardPulse {
+  0% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.25), 0 20px 50px rgba(0, 0, 0, 0.9); }
+  100% { box-shadow: 0 0 55px rgba(239, 68, 68, 0.45), 0 25px 65px rgba(0, 0, 0, 0.95); }
+}
+
+.game-outcome-modal-backdrop.mode-loss .outcome-badge-wrap {
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.3) 0%, rgba(153, 27, 27, 0.1) 70%);
+  border: 2px solid rgba(239, 68, 68, 0.55);
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
+  animation: sadWobble 2s ease-in-out infinite;
+}
+
+@keyframes sadWobble {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-8deg) scale(1.04); }
+  75% { transform: rotate(8deg) scale(1.04); }
+}
+
+.game-outcome-modal-backdrop.mode-loss .outcome-title {
+  color: #ff4d6d;
+  filter: drop-shadow(0 2px 10px rgba(255, 77, 109, 0.5));
+}
+
+.game-outcome-modal-backdrop.mode-loss .outcome-subtitle {
+  color: #fca5a5;
+}
+
+.game-outcome-modal-backdrop.mode-loss .outcome-amount-box {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.22) 0%, rgba(185, 28, 28, 0.12) 100%);
+  border: 1.5px solid rgba(248, 113, 113, 0.65);
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.3), inset 0 0 15px rgba(239, 68, 68, 0.1);
+}
+
+.game-outcome-modal-backdrop.mode-loss .outcome-amount-label {
+  color: #fca5a5;
+}
+
+.game-outcome-modal-backdrop.mode-loss .outcome-amount-value {
+  color: #ff6b6b;
+  text-shadow: 0 0 20px rgba(255, 107, 107, 0.7);
+  animation: lossShake 0.5s ease;
+}
+
+@keyframes lossShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.game-outcome-modal-backdrop.mode-loss .outcome-action-btn.primary {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #991b1b 100%);
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.45);
+}
+
+.game-outcome-modal-backdrop.mode-loss .outcome-action-btn.primary:hover {
+  box-shadow: 0 8px 26px rgba(239, 68, 68, 0.6);
+}

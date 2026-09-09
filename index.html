@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="prevent-reload.js"></script>
+  <meta name="google" content="notranslate">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" type="image/x-icon" href="images/logo.png">
+  <title>DiuWin Games - Lobby</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Top Sticky Header -->
+    <header class="header-container">
+      <div class="raja-logo-container" id="brandLogoHome">
+        <img src="images/logo.png" alt="DiuWin Logo" class="diuwin-logo-img">
+      </div>
+      
+      <div class="header-actions" id="header-user-status">
+        <!-- Will be dynamically populated by JS with either Log in/Register or Stacked Balance -->
+        <a href="javascript:void(0)" class="header-btn-login" id="headerLoginBtn">Log in</a>
+        <a href="javascript:void(0)" class="header-btn-register" id="headerRegisterBtn">Register</a>
+      </div>
+    </header>
+
+    <!-- ==================== VIEW 1: HOME ==================== -->
+    <div id="viewHome" class="app-page-view active">
+      <!-- Promotional Banner Carousel (Exactly 4 Banners matching diuwin.art) -->
+      <section class="banner-section">
+        <div class="banner-carousel">
+          <div class="banner-slide active">
+            <img src="banner/b1.png" alt="DiuWin Banner 1">
+          </div>
+          <div class="banner-slide">
+            <img src="banner/b2.png" alt="DiuWin Banner 2">
+          </div>
+          <div class="banner-slide">
+            <img src="banner/b3.png" alt="DiuWin Banner 3">
+          </div>
+          <div class="banner-slide">
+            <img src="banner/b4.png" alt="DiuWin Banner 4">
+          </div>
+        </div>
+
+        <!-- Banner Dots (4 Dots) -->
+        <div class="banner-dots-wrapper">
+          <span class="dot active" onclick="currentBanner(1)"></span>
+          <span class="dot" onclick="currentBanner(2)"></span>
+          <span class="dot" onclick="currentBanner(3)"></span>
+          <span class="dot" onclick="currentBanner(4)"></span>
+        </div>
+      </section>
+
+      <!-- Broadcast Announcement Bar -->
+      <section class="welcome-text">
+        <img src="images/audio.webp" alt="Speaker" class="speaker-icon">
+        <p id="tickerText">Thanks to all new and old members, because of your accompany, we have become the most reputable gaming group</p>
+        <a href="javascript:void(0)" class="detail-btn" id="detailNoticeBtn"><i class="fa fa-tint"></i> Detail</a>
+      </section>
+
+      <!-- 3D Category Icon Row (Matching diuwin.art) -->
+      <section class="category-nav-bar" id="categoryNavBar">
+        <div class="category-tab-item active" data-filter="all">
+          <img src="images/hot.webp" alt="Hot Slots" class="category-icon-3d">
+          <span>Hot Slots</span>
+        </div>
+        <div class="category-tab-item" data-filter="slots">
+          <img src="images/casino.webp" alt="Slots" class="category-icon-3d">
+          <span>Slots</span>
+        </div>
+        <div class="category-tab-item" data-filter="lottery">
+          <img src="images/CP.webp" alt="Lottery" class="category-icon-3d">
+          <span>Lottery</span>
+        </div>
+        <div class="category-tab-item" data-filter="original">
+          <img src="images/DC.webp" alt="Original" class="category-icon-3d">
+          <span>Original</span>
+        </div>
+        <div class="category-tab-item" data-filter="fishing">
+          <img src="images/fishing.webp" alt="Fishing" class="category-icon-3d">
+          <span>Fishing</span>
+        </div>
+      </section>
+
+      <!-- Section: Recommended Games (3-Column Card Grid) -->
+      <section class="section-container" id="sec-popular">
+        <div class="section-header">
+          <div class="section-title-top">
+            <div class="section-green-bar"></div>
+            <h3 class="section-title-text">Recommended Games</h3>
+          </div>
+          <p class="section-subtitle-text">The most popular electronic games among players</p>
+        </div>
+
+        <div class="games-grid-3col" id="gamesGrid">
+          <!-- 1. AVIATOR -->
+          <div class="game-card-3col" data-game="aviator">
+            <div class="game-thumb-box">
+              <img src="images/aviator_tile.jpg" alt="Aviator">
+            </div>
+            <div class="rtp-strip-bottom">
+              <span class="rtp-strip-label">RTP</span>
+              <span class="rtp-strip-val">97.04%</span>
+            </div>
+          </div>
+
+          <!-- 2. MINES -->
+          <div class="game-card-3col" data-game="mines">
+            <div class="game-thumb-box">
+              <span class="jili-tag">JILI</span>
+              <img src="images/mines_tile.jpg" alt="Mines">
+            </div>
+            <div class="rtp-strip-bottom">
+              <span class="rtp-strip-label">RTP</span>
+              <span class="rtp-strip-val">97.76%</span>
+            </div>
+          </div>
+
+          <!-- 3. CHICKEN ROAD -->
+          <div class="game-card-3col" data-game="chicken">
+            <div class="game-thumb-box">
+              <img src="images/chicken_tile.png" alt="Chicken Road">
+            </div>
+            <div class="rtp-strip-bottom">
+              <span class="rtp-strip-label">RTP</span>
+              <span class="rtp-strip-val">96.79%</span>
+            </div>
+          </div>
+
+          <!-- 4. WINGO 1M -->
+          <div class="game-card-3col" data-game="wingo">
+            <div class="game-thumb-box">
+              <img src="asset/wingo.png" alt="WinGo">
+            </div>
+            <div class="rtp-strip-bottom">
+              <span class="rtp-strip-label">RTP</span>
+              <span class="rtp-strip-val">96.36%</span>
+            </div>
+          </div>
+
+          <!-- 5. K3 LOTTERY -->
+          <div class="game-card-3col" data-game="k3">
+            <div class="game-thumb-box">
+              <img src="asset/k3.png" alt="K3">
+            </div>
+            <div class="rtp-strip-bottom">
+              <span class="rtp-strip-label">RTP</span>
+              <span class="rtp-strip-val">96.60%</span>
+            </div>
+          </div>
+
+          <!-- 6. 5D LOTTERY -->
+          <div class="game-card-3col" data-game="5d">
+            <div class="game-thumb-box">
+              <img src="asset/5d.png" alt="5D">
+            </div>
+            <div class="rtp-strip-bottom">
+              <span class="rtp-strip-label">RTP</span>
+              <span class="rtp-strip-val">96.49%</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Winning Information Live List Section -->
+      <section class="live-activity-section" id="sec-winners">
+        <div class="activity-header">
+          <div class="activity-header-left">
+            <i class="fa fa-trophy"></i>
+            <h4 class="activity-header-title">Winning information</h4>
+          </div>
+          <div class="activity-live-badge">
+            <span class="activity-live-dot"></span>
+            <span>LIVE</span>
+          </div>
+        </div>
+        <div class="activity-feed" id="activityFeed">
+          <!-- Dynamic live winners stream -->
+        </div>
+      </section>
+
+      <!-- Floating Side Buttons (Wheel, VIP, Support) -->
+      <div class="floating-side-actions">
+        <a href="javascript:void(0)" class="side-action-btn" id="sideWheelBtn" title="Wheel of Fortune">
+          <img src="asset/turn_icon.png" alt="Wheel">
+        </a>
+        <a href="javascript:void(0)" class="side-action-btn" id="sideVipBtn" title="VIP Rewards">
+          <img src="asset/vip_icon.png" alt="VIP">
+        </a>
+        <a href="javascript:void(0)" class="side-action-btn" id="sideSupportBtn" title="Live Chat">
+          <img src="images/customer-5ef38c22.png" alt="Support">
+        </a>
+      </div>
+
+      <!-- Floating Add to Desktop Pill -->
+      <div class="add-to-desktop-floating-pill" id="addToDesktopBtn">
+        <img src="images/logo.png" alt="DiuWin Icon">
+        <span>Add to Desktop</span>
+      </div>
+    </div>
+
+    <!-- ==================== VIEW 2: ACTIVITY ==================== -->
+    <div id="viewActivity" class="app-page-view">
+      <div class="page-view-container">
+        <div class="view-hero-banner">
+          <h2>Activity Award Center</h2>
+          <p>Complete daily check-in tasks and claim VIP rebate rewards!</p>
+        </div>
+
+        <!-- 7-Day Attendance Reward -->
+        <div class="activity-card">
+          <div class="activity-card-title">
+            <span>📅 7-Day Attendance Bonus</span>
+            <span class="activity-badge">Daily Task</span>
+          </div>
+          <p style="font-size: 12px; color: #718096; margin: 0;">Sign in every day to claim bonus cash directly to your wallet!</p>
+          <div class="checkin-grid">
+            <div class="checkin-day claimed"><small>Day 1</small><strong>+₹10</strong></div>
+            <div class="checkin-day claimed"><small>Day 2</small><strong>+₹20</strong></div>
+            <div class="checkin-day"><small>Day 3</small><strong>+₹30</strong></div>
+            <div class="checkin-day"><small>Day 4</small><strong>+₹40</strong></div>
+            <div class="checkin-day"><small>Day 5</small><strong>+₹50</strong></div>
+            <div class="checkin-day"><small>Day 6</small><strong>+₹70</strong></div>
+            <div class="checkin-day" style="grid-column: span 2; background: rgba(32,185,107,0.12); border-color:#20B96B;"><small>Day 7 Super Gift</small><strong style="font-size:14px;">+₹100</strong></div>
+          </div>
+          <button class="btn btn-block btn-primary" id="btnCheckInNow">
+            <i class="fa fa-calendar-check-o" style="margin-right: 6px;"></i> Sign In Today & Claim +₹50
+          </button>
+        </div>
+
+        <!-- 100% First Recharge Bonus -->
+        <div class="activity-card">
+          <div class="activity-card-title">
+            <span>🎁 100% First Deposit Bonus</span>
+            <span class="activity-badge" style="background:#fef3c7; color:#d97706;">Hot Event</span>
+          </div>
+          <p style="font-size: 12px; color: #718096; margin: 0 0 10px 0;">Deposit ₹500 or more on your first recharge and get a 100% matching cash bonus!</p>
+          <button class="btn btn-block" id="btnActivityRecharge" style="background: #0B1833; color: #fff; font-weight: 700; border-radius: 10px; padding: 10px;">
+            Go to Recharge Now
+          </button>
+        </div>
+
+        <!-- Betting Rebate -->
+        <div class="activity-card">
+          <div class="activity-card-title">
+            <span>📈 Daily Betting Rebate (Up to 3%)</span>
+            <span class="activity-badge">Automatic</span>
+          </div>
+          <p style="font-size: 12px; color: #718096; margin: 0;">Play any Slot, Aviator or Lottery game and receive up to 3.0% daily rebate credited to your balance automatically.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== VIEW 3: PROMOTION ==================== -->
+    <div id="viewPromotion" class="app-page-view">
+      <div class="page-view-container">
+        <div class="view-hero-banner" style="background: linear-gradient(135deg, #0B1833 0%, #1e3a8a 100%);">
+          <h2>Agency Promotion Center</h2>
+          <p>Invite friends and earn multi-level automated commissions for life!</p>
+        </div>
+
+        <!-- Commission Stats -->
+        <div class="promo-stats-box">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:12px; color:#718096;">Total Team Commission</span>
+            <span class="activity-badge">Rebate 0.6%</span>
+          </div>
+          <div style="font-size:26px; font-weight:900; color:#20B96B; margin:4px 0 10px;" id="promoTotalComm">₹2,450.00</div>
+
+          <div class="promo-stats-grid">
+            <div class="promo-stat-card">
+              <span>Direct Referrals</span>
+              <b id="promoDirectCount">14 Members</b>
+            </div>
+            <div class="promo-stat-card">
+              <span>Total Team</span>
+              <b id="promoTeamCount">48 Members</b>
+            </div>
+            <div class="promo-stat-card">
+              <span>Today's Commission</span>
+              <b class="highlight" id="promoTodayComm">₹320.50</b>
+            </div>
+            <div class="promo-stat-card">
+              <span>Commission Rate</span>
+              <b>Tier 1 (0.6%)</b>
+            </div>
+          </div>
+
+          <button class="btn btn-block btn-primary" id="btnClaimCommission" style="margin-top: 14px;">
+            <i class="fa fa-money" style="margin-right:6px;"></i> Claim ₹320.50 to Main Balance
+          </button>
+        </div>
+
+        <!-- Invitation Link & Code -->
+        <div class="activity-card">
+          <div class="activity-card-title">
+            <span>🔗 My Invitation Link</span>
+          </div>
+          <label style="font-size: 11px; color: #718096;">Referral Code</label>
+          <div class="share-link-box">
+            <input type="text" id="inviteCodeInput" value="DIUWIN888" readonly>
+            <button id="btnCopyCode">Copy Code</button>
+          </div>
+
+          <label style="font-size: 11px; color: #718096; margin-top: 8px; display: block;">Registration Link</label>
+          <div class="share-link-box">
+            <input type="text" id="inviteLinkInput" value="https://diuwin.art/#/register?invitationCode=DIUWIN888" readonly>
+            <button id="btnCopyLink">Copy Link</button>
+          </div>
+        </div>
+
+        <!-- Commission Rules -->
+        <div class="activity-card">
+          <div class="activity-card-title">
+            <span>📊 Multi-Level Rebate Tiers</span>
+          </div>
+          <div style="font-size:12px; color:#4a5568; line-height:1.6;">
+            <div>• <b>Tier 1 Direct</b>: 0.6% on all turnover volume</div>
+            <div>• <b>Tier 2 Sub-team</b>: 0.18% on all turnover volume</div>
+            <div>• <b>Tier 3 Level</b>: 0.05% on all turnover volume</div>
+            <small style="color:#718096; display:block; margin-top:6px;">Commissions are calculated automatically 24/7.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== VIEW 4: ACCOUNT ==================== -->
+    <div id="viewAccount" class="app-page-view">
+      <div class="page-view-container">
+        <!-- User Info Card -->
+        <div class="account-user-card">
+          <div class="account-avatar" id="accViewAvatar">P</div>
+          <div style="flex:1;">
+            <h3 style="margin:0; font-size:17px; font-weight:800; color:#0B1833;" id="accViewName">Player Demo</h3>
+            <span style="font-size:12px; color:#718096;" id="accViewPhone">+91 9876543210</span>
+            <div style="margin-top:4px; display:flex; gap:6px;">
+              <span class="chip-vip" id="accViewVip">VIP 1</span>
+              <span style="font-size:11px; background:#f1f5f9; color:#475569; padding:2px 8px; border-radius:6px;" id="accViewUid">UID: 894721</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Balance Card -->
+        <div class="account-balance-card">
+          <div class="account-balance-title">
+            <span>Total Available Balance</span>
+            <span>Verified 🛡️</span>
+          </div>
+          <div class="account-balance-num">₹<span id="accViewBalance">1,000.00</span></div>
+          <div class="account-actions-row">
+            <button class="btn-acc-deposit" id="btnAccPageDeposit">
+              <i class="fa fa-plus-circle" style="margin-right:6px;"></i> Recharge
+            </button>
+            <button class="btn-acc-withdraw" id="btnAccPageWithdraw">
+              <i class="fa fa-arrow-circle-down" style="margin-right:6px;"></i> Withdraw
+            </button>
+          </div>
+        </div>
+
+        <!-- Redeem Gift Code Card -->
+        <div class="activity-card">
+          <div class="activity-card-title">
+            <span>🎁 Redeem Gift Code</span>
+          </div>
+          <div class="share-link-box">
+            <input type="text" id="giftCodeInput" placeholder="Enter Gift Code e.g. DIUWIN100">
+            <button id="btnRedeemGift">Redeem</button>
+          </div>
+        </div>
+
+        <!-- Menu Links -->
+        <div class="account-menu-card">
+          <div class="account-menu-item" id="menuGameHistory">
+            <div class="account-menu-item-left">
+              <i class="fa fa-gamepad"></i>
+              <span>Game Bet History</span>
+            </div>
+            <i class="fa fa-chevron-right"></i>
+          </div>
+          <div class="account-menu-item" id="menuTxHistory">
+            <div class="account-menu-item-left">
+              <i class="fa fa-file-text-o"></i>
+              <span>Transaction Records</span>
+            </div>
+            <i class="fa fa-chevron-right"></i>
+          </div>
+          <div class="account-menu-item" id="menuVipClub">
+            <div class="account-menu-item-left">
+              <i class="fa fa-diamond"></i>
+              <span>VIP Privilege Club</span>
+            </div>
+            <i class="fa fa-chevron-right"></i>
+          </div>
+          <div class="account-menu-item" id="menuLiveSupport">
+            <div class="account-menu-item-left">
+              <i class="fa fa-headphones"></i>
+              <span>24/7 Live Customer Service</span>
+            </div>
+            <i class="fa fa-chevron-right"></i>
+          </div>
+        </div>
+
+        <!-- Log Out Button -->
+        <button class="btn btn-block" id="btnPageLogout" style="background:#fee2e2; color:#ef4444; border:1px solid #fecaca; margin-top:14px; font-weight:700; padding:12px; border-radius:12px; cursor:pointer;">
+          <i class="fa fa-sign-out" style="margin-right:6px;"></i> Log Out Session
+        </button>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation Bar (Green Brand Theme #20B96B) -->
+    <footer class="bottom-nav" id="global-bottom-nav">
+      <div class="nav-container">
+        <a href="javascript:void(0)" class="nav-item active" id="navHome">
+          <i class="fa fa-home"></i>
+          <span>Home</span>
+        </a>
+        <a href="javascript:void(0)" class="nav-item" id="navActivity">
+          <i class="fa fa-calendar-check-o"></i>
+          <span>Activity</span>
+        </a>
+        <a href="javascript:void(0)" class="nav-center-item" id="navCenterGo">
+          <div class="nav-center-circle">
+            <i class="fa fa-compass"></i>
+            <span class="go-text">GO</span>
+          </div>
+          <span class="label">Get ₹300</span>
+        </a>
+        <a href="javascript:void(0)" class="nav-item" id="navPromotion">
+          <i class="fa fa-share-alt"></i>
+          <span>Promotion</span>
+        </a>
+        <a href="javascript:void(0)" class="nav-item" id="navAccount">
+          <i class="fa fa-user"></i>
+          <span>Account</span>
+        </a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ==================== PLAYABLE ARENA MODAL ==================== -->
+  <div class="modal-backdrop" id="gameArenaModal">
+    <div class="modal-sheet game-arena-sheet">
+      <button class="modal-close-btn" id="gameArenaClose">×</button>
+
+      <div class="game-arena-header">
+        <div class="arena-game-info">
+          <span class="arena-game-icon" id="arenaGameIcon">🚀</span>
+          <div>
+            <h3 id="arenaGameTitle">Aviator</h3>
+            <span class="arena-game-rtp" id="arenaGameRtp">RTP 97.04% • Provably Fair</span>
+          </div>
+        </div>
+        <div class="arena-user-balance">
+          <small>Balance</small>
+          <strong>₹<span id="arenaBalance">0.00</span></strong>
+        </div>
+      </div>
+
+      <!-- Game Stage -->
+      <div class="game-stage" id="gameStage"></div>
+
+      <!-- Bet Controls -->
+      <div class="game-controls">
+        <div class="bet-presets-label">Bet Amount:</div>
+        <div class="bet-chip-group" id="betChips">
+          <button class="chip active" data-amount="10">₹10</button>
+          <button class="chip" data-amount="50">₹50</button>
+          <button class="chip" data-amount="100">₹100</button>
+          <button class="chip" data-amount="500">₹500</button>
+          <button class="chip" data-amount="1000">₹1000</button>
+        </div>
+
+        <div class="action-btn-row">
+          <div class="custom-bet-box">
+            <span class="curr-sign">₹</span>
+            <input type="number" id="customBetInput" value="50" min="10" step="10">
+          </div>
+          <button class="btn btn-primary btn-spin-action" id="arenaPlayActionBtn">
+            <span id="arenaPlayBtnText">PLAY NOW</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="arena-result-banner" id="arenaResultBanner" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- ==================== AUTH MODAL ==================== -->
+  <div class="modal-backdrop" id="authModal">
+    <div class="modal-sheet">
+      <button class="modal-close-btn" id="authModalClose">×</button>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLoginBtn">Login</button>
+        <button class="auth-tab" id="tabRegisterBtn">Register</button>
+      </div>
+
+      <form id="loginForm" class="auth-form">
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <div class="input-wrap">
+            <span class="input-prefix">+91</span>
+            <input type="tel" id="loginPhone" placeholder="Enter mobile number" autocomplete="username" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <label style="margin:0;">Password</label>
+            <a href="javascript:void(0)" id="linkForgotPassword" style="font-size:11.5px; font-weight:800; color:#ef4444; text-decoration:none;">Forgot Password?</a>
+          </div>
+          <div style="position:relative;">
+            <input type="password" id="loginPass" placeholder="Enter password" autocomplete="current-password" required style="padding-right:38px;">
+            <button type="button" id="btnToggleLoginPass" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); background:none; border:none; color:#64748b; cursor:pointer; font-size:15px; padding:4px;">
+              <i class="fa fa-eye" id="eyeIconLogin"></i>
+            </button>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin:8px 0 14px; font-size:12px;">
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:700; color:#334155; margin:0;">
+            <input type="checkbox" id="chkRememberPassword" checked style="accent-color:#059669; width:16px; height:16px; cursor:pointer;">
+            <span>Save Password (Remember Me)</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-block btn-primary">Log In</button>
+        <div class="form-divider"><span>OR</span></div>
+        <button type="button" class="btn btn-block btn-guest-action" id="authGuestBtn">⚡ Play as Demo Guest (₹1,000 Free)</button>
+      </form>
+
+      <form id="registerForm" class="auth-form" style="display: none;">
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <div class="input-wrap">
+            <span class="input-prefix">+91</span>
+            <input type="tel" id="regPhone" placeholder="10-digit mobile number" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Set Password</label>
+          <input type="password" id="regPass" placeholder="At least 6 characters" required>
+        </div>
+        <div class="form-group">
+          <label>Invite Code</label>
+          <input type="text" id="regInvite" placeholder="Optional" value="DIUWIN888">
+        </div>
+        <button type="submit" class="btn btn-block btn-primary">Register & Claim ₹500</button>
+      </form>
+
+      <!-- Forgot Password Form -->
+      <form id="forgotForm" class="auth-form" style="display: none;">
+        <div style="margin-bottom:12px;">
+          <h4 style="margin:0 0 4px; font-size:15px; font-weight:800; color:#1e293b;">Reset Password</h4>
+          <small style="color:#64748b; font-size:11.5px;">Enter your registered mobile number and set a new password</small>
+        </div>
+
+        <div class="form-group">
+          <label>Registered Mobile Number</label>
+          <div class="input-wrap">
+            <span class="input-prefix">+91</span>
+            <input type="tel" id="forgotPhone" placeholder="10-digit mobile number" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Verification Code (OTP)</label>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="forgotOtp" placeholder="Enter 6-digit OTP" maxlength="6" required style="flex:1;">
+            <button type="button" class="btn" id="btnSendForgotOtp" style="background:#0f766e; color:#ffffff; font-size:12px; font-weight:800; padding:0 12px; border-radius:8px; white-space:nowrap;">
+              Send OTP
+            </button>
+          </div>
+          <small id="forgotOtpHint" style="color:#059669; font-size:11px; margin-top:3px; display:none; font-weight:700;">✓ Verification OTP sent: <b>123456</b></small>
+        </div>
+
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" id="forgotNewPass" placeholder="Enter new password (min 4 chars)" required>
+        </div>
+
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <input type="password" id="forgotConfirmPass" placeholder="Confirm new password" required>
+        </div>
+
+        <button type="submit" class="btn btn-block btn-primary" style="margin-top:8px;">Reset & Update Password</button>
+        <button type="button" class="btn btn-block" id="btnBackToLogin" style="background:#f1f5f9; color:#475569; margin-top:8px; font-size:12px; font-weight:700;">
+          &larr; Back to Login
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== WALLET & RECHARGE MODAL ==================== -->
+  <div class="modal-backdrop" id="walletModal">
+    <div class="modal-sheet">
+      <button class="modal-close-btn" id="walletModalClose">×</button>
+      <div class="wallet-modal-header">
+        <h3>My Wallet</h3>
+        <div class="wallet-card-highlight">
+          <span class="card-label">Current Available Balance</span>
+          <div class="card-balance">₹<span id="walletModalBalance">0.00</span></div>
+          <div class="card-tags">
+            <span>Verified Account</span>
+            <span class="chip-vip" id="walletModalVip">VIP 1</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wallet-tabs">
+        <button class="w-tab active" id="tabDepositBtn">Recharge</button>
+        <button class="w-tab" id="tabWithdrawBtn">Withdraw</button>
+        <button class="w-tab" id="tabHistoryBtn">History</button>
+      </div>
+
+      <div id="depositSection" class="wallet-tab-content">
+        <label class="form-label">Select Recharge Amount (INR)</label>
+        <div class="recharge-presets" id="rechargePresets">
+          <button class="r-chip active" data-amt="200">₹200</button>
+          <button class="r-chip" data-amt="500">₹500 <span>+₹25</span></button>
+          <button class="r-chip" data-amt="1000">₹1,000 <span>+₹70</span></button>
+          <button class="r-chip" data-amt="2000">₹2,000 <span>+₹180</span></button>
+          <button class="r-chip" data-amt="5000">₹5,000 <span>+₹500</span></button>
+        </div>
+
+        <div class="form-group" style="margin-top: 14px;">
+          <label>Payment Method</label>
+          <div class="payment-methods">
+            <div class="pay-method active">
+              <span class="pay-icon">📱</span>
+              <b>UPI Instant</b>
+              <small>0% Fee</small>
+            </div>
+            <div class="pay-method">
+              <span class="pay-icon">⚡</span>
+              <b>PayTM / PhonePe</b>
+              <small>Instant</small>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-block btn-primary" id="confirmDepositBtn" style="margin-top: 15px;">
+          Deposit ₹<span id="depositBtnAmount">200</span>
+        </button>
+      </div>
+
+      <div id="withdrawSection" class="wallet-tab-content" style="display: none;">
+        <div class="form-group">
+          <label>Withdrawal Amount (Min ₹100)</label>
+          <input type="number" id="withdrawAmountInput" placeholder="Enter amount" min="100" value="200">
+        </div>
+        <div class="form-group">
+          <label>UPI ID or Bank Account</label>
+          <input type="text" id="withdrawDestInput" placeholder="e.g. yourname@oksbi" value="winner@upi">
+        </div>
+        <button class="btn btn-block btn-primary" id="confirmWithdrawBtn" style="margin-top: 15px;">
+          Submit Withdrawal Request
+        </button>
+      </div>
+
+      <div id="historySection" class="wallet-tab-content" style="display: none;">
+        <div class="tx-list" id="transactionList"></div>
+      </div>
+  <!-- ==================== ACCOUNT PROFILE MODAL ==================== -->
+  <div class="modal-backdrop" id="accountModal">
+    <div class="modal-sheet">
+      <button class="modal-close-btn" id="accountModalClose">×</button>
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
+        <div id="accAvatar" style="width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,#20B96B,#36C66B); color:#fff; display:grid; place-items:center; font-size:22px; font-weight:800;">P</div>
+        <div>
+          <h3 id="accUserName" style="margin:0; font-size:17px; font-weight:800;">Player</h3>
+          <span id="accUserPhone" style="font-size:12px; color:#7C8290;">+91 9876543210</span>
+          <div style="margin-top:3px;"><span class="chip-vip" id="accVipTag">VIP 1</span></div>
+        </div>
+      </div>
+      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:14px; margin-bottom:16px;">
+        <div style="font-size:11px; color:#7C8290;">Available Balance</div>
+        <div style="font-size:24px; font-weight:900; color:#20B96B; margin:4px 0 10px;">₹<span id="accBalanceVal">0.00</span></div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-primary" id="accRechargeBtn" style="flex:1; padding:8px; font-size:13px;">💳 Deposit</button>
+          <button class="btn" id="accWithdrawBtn" style="flex:1; padding:8px; font-size:13px; background:#e2e8f0; color:#0B1833;">💸 Withdraw</button>
+        </div>
+      </div>
+      <button class="btn btn-block" id="logoutBtn" style="background:#fee2e2; color:#ef4444; border:1px solid #fecaca; margin-top:10px;">
+        <i class="fa fa-sign-out" style="margin-right:6px;"></i> Log Out Session
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">Message</div>
+
+  <script src="app.js"></script>
+  <script src="upi-recharge.js"></script>
+</body>
+</html>
