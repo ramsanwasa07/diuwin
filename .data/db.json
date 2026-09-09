@@ -5820,6 +5820,303 @@
   ],
   "masterHistory": [
     {
+      "id": "mh_1788945156547_vrqh6",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1514,
+      "result": "Crashed at 1.00x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:12:36.547Z"
+    },
+    {
+      "id": "mh_1788945148473_5wawh",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1513,
+      "result": "Crashed at 1.90x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:12:28.473Z"
+    },
+    {
+      "id": "mh_1788945137778_3sdhl",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1512,
+      "result": "Crashed at 1.72x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:12:17.778Z"
+    },
+    {
+      "id": "mh_1788945127411_7x77f",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1511,
+      "result": "Crashed at 2.08x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:12:07.411Z"
+    },
+    {
+      "id": "mh_1788945116379_640nu",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1510,
+      "result": "Crashed at 4.53x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:11:56.379Z"
+    },
+    {
+      "id": "mh_1788945102071_x6roc",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1509,
+      "result": "Crashed at 5.43x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:11:42.071Z"
+    },
+    {
+      "id": "mh_1788945099247_2v652",
+      "gameId": "5d",
+      "gameName": "5D Lotre 1Min",
+      "period": 370,
+      "result": "Digits [9, 2, 2, 0, 3] = Sum 16 (Small, Even)",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:11:39.247Z"
+    },
+    {
+      "id": "mh_1788945099247_gr390",
+      "gameId": "k3",
+      "gameName": "K3 Lotre 1Min",
+      "period": 370,
+      "result": "Dice [2, 5, 4] = 11 (Big, Odd)",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:11:39.247Z"
+    },
+    {
+      "id": "mh_1788945099247_c7qpc",
+      "gameId": "wingo",
+      "gameName": "Win Go 1Min",
+      "period": 370,
+      "result": "Ball #2 (Red, Small)",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:11:39.247Z"
+    },
+    {
+      "id": "mh_1788945086769_j3hdq",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1508,
+      "result": "Crashed at 11.51x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:11:26.769Z"
+    },
+    {
+      "id": "mh_1788945066318_42e1h",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1507,
+      "result": "Crashed at 13.15x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:11:06.318Z"
+    },
+    {
+      "id": "mh_1788945044581_y1p1v",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1506,
+      "result": "Crashed at 5.84x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:10:44.581Z"
+    },
+    {
+      "id": "mh_1788945038691_93k6s",
+      "gameId": "5d",
+      "gameName": "5D Lotre 1Min",
+      "period": 369,
+      "result": "Digits [8, 4, 0, 2, 5] = Sum 19 (Small, Odd)",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:10:38.691Z"
+    },
+    {
+      "id": "mh_1788945038691_i9oh7",
+      "gameId": "k3",
+      "gameName": "K3 Lotre 1Min",
+      "period": 369,
+      "result": "Dice [6, 2, 4] = 12 (Big, Even)",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:10:38.691Z"
+    },
+    {
+      "id": "mh_1788945038690_uy2uh",
+      "gameId": "wingo",
+      "gameName": "Win Go 1Min",
+      "period": 369,
+      "result": "Ball #8 (Red, Big)",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:10:38.690Z"
+    },
+    {
+      "id": "mh_1788945028859_uk1e4",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1505,
+      "result": "Crashed at 1.66x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:10:28.859Z"
+    },
+    {
+      "id": "mh_1788945018603_7d15t",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1504,
+      "result": "Crashed at 1.21x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:10:18.603Z"
+    },
+    {
+      "id": "mh_1788945009501_cox53",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1503,
+      "result": "Crashed at 1.49x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:10:09.501Z"
+    },
+    {
+      "id": "mh_1788944999582_i8brm",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1502,
+      "result": "Crashed at 2.90x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:09:59.582Z"
+    },
+    {
+      "id": "mh_1788944987258_kxc98",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1501,
+      "result": "Crashed at 27.00x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:09:47.258Z"
+    },
+    {
+      "id": "mh_1788944978120_2jqpt",
+      "gameId": "5d",
+      "gameName": "5D Lotre 1Min",
+      "period": 368,
+      "result": "Digits [2, 4, 6, 3, 8] = Sum 23 (Big, Odd)",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:09:38.120Z"
+    },
+    {
+      "id": "mh_1788944978120_p74ov",
+      "gameId": "k3",
+      "gameName": "K3 Lotre 1Min",
+      "period": 368,
+      "result": "Dice [1, 1, 5] = 7 (Small, Odd)",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:09:38.120Z"
+    },
+    {
+      "id": "mh_1788944978120_x9ail",
+      "gameId": "wingo",
+      "gameName": "Win Go 1Min",
+      "period": 368,
+      "result": "Ball #6 (Red, Big)",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:09:38.120Z"
+    },
+    {
+      "id": "mh_1788944957349_juoi0",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1500,
+      "result": "Crashed at 1.66x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:09:17.349Z"
+    },
+    {
+      "id": "mh_1788944947091_lln2z",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1499,
+      "result": "Crashed at 2.10x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:09:07.091Z"
+    },
+    {
+      "id": "mh_1788944935964_fj5s9",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1498,
+      "result": "Crashed at 2.14x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:08:55.964Z"
+    },
+    {
+      "id": "mh_1788944924846_cuhvn",
+      "gameId": "aviator",
+      "gameName": "Aviator Crash",
+      "period": 1497,
+      "result": "Crashed at 66.88x",
+      "totalBet": 0,
+      "totalPayout": 0,
+      "netHouseProfit": 0,
+      "timestamp": "2026-09-09T09:08:44.846Z"
+    },
+    {
       "id": "mh_1788944917486_qf6rm",
       "gameId": "5d",
       "gameName": "5D Lotre 1Min",
@@ -16521,307 +16818,46 @@
       "totalPayout": 0,
       "netHouseProfit": 0,
       "timestamp": "2026-09-09T06:28:37.498Z"
-    },
-    {
-      "id": "mh_1788935317498_09og5",
-      "gameId": "wingo",
-      "gameName": "Win Go 1Min",
-      "period": 223,
-      "result": "Ball #3 (Green, Small)",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:28:37.498Z"
-    },
-    {
-      "id": "mh_1788935311451_ay6em",
-      "gameId": "aviator",
-      "gameName": "Aviator Crash",
-      "period": 957,
-      "result": "Crashed at 1.21x",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:28:31.451Z"
-    },
-    {
-      "id": "mh_1788935302287_5xyan",
-      "gameId": "aviator",
-      "gameName": "Aviator Crash",
-      "period": 956,
-      "result": "Crashed at 44.95x",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:28:22.287Z"
-    },
-    {
-      "id": "mh_1788935263822_r0bto",
-      "gameId": "aviator",
-      "gameName": "Aviator Crash",
-      "period": 955,
-      "result": "Crashed at 3.93x",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:27:43.822Z"
-    },
-    {
-      "id": "mh_1788935257023_93no4",
-      "gameId": "5d",
-      "gameName": "5D Lotre 1Min",
-      "period": 222,
-      "result": "Digits [6, 7, 5, 0, 6] = Sum 24 (Big, Even)",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:27:37.023Z"
-    },
-    {
-      "id": "mh_1788935257023_d3cyc",
-      "gameId": "k3",
-      "gameName": "K3 Lotre 1Min",
-      "period": 222,
-      "result": "Dice [2, 1, 4] = 7 (Small, Odd)",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:27:37.023Z"
-    },
-    {
-      "id": "mh_1788935257023_6zst7",
-      "gameId": "wingo",
-      "gameName": "Win Go 1Min",
-      "period": 222,
-      "result": "Ball #7 (Green, Big)",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:27:37.023Z"
-    },
-    {
-      "id": "mh_1788935250139_a06eh",
-      "gameId": "aviator",
-      "gameName": "Aviator Crash",
-      "period": 954,
-      "result": "Crashed at 5.50x",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:27:30.139Z"
-    },
-    {
-      "id": "mh_1788935234804_nsvkr",
-      "gameId": "aviator",
-      "gameName": "Aviator Crash",
-      "period": 953,
-      "result": "Crashed at 2.26x",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:27:14.804Z"
-    },
-    {
-      "id": "mh_1788935223437_ms4aw",
-      "gameId": "aviator",
-      "gameName": "Aviator Crash",
-      "period": 952,
-      "result": "Crashed at 2.34x",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:27:03.437Z"
-    },
-    {
-      "id": "mh_1788935211986_ygq73",
-      "gameId": "aviator",
-      "gameName": "Aviator Crash",
-      "period": 951,
-      "result": "Crashed at 11.34x",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:26:51.986Z"
-    },
-    {
-      "id": "mh_1788935196492_m4cch",
-      "gameId": "5d",
-      "gameName": "5D Lotre 1Min",
-      "period": 221,
-      "result": "Digits [7, 4, 0, 0, 7] = Sum 18 (Small, Even)",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:26:36.492Z"
-    },
-    {
-      "id": "mh_1788935196492_ahy26",
-      "gameId": "k3",
-      "gameName": "K3 Lotre 1Min",
-      "period": 221,
-      "result": "Dice [6, 4, 2] = 12 (Big, Even)",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:26:36.492Z"
-    },
-    {
-      "id": "mh_1788935196492_a28lc",
-      "gameId": "wingo",
-      "gameName": "Win Go 1Min",
-      "period": 221,
-      "result": "Ball #8 (Red, Big)",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:26:36.492Z"
-    },
-    {
-      "id": "mh_1788935193706_o3yu3",
-      "gameId": "aviator",
-      "gameName": "Aviator Crash",
-      "period": 950,
-      "result": "Crashed at 1.30x",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:26:33.706Z"
-    },
-    {
-      "id": "mh_1788935184269_bw1c6",
-      "gameId": "aviator",
-      "gameName": "Aviator Crash",
-      "period": 949,
-      "result": "Crashed at 8.87x",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:26:24.269Z"
-    },
-    {
-      "id": "mh_1788935165813_2nvs0",
-      "gameId": "aviator",
-      "gameName": "Aviator Crash",
-      "period": 948,
-      "result": "Crashed at 4.35x",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:26:05.813Z"
-    },
-    {
-      "id": "mh_1788935151701_ing1l",
-      "gameId": "aviator",
-      "gameName": "Aviator Crash",
-      "period": 947,
-      "result": "Crashed at 1.28x",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:25:51.701Z"
-    },
-    {
-      "id": "mh_1788935142321_1ir3o",
-      "gameId": "aviator",
-      "gameName": "Aviator Crash",
-      "period": 946,
-      "result": "Crashed at 4.50x",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:25:42.321Z"
-    },
-    {
-      "id": "mh_1788935136020_6oocl",
-      "gameId": "5d",
-      "gameName": "5D Lotre 1Min",
-      "period": 220,
-      "result": "Digits [7, 9, 1, 1, 0] = Sum 18 (Small, Even)",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:25:36.020Z"
-    },
-    {
-      "id": "mh_1788935136020_y1av4",
-      "gameId": "k3",
-      "gameName": "K3 Lotre 1Min",
-      "period": 220,
-      "result": "Dice [3, 3, 5] = 11 (Big, Odd)",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:25:36.020Z"
-    },
-    {
-      "id": "mh_1788935136020_5cgdy",
-      "gameId": "wingo",
-      "gameName": "Win Go 1Min",
-      "period": 220,
-      "result": "Ball #8 (Red, Big)",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T06:25:36.020Z"
-    },
-    {
-      "id": "mh_1788925705655_s5sx5",
-      "gameId": "5d",
-      "gameName": "5D Lotre 1Min",
-      "period": 219,
-      "result": "Digits [7, 0, 6, 4, 5] = Sum 22 (Small, Even)",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T03:48:25.655Z"
-    },
-    {
-      "id": "mh_1788925705655_f0k7k",
-      "gameId": "k3",
-      "gameName": "K3 Lotre 1Min",
-      "period": 219,
-      "result": "Dice [6, 2, 3] = 11 (Big, Odd)",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T03:48:25.655Z"
-    },
-    {
-      "id": "mh_1788925705655_yqgfl",
-      "gameId": "wingo",
-      "gameName": "Win Go 1Min",
-      "period": 219,
-      "result": "Ball #7 (Green, Big)",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T03:48:25.655Z"
-    },
-    {
-      "id": "mh_1788925705655_khf93",
-      "gameId": "aviator",
-      "gameName": "Aviator Crash",
-      "period": 945,
-      "result": "Crashed at 14.06x",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T03:48:25.655Z"
-    },
-    {
-      "id": "mh_1788924820711_t2mn5",
-      "gameId": "aviator",
-      "gameName": "Aviator Crash",
-      "period": 944,
-      "result": "Crashed at 10.93x",
-      "totalBet": 0,
-      "totalPayout": 0,
-      "netHouseProfit": 0,
-      "timestamp": "2026-09-09T03:33:40.711Z"
     }
   ],
   "gameHistories": {
     "wingo": [
+      {
+        "num": 2,
+        "size": "Small",
+        "color": "red",
+        "colorName": "Red",
+        "period": 370,
+        "number": 2,
+        "timestamp": "2026-09-09T09:11:39.247Z",
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0
+      },
+      {
+        "num": 8,
+        "size": "Big",
+        "color": "red",
+        "colorName": "Red",
+        "period": 369,
+        "number": 8,
+        "timestamp": "2026-09-09T09:10:38.690Z",
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0
+      },
+      {
+        "num": 6,
+        "size": "Big",
+        "color": "red",
+        "colorName": "Red",
+        "period": 368,
+        "number": 6,
+        "timestamp": "2026-09-09T09:09:38.120Z",
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0
+      },
       {
         "num": 0,
         "size": "Small",
@@ -17385,45 +17421,60 @@
         "totalBet": 0,
         "totalPayout": 0,
         "netHouseProfit": 0
-      },
-      {
-        "num": 6,
-        "size": "Big",
-        "color": "red",
-        "colorName": "Red",
-        "period": 320,
-        "number": 6,
-        "timestamp": "2026-09-09T08:07:19.233Z",
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0
-      },
-      {
-        "num": 7,
-        "size": "Big",
-        "color": "green",
-        "colorName": "Green",
-        "period": 319,
-        "number": 7,
-        "timestamp": "2026-09-09T08:06:18.593Z",
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0
-      },
-      {
-        "num": 4,
-        "size": "Small",
-        "color": "red",
-        "colorName": "Red",
-        "period": 318,
-        "number": 4,
-        "timestamp": "2026-09-09T08:05:18.012Z",
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0
       }
     ],
     "k3": [
+      {
+        "period": 370,
+        "dice": [
+          2,
+          5,
+          4
+        ],
+        "sum": 11,
+        "size": "Big",
+        "parity": "Odd",
+        "isTriple": false,
+        "isTwoSame": false,
+        "timestamp": "2026-09-09T09:11:39.247Z",
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0
+      },
+      {
+        "period": 369,
+        "dice": [
+          6,
+          2,
+          4
+        ],
+        "sum": 12,
+        "size": "Big",
+        "parity": "Even",
+        "isTriple": false,
+        "isTwoSame": false,
+        "timestamp": "2026-09-09T09:10:38.690Z",
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0
+      },
+      {
+        "period": 368,
+        "dice": [
+          1,
+          1,
+          5
+        ],
+        "sum": 7,
+        "size": "Small",
+        "parity": "Odd",
+        "isTriple": false,
+        "isTwoSame": true,
+        "timestamp": "2026-09-09T09:09:38.120Z",
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0
+      },
       {
         "period": 367,
         "dice": [
@@ -18222,60 +18273,60 @@
         "totalBet": 0,
         "totalPayout": 0,
         "netHouseProfit": 0
-      },
-      {
-        "period": 320,
-        "dice": [
-          3,
-          3,
-          1
-        ],
-        "sum": 7,
-        "size": "Small",
-        "parity": "Odd",
-        "isTriple": false,
-        "isTwoSame": true,
-        "timestamp": "2026-09-09T08:07:19.233Z",
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0
-      },
-      {
-        "period": 319,
-        "dice": [
-          6,
-          4,
-          3
-        ],
-        "sum": 13,
-        "size": "Big",
-        "parity": "Odd",
-        "isTriple": false,
-        "isTwoSame": false,
-        "timestamp": "2026-09-09T08:06:18.593Z",
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0
-      },
-      {
-        "period": 318,
-        "dice": [
-          6,
-          3,
-          6
-        ],
-        "sum": 15,
-        "size": "Big",
-        "parity": "Odd",
-        "isTriple": false,
-        "isTwoSame": true,
-        "timestamp": "2026-09-09T08:05:18.012Z",
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0
       }
     ],
     "5d": [
+      {
+        "period": 370,
+        "digits": [
+          9,
+          2,
+          2,
+          0,
+          3
+        ],
+        "sum": 16,
+        "size": "Small",
+        "parity": "Even",
+        "timestamp": "2026-09-09T09:11:39.247Z",
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0
+      },
+      {
+        "period": 369,
+        "digits": [
+          8,
+          4,
+          0,
+          2,
+          5
+        ],
+        "sum": 19,
+        "size": "Small",
+        "parity": "Odd",
+        "timestamp": "2026-09-09T09:10:38.691Z",
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0
+      },
+      {
+        "period": 368,
+        "digits": [
+          2,
+          4,
+          6,
+          3,
+          8
+        ],
+        "sum": 23,
+        "size": "Big",
+        "parity": "Odd",
+        "timestamp": "2026-09-09T09:09:38.120Z",
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0
+      },
       {
         "period": 367,
         "digits": [
@@ -19074,60 +19125,153 @@
         "totalBet": 0,
         "totalPayout": 0,
         "netHouseProfit": 0
-      },
-      {
-        "period": 320,
-        "digits": [
-          9,
-          1,
-          4,
-          3,
-          0
-        ],
-        "sum": 17,
-        "size": "Small",
-        "parity": "Odd",
-        "timestamp": "2026-09-09T08:07:19.233Z",
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0
-      },
-      {
-        "period": 319,
-        "digits": [
-          5,
-          8,
-          1,
-          0,
-          0
-        ],
-        "sum": 14,
-        "size": "Small",
-        "parity": "Even",
-        "timestamp": "2026-09-09T08:06:18.593Z",
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0
-      },
-      {
-        "period": 318,
-        "digits": [
-          1,
-          6,
-          2,
-          0,
-          8
-        ],
-        "sum": 17,
-        "size": "Small",
-        "parity": "Odd",
-        "timestamp": "2026-09-09T08:05:18.012Z",
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0
       }
     ],
     "aviator": [
+      {
+        "period": 1514,
+        "crashedAt": 1,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:12:36.547Z"
+      },
+      {
+        "period": 1513,
+        "crashedAt": 1.9,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:12:28.473Z"
+      },
+      {
+        "period": 1512,
+        "crashedAt": 1.72,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:12:17.778Z"
+      },
+      {
+        "period": 1511,
+        "crashedAt": 2.08,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:12:07.411Z"
+      },
+      {
+        "period": 1510,
+        "crashedAt": 4.53,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:11:56.379Z"
+      },
+      {
+        "period": 1509,
+        "crashedAt": 5.43,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:11:42.070Z"
+      },
+      {
+        "period": 1508,
+        "crashedAt": 11.51,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:11:26.769Z"
+      },
+      {
+        "period": 1507,
+        "crashedAt": 13.15,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:11:06.318Z"
+      },
+      {
+        "period": 1506,
+        "crashedAt": 5.84,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:10:44.581Z"
+      },
+      {
+        "period": 1505,
+        "crashedAt": 1.66,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:10:28.859Z"
+      },
+      {
+        "period": 1504,
+        "crashedAt": 1.21,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:10:18.603Z"
+      },
+      {
+        "period": 1503,
+        "crashedAt": 1.49,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:10:09.501Z"
+      },
+      {
+        "period": 1502,
+        "crashedAt": 2.9,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:09:59.582Z"
+      },
+      {
+        "period": 1501,
+        "crashedAt": 27,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:09:47.258Z"
+      },
+      {
+        "period": 1500,
+        "crashedAt": 1.66,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:09:17.349Z"
+      },
+      {
+        "period": 1499,
+        "crashedAt": 2.1,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:09:07.091Z"
+      },
+      {
+        "period": 1498,
+        "crashedAt": 2.14,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:08:55.964Z"
+      },
+      {
+        "period": 1497,
+        "crashedAt": 66.88,
+        "totalBet": 0,
+        "totalPayout": 0,
+        "netHouseProfit": 0,
+        "timestamp": "2026-09-09T09:08:44.846Z"
+      },
       {
         "period": 1496,
         "crashedAt": 1,
@@ -19383,150 +19527,6 @@
         "totalPayout": 0,
         "netHouseProfit": 0,
         "timestamp": "2026-09-09T08:49:16.072Z"
-      },
-      {
-        "period": 1464,
-        "crashedAt": 1.38,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:49:06.559Z"
-      },
-      {
-        "period": 1463,
-        "crashedAt": 1.25,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:48:56.942Z"
-      },
-      {
-        "period": 1462,
-        "crashedAt": 1.06,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:48:47.642Z"
-      },
-      {
-        "period": 1461,
-        "crashedAt": 53.31,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:48:39.119Z"
-      },
-      {
-        "period": 1460,
-        "crashedAt": 3.3,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:47:57.129Z"
-      },
-      {
-        "period": 1459,
-        "crashedAt": 4.28,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:47:44.215Z"
-      },
-      {
-        "period": 1458,
-        "crashedAt": 2.06,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:47:30.116Z"
-      },
-      {
-        "period": 1457,
-        "crashedAt": 1.58,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:47:19.075Z"
-      },
-      {
-        "period": 1456,
-        "crashedAt": 1,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:47:09.009Z"
-      },
-      {
-        "period": 1455,
-        "crashedAt": 3.06,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:47:00.925Z"
-      },
-      {
-        "period": 1454,
-        "crashedAt": 10.19,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:46:48.359Z"
-      },
-      {
-        "period": 1453,
-        "crashedAt": 1.88,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:46:28.825Z"
-      },
-      {
-        "period": 1452,
-        "crashedAt": 5.42,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:46:18.116Z"
-      },
-      {
-        "period": 1451,
-        "crashedAt": 4.36,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:46:02.836Z"
-      },
-      {
-        "period": 1450,
-        "crashedAt": 1.33,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:45:48.636Z"
-      },
-      {
-        "period": 1449,
-        "crashedAt": 1.55,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:45:39.146Z"
-      },
-      {
-        "period": 1448,
-        "crashedAt": 2.01,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:45:29.117Z"
-      },
-      {
-        "period": 1447,
-        "crashedAt": 2.46,
-        "totalBet": 0,
-        "totalPayout": 0,
-        "netHouseProfit": 0,
-        "timestamp": "2026-09-09T08:45:18.205Z"
       }
     ],
     "mines": [
@@ -19625,10 +19625,10 @@
     ]
   },
   "periods": {
-    "wingo": 368,
-    "k3": 368,
-    "5d": 368,
-    "aviator": 1497,
+    "wingo": 371,
+    "k3": 371,
+    "5d": 371,
+    "aviator": 1515,
     "mines": 2,
     "chicken": 2
   }
