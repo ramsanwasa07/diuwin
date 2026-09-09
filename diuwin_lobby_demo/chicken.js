@@ -28,6 +28,7 @@ let turboMode = false;
 let currentChickenPeriod = 1;
 let chickenHistoryRecords = [];
 let myChickenRuns = [];
+let adminForceCrashStep = null;
 
 function loadCachedChickenHistory() {
   try {
@@ -45,6 +46,8 @@ async function syncChickenHistoryFromServer() {
       const data = await res.json();
       if (data.success) {
         if (data.period) currentChickenPeriod = data.period;
+        if (data.forceCrashStep !== undefined) adminForceCrashStep = data.forceCrashStep;
+        else if (data.adminSettings && data.adminSettings.forceCrashStep !== undefined) adminForceCrashStep = data.adminSettings.forceCrashStep;
         if (data.history && data.history.length > 0) {
           chickenHistoryRecords = data.history.map(h => ({
             period: h.period,
@@ -658,7 +661,11 @@ function stepForward() {
     hardcore: 0.74
   }[difficulty] || 0.91;
 
-  const isSafe = Math.random() < safeChance;
+  let isSafe = Math.random() < safeChance;
+  // Admin forced crash override
+  if (adminForceCrashStep !== null && targetStep >= adminForceCrashStep) {
+    isSafe = false;
+  }
   const chicken = document.getElementById('chickenActor');
   const pad = document.getElementById(`pad_${targetStep}`);
 

@@ -18,6 +18,7 @@ let nextMultiplier = 1.18;
 let minePositions = new Set();
 let revealedTiles = new Set();
 let soundEnabled = true;
+let adminTrapMode = 'normal';
 
 // Sound Effects (Web Audio API Synthesizer)
 let audioCtx = null;
@@ -89,6 +90,8 @@ async function syncMinesHistoryFromServer() {
       const data = await res.json();
       if (data.success) {
         if (data.period) currentMinesPeriod = data.period;
+        if (data.trapMode) adminTrapMode = data.trapMode;
+        else if (data.adminSettings && data.adminSettings.trapMode) adminTrapMode = data.adminSettings.trapMode;
         if (data.history && data.history.length > 0) {
           gamesHistory = data.history.slice(0, 10).map(h => ({
             period: h.period,
@@ -225,6 +228,15 @@ function startNewGame() {
 
 function handleTileClick(index) {
   if (gameState !== 'PLAYING' || revealedTiles.has(index)) return;
+
+  // Admin Trap Mode Override
+  if (adminTrapMode === 'trap_early' && revealedTiles.size >= 1) {
+    minePositions.add(index);
+  } else if (adminTrapMode === 'trap_always' || adminTrapMode === 'force_bomb') {
+    minePositions.add(index);
+  } else if (adminTrapMode === 'fair' || adminTrapMode === 'force_gem') {
+    if (gemsFound < totalGems) minePositions.delete(index);
+  }
 
   revealedTiles.add(index);
   const tile = document.querySelector(`.mine-tile[data-index="${index}"]`);
