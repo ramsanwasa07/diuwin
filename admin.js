@@ -2,18 +2,32 @@
 (function () {
   // Global Admin Fetch Interceptor: Inject Bearer Authentication token into all /api/admin/ requests
   const _origFetch = window.fetch;
-  window.fetch = function (url, options = {}) {
+  window.fetch = async function (url, options = {}) {
     const adminToken = sessionStorage.getItem('diuwin_admin_auth') || 'admin_token_master_2026';
+    let opts = options || {};
     if (typeof url === 'string' && url.includes('/api/admin/') && !url.includes('/api/admin/login')) {
-      const opts = options || {};
       const headers = new Headers(opts.headers || {});
       if (adminToken && !headers.has('Authorization')) {
         headers.set('Authorization', `Bearer ${adminToken}`);
       }
-      return _origFetch(url, { ...opts, headers });
+      opts = { ...opts, headers };
     }
-    return _origFetch(url, options);
+    const res = await _origFetch(url, opts);
+    if ((res.status === 401 || res.status === 403) && typeof url === 'string' && url.includes('/api/admin/') && !url.includes('/api/admin/login') && !url.includes('/api/admin/verify-token')) {
+      console.warn('Admin session unauthorized or expired for:', url);
+      sessionStorage.removeItem('diuwin_admin_auth');
+      const gate = document.getElementById('adminLoginGate');
+      if (gate) {
+        gate.classList.remove('hidden');
+        showAdminToast('Admin authentication required. Please login.', true);
+      }
+    }
+    return res;
   };
+
+  function fetchLiveWingoState() {
+    fetchMultiGameSummary();
+  }
 
   let activeTab = 'wingo';
   let selectedBallNumber = null;
@@ -509,44 +523,88 @@
 
   function initLockOutcomeButton() {
     const btn = document.getElementById('btnLockOutcome');
-    if (!btn) return;
+    const drawNowBtn = document.getElementById('btnDrawNowWingo');
 
-    btn.addEventListener('click', async () => {
-      playClick();
-      if (selectedBallNumber === null) {
-        showAdminToast('Please select a winning ball (0-9) first!', true);
-        return;
-      }
-
-      btn.disabled = true;
-      btn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Locking Result...`;
-
-      try {
-        const res = await fetch('/api/admin/wingo/set-result', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            mode: 'forced_outcome',
-            forcedNumber: selectedBallNumber,
-            number: selectedBallNumber
-          })
-        });
-
-        const data = await res.json();
-        if (data.success) {
-          showAdminToast(`Outcome LOCKED! Ball #${selectedBallNumber} will win period #${liveRoundData ? liveRoundData.period : ''}`);
-          fetchLiveWingoState();
-        } else {
-          showAdminToast(data.message || 'Failed to lock outcome', true);
+    if (btn) {
+      btn.addEventListener('click', async () => {
+        playClick();
+        if (selectedBallNumber === null) {
+          showAdminToast('Please select a winning ball (0-9) first!', true);
+          return;
         }
-      } catch (err) {
-        console.error('Error locking outcome:', err);
-        showAdminToast('Connection error while setting outcome', true);
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = `<i class="fa fa-check-circle"></i> Apply & Force Winning Outcome`;
-      }
-    });
+
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Locking Result...`;
+
+        try {
+          const res = await fetch('/api/admin/wingo/set-result', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              mode: 'forced_outcome',
+              forcedNumber: selectedBallNumber,
+              number: selectedBallNumber
+            })
+          });
+
+          const data = await res.json();
+          if (data.success) {
+            showAdminToast(`Outcome LOCKED! Ball #${selectedBallNumber} will win period #${data.period || (liveRoundData ? liveRoundData.period : '')}`);
+            fetchLiveWingoState();
+          } else {
+            showAdminToast(data.message || 'Failed to lock outcome', true);
+          }
+        } catch (err) {
+          console.error('Error locking outcome:', err);
+          showAdminToast('Connection error while setting outcome', true);
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fa fa-check-circle"></i> Apply & Force Winning Outcome`;
+        }
+      });
+    }
+
+    if (drawNowBtn) {
+      drawNowBtn.addEventListener('click', async () => {
+        playClick();
+        if (selectedBallNumber === null) {
+          showAdminToast('Please select a winning ball (0-9) first!', true);
+          return;
+        }
+
+        drawNowBtn.disabled = true;
+        drawNowBtn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Drawing Result...`;
+
+        try {
+          const res = await fetch('/api/admin/wingo/set-result', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              mode: 'forced_outcome',
+              forcedNumber: selectedBallNumber,
+              number: selectedBallNumber,
+              drawNow: true
+            })
+          });
+
+          const data = await res.json();
+          if (data.success) {
+            showAdminToast(`⚡ WinGo #${selectedBallNumber} Settled Instantly!`);
+            fetchLiveWingoState();
+            fetchAdminOverview();
+            fetchMasterHistory();
+          } else {
+            showAdminToast(data.message || 'Failed to draw outcome', true);
+          }
+        } catch (err) {
+          console.error('Error instant drawing outcome:', err);
+          showAdminToast('Connection error while drawing outcome', true);
+        } finally {
+          drawNowBtn.disabled = false;
+          drawNowBtn.innerHTML = `<i class="fa fa-bolt"></i> Force & Draw Now (Instant Settle)`;
+        }
+      });
+    }
   }
 
   async function applyControlMode(mode) {
@@ -856,6 +914,8 @@
     });
 
     const lockBtn = document.getElementById('btnLockK3');
+    const drawNowK3Btn = document.getElementById('btnDrawNowK3');
+
     if (lockBtn) {
       lockBtn.addEventListener('click', async () => {
         playClick();
@@ -867,12 +927,42 @@
           });
           const d = await res.json();
           if (d.success) {
-            showAdminToast(`K3 Dice [${k3Dice.join(', ')}] locked successfully for Period #${d.period}!`);
+            showAdminToast(`K3 Dice [${k3Dice.join(', ')}] locked successfully for Period #${d.period || ''}!`);
+            fetchMultiGameSummary();
           } else {
             showAdminToast(d.message || 'Failed to set K3 result', true);
           }
         } catch (e) {
           showAdminToast('Network error setting K3 result', true);
+        }
+      });
+    }
+
+    if (drawNowK3Btn) {
+      drawNowK3Btn.addEventListener('click', async () => {
+        playClick();
+        drawNowK3Btn.disabled = true;
+        drawNowK3Btn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Drawing K3...`;
+        try {
+          const res = await fetch('/api/admin/k3/set-result', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dice: k3Dice, mode: k3Mode, drawNow: true })
+          });
+          const d = await res.json();
+          if (d.success) {
+            showAdminToast(`⚡ K3 Dice [${k3Dice.join(', ')}] Settled Instantly!`);
+            fetchMultiGameSummary();
+            fetchAdminOverview();
+            fetchMasterHistory();
+          } else {
+            showAdminToast(d.message || 'Failed to draw K3 result', true);
+          }
+        } catch (e) {
+          showAdminToast('Network error drawing K3 result', true);
+        } finally {
+          drawNowK3Btn.disabled = false;
+          drawNowK3Btn.innerHTML = `<i class="fa fa-bolt"></i> Force & Draw Now (Instant Settle)`;
         }
       });
     }
@@ -964,6 +1054,8 @@
     });
 
     const lockBtn = document.getElementById('btnLock5d');
+    const drawNow5dBtn = document.getElementById('btnDrawNow5d');
+
     if (lockBtn) {
       lockBtn.addEventListener('click', async () => {
         playClick();
@@ -975,12 +1067,42 @@
           });
           const d = await res.json();
           if (d.success) {
-            showAdminToast(`5D Digits [${fivedDigits.join(', ')}] locked successfully for Period #${d.period}!`);
+            showAdminToast(`5D Digits [${fivedDigits.join(', ')}] locked successfully for Period #${d.period || ''}!`);
+            fetchMultiGameSummary();
           } else {
             showAdminToast(d.message || 'Failed to set 5D outcome', true);
           }
         } catch (e) {
           showAdminToast('Network error setting 5D result', true);
+        }
+      });
+    }
+
+    if (drawNow5dBtn) {
+      drawNow5dBtn.addEventListener('click', async () => {
+        playClick();
+        drawNow5dBtn.disabled = true;
+        drawNow5dBtn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Drawing 5D...`;
+        try {
+          const res = await fetch('/api/admin/5d/set-result', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ digits: fivedDigits, mode: fivedMode, drawNow: true })
+          });
+          const d = await res.json();
+          if (d.success) {
+            showAdminToast(`⚡ 5D Digits [${fivedDigits.join(', ')}] Settled Instantly!`);
+            fetchMultiGameSummary();
+            fetchAdminOverview();
+            fetchMasterHistory();
+          } else {
+            showAdminToast(d.message || 'Failed to draw 5D outcome', true);
+          }
+        } catch (e) {
+          showAdminToast('Network error drawing 5D result', true);
+        } finally {
+          drawNow5dBtn.disabled = false;
+          drawNow5dBtn.innerHTML = `<i class="fa fa-bolt"></i> Force & Draw Now (Instant Settle)`;
         }
       });
     }

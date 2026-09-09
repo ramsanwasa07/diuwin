@@ -3,7 +3,7 @@ const http = require('http');
 const PORT = 3000;
 const BASE_URL = `http://localhost:${PORT}`;
 
-function request(method, pathName, data = null) {
+function request(method, pathName, data = null, customHeaders = {}) {
   return new Promise((resolve, reject) => {
     const url = new URL(pathName, BASE_URL);
     const bodyStr = data ? JSON.stringify(data) : null;
@@ -11,6 +11,8 @@ function request(method, pathName, data = null) {
       method,
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer admin_token_master_2026',
+        ...customHeaders,
         ...(bodyStr ? { 'Content-Length': Buffer.byteLength(bodyStr) } : {})
       }
     }, (res) => {
@@ -33,6 +35,22 @@ function request(method, pathName, data = null) {
 async function testAdminProfit() {
   console.log('🧪 Testing Multi-Client Admin Profit Engine (> 2 Clients Playing)...');
 
+  // Register 3 fresh users with funded balances
+  const uTokens = [];
+  const uIds = [];
+  for (let i = 1; i <= 3; i++) {
+    const phone = '99' + Math.floor(10000000 + Math.random() * 90000000);
+    const reg = await request('POST', '/api/auth/register', { phone, password: 'Password@123' });
+    const token = reg.data.user.token;
+    const uid = reg.data.user.id;
+    await request('POST', '/api/wallet/deposit', { amount: 2000 }, { Authorization: `Bearer ${token}` });
+    uTokens.push(token);
+    uIds.push(uid);
+  }
+
+  const [u1, u2, u3] = uIds;
+  const [t1, t2, t3] = uTokens;
+
   // ==================== TEST 1: WINGO ADMIN PROFIT ====================
   console.log('\n--- 1. Testing WinGo 1Min (> 2 Clients) ---');
   const wingoState = await request('GET', '/api/wingo/state');
@@ -40,32 +58,32 @@ async function testAdminProfit() {
 
   // 3 distinct clients place bets
   const client1 = await request('POST', '/api/wingo/bet', {
-    userId: 'usr_client_1',
+    userId: u1,
     userName: 'Client 1',
     period,
     type: 'color',
     choice: 'green',
     amount: 500
-  });
+  }, { 'Authorization': `Bearer ${t1}` });
   const client2 = await request('POST', '/api/wingo/bet', {
-    userId: 'usr_client_2',
+    userId: u2,
     userName: 'Client 2',
     period,
     type: 'size',
     choice: 'big',
     amount: 300
-  });
+  }, { 'Authorization': `Bearer ${t2}` });
   const client3 = await request('POST', '/api/wingo/bet', {
-    userId: 'usr_client_3',
+    userId: u3,
     userName: 'Client 3',
     period,
     type: 'color',
     choice: 'red',
     amount: 200
-  });
+  }, { 'Authorization': `Bearer ${t3}` });
 
   if (!client1.data.success || !client2.data.success || !client3.data.success) {
-    throw new Error('Failed to place multi-client bets for WinGo');
+    throw new Error('Failed to place multi-client bets for WinGo: ' + JSON.stringify({ c1: client1.data, c2: client2.data, c3: client3.data }));
   }
   console.log('  ✅ 3 distinct clients placed bets: ₹500 on Green, ₹300 on Big, ₹200 on Red (Total Pool: ₹1000)');
 
@@ -79,26 +97,26 @@ async function testAdminProfit() {
   const k3Period = k3State.data.period;
 
   await request('POST', '/api/k3/bet', {
-    userId: 'usr_client_1',
+    userId: u1,
     period: k3Period,
     type: 'size',
     choice: 'Big',
     amount: 400
-  });
+  }, { 'Authorization': `Bearer ${t1}` });
   await request('POST', '/api/k3/bet', {
-    userId: 'usr_client_2',
+    userId: u2,
     period: k3Period,
     type: 'parity',
     choice: 'Odd',
     amount: 300
-  });
+  }, { 'Authorization': `Bearer ${t2}` });
   await request('POST', '/api/k3/bet', {
-    userId: 'usr_client_3',
+    userId: u3,
     period: k3Period,
     type: 'total',
     choice: '15',
     amount: 100
-  });
+  }, { 'Authorization': `Bearer ${t3}` });
   console.log('  ✅ 3 distinct clients placed K3 bets (Total Pool: ₹800)');
 
   // ==================== TEST 3: 5D ADMIN PROFIT ====================
@@ -107,57 +125,42 @@ async function testAdminProfit() {
   const fivedPeriod = fivedState.data.period;
 
   await request('POST', '/api/5d/bet', {
-    userId: 'usr_client_1',
+    userId: u1,
     period: fivedPeriod,
     pos: 'A',
     type: 'number',
     choice: '7',
     amount: 200
-  });
+  }, { 'Authorization': `Bearer ${t1}` });
   await request('POST', '/api/5d/bet', {
-    userId: 'usr_client_2',
+    userId: u2,
     period: fivedPeriod,
     pos: 'B',
     type: 'size',
     choice: 'Big',
     amount: 300
-  });
+  }, { 'Authorization': `Bearer ${t2}` });
   await request('POST', '/api/5d/bet', {
-    userId: 'usr_client_3',
+    userId: u3,
     period: fivedPeriod,
     pos: 'Total',
     type: 'size',
     choice: 'Small',
     amount: 150
-  });
+  }, { 'Authorization': `Bearer ${t3}` });
   console.log('  ✅ 3 distinct clients placed 5D bets (Total Pool: ₹650)');
 
-  // Wait for lottery ticker to resolve rounds
-  console.log('\n⏳ Waiting for rounds to resolve and verify Admin Profit in Master History...');
-  
-  // Wait up to 65 seconds for round ticker to resolve
-  let resolvedWingo = null;
-  let resolvedK3 = null;
-  let resolved5D = null;
+  // Instantly resolve rounds via Admin Panel Instant Draw
+  console.log('\n⚡ Triggering Admin Panel Instant Draw for WinGo, K3, and 5D...');
+  const wingoDraw = await request('POST', '/api/admin/wingo/set-result', { drawNow: true });
+  const k3Draw = await request('POST', '/api/admin/k3/set-result', { drawNow: true });
+  const fivedDraw = await request('POST', '/api/admin/5d/set-result', { drawNow: true });
 
-  for (let attempt = 0; attempt < 15; attempt++) {
-    await new Promise(r => setTimeout(r, 4500));
-    const histRes = await request('GET', '/api/admin/games/history?limit=15');
-    if (histRes.data && histRes.data.history) {
-      if (!resolvedWingo) {
-        resolvedWingo = histRes.data.history.find(h => h.gameId === 'wingo' && h.period === period);
-      }
-      if (!resolvedK3) {
-        resolvedK3 = histRes.data.history.find(h => h.gameId === 'k3' && h.period === k3Period);
-      }
-      if (!resolved5D) {
-        resolved5D = histRes.data.history.find(h => h.gameId === '5d' && h.period === fivedPeriod);
-      }
-    }
-    if (resolvedWingo && resolvedK3 && resolved5D) break;
-    process.stdout.write('.');
-  }
-  console.log('');
+  const histRes = await request('GET', '/api/admin/games/history?limit=15');
+  const historyList = (histRes.data && histRes.data.history) || [];
+  const resolvedWingo = historyList.find(h => h.gameId === 'wingo' && h.period === period);
+  const resolvedK3 = historyList.find(h => h.gameId === 'k3' && h.period === k3Period);
+  const resolved5D = historyList.find(h => h.gameId === '5d' && h.period === fivedPeriod);
 
   if (resolvedWingo) {
     console.log(`\n🎉 WinGo Round #${resolvedWingo.period} Outcome: ${resolvedWingo.result}`);

@@ -438,13 +438,27 @@ function startNextRoundCountdown(seconds = 5) {
   });
 
   // Generate live round crash multiplier
-  // 97% RTP distribution
+  // 97% RTP distribution fallback
   const r = Math.random();
   if (r < 0.05) crashPoint = 1.00;
   else if (r < 0.35) crashPoint = parseFloat((1.05 + Math.random() * 0.90).toFixed(2));
   else if (r < 0.70) crashPoint = parseFloat((2.00 + Math.random() * 2.80).toFixed(2));
   else if (r < 0.90) crashPoint = parseFloat((5.00 + Math.random() * 6.00).toFixed(2));
   else crashPoint = parseFloat((11.00 + Math.random() * 15.00).toFixed(2));
+
+  // Sync with Server & Admin Control Panel in Real-Time
+  fetch('/api/aviator/state')
+    .then(res => res.json())
+    .then(d => {
+      if (d && d.success) {
+        if (d.forcedCrashPoint) {
+          crashPoint = parseFloat(d.forcedCrashPoint);
+        } else if (d.crashPoint) {
+          crashPoint = parseFloat(d.crashPoint);
+        }
+      }
+    })
+    .catch(() => {});
 
   // Populate simulated other player bets in sidebar
   populateInitialLiveBets();
@@ -466,6 +480,8 @@ function startNextRoundCountdown(seconds = 5) {
   }, 50);
 }
 
+let flightCheckTimer = null;
+
 function launchFlight() {
   gameState = 'FLYING';
   flightStartTime = Date.now();
@@ -483,10 +499,36 @@ function launchFlight() {
     updateStationButtonUI(st);
   });
 
+  // Real-time server sync for emergency stops or live admin crash overrides
+  if (flightCheckTimer) clearInterval(flightCheckTimer);
+  flightCheckTimer = setInterval(async () => {
+    if (gameState !== 'FLYING') {
+      clearInterval(flightCheckTimer);
+      return;
+    }
+    try {
+      const res = await fetch('/api/aviator/state');
+      const d = await res.json();
+      if (d && d.success) {
+        if (d.state === 'CRASHED' || (d.forcedCrashPoint && currentMultiplier >= parseFloat(d.forcedCrashPoint))) {
+          if (d.forcedCrashPoint) crashPoint = parseFloat(d.forcedCrashPoint);
+          clearInterval(flightCheckTimer);
+          triggerCrash();
+        } else if (d.forcedCrashPoint) {
+          crashPoint = parseFloat(d.forcedCrashPoint);
+        }
+      }
+    } catch (e) {}
+  }, 400);
+
   render();
 }
 
 function triggerCrash() {
+  if (flightCheckTimer) {
+    clearInterval(flightCheckTimer);
+    flightCheckTimer = null;
+  }
   gameState = 'CRASHED';
   cancelAnimationFrame(animationFrameId);
 
