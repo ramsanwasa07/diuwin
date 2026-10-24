@@ -73,8 +73,15 @@ const corsOptions = {
     // Allow requests with no origin (like mobile apps, curl, server-to-server, file:// protocol or same-origin)
     if (!origin || origin === 'null') return callback(null, true);
     if (configuredOrigins.length === 0) {
-      // In development, allow localhost and 127.0.0.1
-      if (process.env.NODE_ENV !== 'production' || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      // Allow localhost, GitHub Pages, Render, and Railway
+      if (
+        process.env.NODE_ENV !== 'production' ||
+        origin.includes('localhost') ||
+        origin.includes('127.0.0.1') ||
+        origin.includes('github.io') ||
+        origin.includes('onrender.com') ||
+        origin.includes('up.railway.app')
+      ) {
         return callback(null, true);
       }
       return callback(new Error('CORS policy: Not allowed by CORS (specify ALLOWED_ORIGINS)'));

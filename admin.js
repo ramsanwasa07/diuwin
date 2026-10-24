@@ -3,9 +3,10 @@
   const IS_FILE_PROTOCOL = window.location.protocol === 'file:';
   const IS_DEV_PORT = window.location.port && window.location.port !== '3000';
   const IS_LOCAL_HOST = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  const API_BASE = (IS_FILE_PROTOCOL || (IS_LOCAL_HOST && IS_DEV_PORT))
+  let savedBackend = (localStorage.getItem('diuwin_backend_url') || '').trim().replace(/\/+$/, '');
+  let API_BASE = (IS_FILE_PROTOCOL || (IS_LOCAL_HOST && IS_DEV_PORT))
     ? `http://${window.location.hostname || 'localhost'}:3000`
-    : '';
+    : (window.location.hostname.includes('github.io') && savedBackend ? savedBackend : '');
 
   // Global Admin Fetch Interceptor: Inject Bearer Authentication token and resolve API_BASE into all /api/ requests
   const _origFetch = window.fetch;
@@ -111,11 +112,27 @@
       });
     }
 
+    // Backend Server URL Field for GitHub Pages
+    const backendField = document.getElementById('backendUrlField');
+    const backendInput = document.getElementById('backendUrlInput');
+    if (backendField && backendInput) {
+      if (window.location.hostname.includes('github.io') || IS_FILE_PROTOCOL) {
+        backendField.style.display = 'block';
+        backendInput.value = localStorage.getItem('diuwin_backend_url') || '';
+      }
+    }
+
     // Login Form Submit
     if (form) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         playClick();
+
+        if (backendInput && (window.location.hostname.includes('github.io') || IS_FILE_PROTOCOL)) {
+          const customUrl = backendInput.value.trim().replace(/\/+$/, '');
+          localStorage.setItem('diuwin_backend_url', customUrl);
+          API_BASE = customUrl;
+        }
 
         const username = document.getElementById('adminIdInput').value.trim();
         const password = passInput.value.trim();
