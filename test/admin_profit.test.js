@@ -1,17 +1,26 @@
+process.env.NODE_ENV = 'test';
 const http = require('http');
+const { startServer, stopServer } = require('../server');
 
-const PORT = 3000;
-const BASE_URL = `http://localhost:${PORT}`;
+const PORT = 3096;
+const BASE_URL = `http://127.0.0.1:${PORT}`;
+
+let currentAdminToken = null;
 
 function request(method, pathName, data = null, customHeaders = {}) {
   return new Promise((resolve, reject) => {
     const url = new URL(pathName, BASE_URL);
     const bodyStr = data ? JSON.stringify(data) : null;
+    const defaultHeaders = {
+      'Content-Type': 'application/json'
+    };
+    if (currentAdminToken) {
+      defaultHeaders['Authorization'] = `Bearer ${currentAdminToken}`;
+    }
     const req = http.request(url, {
       method,
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer admin_token_master_2026',
+        ...defaultHeaders,
         ...customHeaders,
         ...(bodyStr ? { 'Content-Length': Buffer.byteLength(bodyStr) } : {})
       }
@@ -34,6 +43,12 @@ function request(method, pathName, data = null, customHeaders = {}) {
 
 async function testAdminProfit() {
   console.log('🧪 Testing Multi-Client Admin Profit Engine (> 2 Clients Playing)...');
+
+  // Authenticate as Admin dynamically
+  const adminLogin = await request('POST', '/api/admin/login', { username: 'admin', password: 'admin123' });
+  if (adminLogin.data && adminLogin.data.token) {
+    currentAdminToken = adminLogin.data.token;
+  }
 
   // Register 3 fresh users with funded balances
   const uTokens = [];
@@ -96,27 +111,30 @@ async function testAdminProfit() {
   const k3State = await request('GET', '/api/k3/state');
   const k3Period = k3State.data.period;
 
-  await request('POST', '/api/k3/bet', {
+  const k3b1 = await request('POST', '/api/k3/bet', {
     userId: u1,
     period: k3Period,
     type: 'size',
     choice: 'Big',
     amount: 400
   }, { 'Authorization': `Bearer ${t1}` });
-  await request('POST', '/api/k3/bet', {
+  const k3b2 = await request('POST', '/api/k3/bet', {
     userId: u2,
     period: k3Period,
     type: 'parity',
     choice: 'Odd',
     amount: 300
   }, { 'Authorization': `Bearer ${t2}` });
-  await request('POST', '/api/k3/bet', {
+  const k3b3 = await request('POST', '/api/k3/bet', {
     userId: u3,
     period: k3Period,
     type: 'total',
     choice: '15',
     amount: 100
   }, { 'Authorization': `Bearer ${t3}` });
+  if (!k3b1.data.success || !k3b2.data.success || !k3b3.data.success) {
+    throw new Error('Failed to place K3 bets: ' + JSON.stringify({ k3b1: k3b1.data, k3b2: k3b2.data, k3b3: k3b3.data }));
+  }
   console.log('  ✅ 3 distinct clients placed K3 bets (Total Pool: ₹800)');
 
   // ==================== TEST 3: 5D ADMIN PROFIT ====================
@@ -124,7 +142,7 @@ async function testAdminProfit() {
   const fivedState = await request('GET', '/api/5d/state');
   const fivedPeriod = fivedState.data.period;
 
-  await request('POST', '/api/5d/bet', {
+  const f5b1 = await request('POST', '/api/5d/bet', {
     userId: u1,
     period: fivedPeriod,
     pos: 'A',
@@ -132,7 +150,7 @@ async function testAdminProfit() {
     choice: '7',
     amount: 200
   }, { 'Authorization': `Bearer ${t1}` });
-  await request('POST', '/api/5d/bet', {
+  const f5b2 = await request('POST', '/api/5d/bet', {
     userId: u2,
     period: fivedPeriod,
     pos: 'B',
@@ -140,7 +158,7 @@ async function testAdminProfit() {
     choice: 'Big',
     amount: 300
   }, { 'Authorization': `Bearer ${t2}` });
-  await request('POST', '/api/5d/bet', {
+  const f5b3 = await request('POST', '/api/5d/bet', {
     userId: u3,
     period: fivedPeriod,
     pos: 'Total',
@@ -148,6 +166,9 @@ async function testAdminProfit() {
     choice: 'Small',
     amount: 150
   }, { 'Authorization': `Bearer ${t3}` });
+  if (!f5b1.data.success || !f5b2.data.success || !f5b3.data.success) {
+    throw new Error('Failed to place 5D bets: ' + JSON.stringify({ f5b1: f5b1.data, f5b2: f5b2.data, f5b3: f5b3.data }));
+  }
   console.log('  ✅ 3 distinct clients placed 5D bets (Total Pool: ₹650)');
 
   // Instantly resolve rounds via Admin Panel Instant Draw
@@ -198,7 +219,16 @@ async function testAdminProfit() {
   console.log('\n🌟 ALL ADMIN PROFIT REQUIREMENTS VERIFIED SUCCESSFULLY!');
 }
 
-testAdminProfit().catch(err => {
+async function main() {
+  await startServer(PORT);
+  try {
+    await testAdminProfit();
+  } finally {
+    await stopServer();
+  }
+}
+
+main().catch(err => {
   console.error('❌ Test Failed:', err);
   process.exit(1);
 });

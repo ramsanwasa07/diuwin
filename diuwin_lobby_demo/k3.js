@@ -1,17 +1,63 @@
 // DiuWin Official K3 3-Dice Lottery Engine
 const IS_FILE_PROTOCOL = window.location.protocol === 'file:';
-const IS_LOCAL_DEV = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && 
-                     (window.location.port === '5500' || window.location.port === '5501' || IS_FILE_PROTOCOL);
-const API_BASE = IS_LOCAL_DEV ? 'http://localhost:3000' : '';
+const IS_DEV_PORT = window.location.port && window.location.port !== '3000';
+const IS_LOCAL_HOST = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE = (IS_FILE_PROTOCOL || (IS_LOCAL_HOST && IS_DEV_PORT))
+  ? `http://${window.location.hostname || 'localhost'}:3000`
+  : '';
 
-let currentToken = localStorage.getItem('diuwin_token') || null;
 let currentUser = null;
+try {
+  const savedUserJson = sessionStorage.getItem('diuwin_user') || localStorage.getItem('diuwin_user');
+  if (savedUserJson) {
+    currentUser = JSON.parse(savedUserJson);
+    const storedBal = sessionStorage.getItem('diuwin_balance') || localStorage.getItem('diuwin_balance');
+    if (storedBal !== null && !isNaN(parseFloat(storedBal))) {
+      currentUser.balance = parseFloat(storedBal);
+    }
+  }
+} catch (e) {
+  currentUser = null;
+}
+
+let currentToken = sessionStorage.getItem('diuwin_token') || localStorage.getItem('diuwin_token') || (currentUser ? currentUser.token : null);
+
+// If not logged in, redirect to main page (index.html) so visitor always starts at clean lobby
+if (!currentToken || !currentUser) {
+  window.location.replace('index.html');
+}
+
+function saveUserBalance(newBal) {
+  if (currentUser) {
+    currentUser.balance = Number(Number(newBal).toFixed(2));
+    sessionStorage.setItem('diuwin_balance', currentUser.balance); localStorage.setItem('diuwin_balance', currentUser.balance);
+    const savedUserJson = localStorage.getItem('diuwin_user');
+    if (savedUserJson) {
+      try {
+        const u = JSON.parse(savedUserJson);
+        u.balance = currentUser.balance;
+        localStorage.setItem('diuwin_user', JSON.stringify(u));
+      } catch (e) {}
+    }
+  }
+}
 
 // Game State
 let activeTimerDuration = 60; // 1 min
 let timeRemaining = 44;
 let timerInterval = null;
-let currentPeriod = 1;
+let currentPeriod = 'K1';
+
+function formatK3Period(p) {
+  if (typeof p === 'string' && p.startsWith('K')) return p;
+  const n = typeof p === 'number' ? p : (parseInt(String(p || '').replace(/^\D+/, '')) || 1);
+  return 'K' + n;
+}
+
+function nextK3Period(p) {
+  const n = parseInt(String(p || '').replace(/^\D+/, '')) || 1;
+  return 'K' + (n + 1);
+}
 
 let activeBaseMoney = 10;
 let activeQuantity = 1;
@@ -112,7 +158,7 @@ async function syncK3StateWithServer() {
     const data = await res.json();
     if (data.success) {
       if (data.period) {
-        currentPeriod = data.period;
+        currentPeriod = formatK3Period(data.period);
         const el = document.getElementById('k3PeriodNumber');
         if (el) el.textContent = currentPeriod;
       }
@@ -125,7 +171,7 @@ async function syncK3StateWithServer() {
         if (topKey !== lastK3HistoryKey) {
           lastK3HistoryKey = topKey;
           k3HistoryRecords = data.history.map(h => ({
-            period: h.period,
+            period: formatK3Period(h.period),
             d: h.dice || [1, 2, 3],
             sum: h.sum,
             size: h.size,
@@ -143,30 +189,32 @@ async function syncK3StateWithServer() {
 
 // User Session & Balance
 async function initUser() {
-  if (!currentToken) {
-    try {
-      const gRes = await fetch(`${API_BASE}/api/auth/guest`, { method: 'POST' });
-      const gData = await gRes.json();
-      if (gData && gData.success && gData.token) {
-        currentToken = gData.token;
-        localStorage.setItem('diuwin_token', currentToken);
-        if (gData.user) {
-          currentUser = gData.user;
-          localStorage.setItem('diuwin_balance', currentUser.balance);
-          updateBalanceDisplay(currentUser.balance);
-          loadMyBetsFromServer();
-          return;
-        }
-      }
-    } catch (e) {}
+  const storedBal = localStorage.getItem('diuwin_balance');
+  const userBalance = storedBal !== null && !isNaN(parseFloat(storedBal))
+    ? parseFloat(storedBal)
+    : (currentUser && currentUser.balance !== undefined ? currentUser.balance : 1000.00);
+
+  if (currentUser) {
+    currentUser.balance = userBalance;
   } else {
+    currentUser = {
+      id: currentToken ? 'usr_guest_demo' : 'usr_guest_demo',
+      name: 'Demo Player',
+      balance: userBalance
+    };
+  }
+
+  updateBalanceDisplay(currentUser.balance);
+
+  if (currentToken) {
     try {
       const res = await fetch(`${API_BASE}/api/user/profile`, {
         headers: { 'Authorization': `Bearer ${currentToken}` }
       });
       const data = await res.json();
-      if (data.success && data.user) {
+      if (data && data.success && data.user) {
         currentUser = data.user;
+        saveUserBalance(currentUser.balance);
         updateBalanceDisplay(currentUser.balance);
         loadMyBetsFromServer();
         return;
@@ -174,10 +222,6 @@ async function initUser() {
     } catch (e) {}
   }
 
-  // Fallback guest session
-  const storedBal = localStorage.getItem('diuwin_balance');
-  currentUser = { id: 'usr_guest_demo', name: 'Demo Player', balance: storedBal ? parseFloat(storedBal) : 973.70 };
-  updateBalanceDisplay(currentUser.balance);
   loadMyBetsFromServer();
 }
 
@@ -277,7 +321,7 @@ async function handleRoundCompletion() {
     if (data && data.lastOutcome && data.lastOutcome.dice) {
       serverOutcome = data.lastOutcome;
       if (data.period) {
-        currentPeriod = data.period;
+        currentPeriod = formatK3Period(data.period);
         const el = document.getElementById('k3PeriodNumber');
         if (el) el.textContent = currentPeriod;
       }
@@ -310,7 +354,7 @@ async function handleRoundCompletion() {
 
     // Add to history
     k3HistoryRecords.unshift({
-      period: currentPeriod,
+      period: formatK3Period(currentPeriod),
       d: [d1, d2, d3],
       sum,
       size,
@@ -370,17 +414,16 @@ async function handleRoundCompletion() {
       showOutcomePopup(currentPeriod, [d1, d2, d3], sum, size, parity, isWin, totalWin, lossAmount, roundBetsSummary);
 
       if (isWin && currentUser) {
-        currentUser.balance += totalWin;
-        currentUser.balance = Number(currentUser.balance.toFixed(2));
+        saveUserBalance(currentUser.balance + totalWin);
         updateBalanceDisplay(currentUser.balance);
-        localStorage.setItem('diuwin_balance', currentUser.balance);
       }
       renderMyBets();
     }
 
     userBetsThisRound = [];
-    currentPeriod++;
-    document.getElementById('k3PeriodNumber').textContent = currentPeriod;
+    currentPeriod = nextK3Period(currentPeriod);
+    const el = document.getElementById('k3PeriodNumber');
+    if (el) el.textContent = currentPeriod;
   }, 900);
 }
 
@@ -455,10 +498,8 @@ function confirmBetPlacement() {
   }
 
   // Deduct balance immediately
-  currentUser.balance -= total;
-  currentUser.balance = Number(currentUser.balance.toFixed(2));
+  saveUserBalance(currentUser.balance - total);
   updateBalanceDisplay(currentUser.balance);
-  localStorage.setItem('diuwin_balance', currentUser.balance);
 
   const betRecord = {
     period: currentPeriod,
@@ -511,7 +552,7 @@ async function syncBetWithBackend(gameId, gameName, bet) {
       if (currentUser) {
         currentUser.balance = data.newBalance;
         updateBalanceDisplay(currentUser.balance);
-        localStorage.setItem('diuwin_balance', currentUser.balance);
+        sessionStorage.setItem('diuwin_balance', currentUser.balance); localStorage.setItem('diuwin_balance', currentUser.balance);
       }
     }
   } catch (e) {}

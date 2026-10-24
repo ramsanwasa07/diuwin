@@ -1,17 +1,24 @@
 const assert = require('assert');
+const app = require('../server');
+
+let server;
+const PORT = 3097;
 
 async function runBetHistoryTests() {
   console.log('🧪 Testing Bet Profit/Loss & Main Balance Sync...');
 
+  server = app.listen(PORT, '127.0.0.1');
+  await new Promise(r => setTimeout(r, 150));
+
   // 1. Guest login
-  const authRes = await fetch('http://localhost:3000/api/auth/guest', { method: 'POST' });
+  const authRes = await fetch(`http://127.0.0.1:${PORT}/api/auth/guest`, { method: 'POST' });
   const authData = await authRes.json();
   assert(authData.success, 'Auth failed');
   const token = authData.token;
   const initialBalance = authData.user.balance;
 
   // 2. Place a winning bet
-  const winBetRes = await fetch('http://localhost:3000/api/games/record-bet', {
+  const winBetRes = await fetch(`http://127.0.0.1:${PORT}/api/games/record-bet`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -34,7 +41,7 @@ async function runBetHistoryTests() {
   assert.strictEqual(winBetData.newBalance, Number((initialBalance + 100).toFixed(2)), 'Main balance not credited correctly');
 
   // 3. Place a losing bet
-  const lossBetRes = await fetch('http://localhost:3000/api/games/record-bet', {
+  const lossBetRes = await fetch(`http://127.0.0.1:${PORT}/api/games/record-bet`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -57,7 +64,7 @@ async function runBetHistoryTests() {
   assert.strictEqual(lossBetData.newBalance, Number((winBetData.newBalance - 50).toFixed(2)), 'Main balance not debited correctly');
 
   // 4. Fetch My Bets History
-  const historyRes = await fetch('http://localhost:3000/api/games/my-bets', {
+  const historyRes = await fetch(`http://127.0.0.1:${PORT}/api/games/my-bets`, {
     headers: { 'Authorization': `Bearer ${token}` }
   });
   const historyData = await historyRes.json();
@@ -70,7 +77,10 @@ async function runBetHistoryTests() {
   console.log('✅ ALL TESTS PASSED: Profit & Loss successfully connected to Main Balance & Bet History verified!');
 }
 
-runBetHistoryTests().catch(err => {
+runBetHistoryTests().then(() => {
+  if (server) server.close();
+}).catch(err => {
   console.error('❌ Test failed:', err);
+  if (server) server.close();
   process.exit(1);
 });

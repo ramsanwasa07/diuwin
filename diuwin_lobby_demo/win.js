@@ -1,14 +1,60 @@
 // DiuWin Official Win Go Game Engine & State Management
 const IS_FILE_PROTOCOL = window.location.protocol === 'file:';
-const IS_LOCAL_DEV = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && 
-                     (window.location.port === '5500' || window.location.port === '5501' || IS_FILE_PROTOCOL);
-const API_BASE = IS_LOCAL_DEV ? 'http://localhost:3000' : '';
+const IS_DEV_PORT = window.location.port && window.location.port !== '3000';
+const IS_LOCAL_HOST = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE = (IS_FILE_PROTOCOL || (IS_LOCAL_HOST && IS_DEV_PORT))
+  ? `http://${window.location.hostname || 'localhost'}:3000`
+  : '';
 
-let currentToken = localStorage.getItem('diuwin_token') || null;
 let currentUser = null;
+try {
+  const savedUserJson = sessionStorage.getItem('diuwin_user') || localStorage.getItem('diuwin_user');
+  if (savedUserJson) {
+    currentUser = JSON.parse(savedUserJson);
+    const storedBal = sessionStorage.getItem('diuwin_balance') || localStorage.getItem('diuwin_balance');
+    if (storedBal !== null && !isNaN(parseFloat(storedBal))) {
+      currentUser.balance = parseFloat(storedBal);
+    }
+  }
+} catch (e) {
+  currentUser = null;
+}
+
+let currentToken = sessionStorage.getItem('diuwin_token') || localStorage.getItem('diuwin_token') || (currentUser ? currentUser.token : null);
+
+// If not logged in, redirect to main page (index.html) so visitor always starts at clean lobby
+if (!currentToken || !currentUser) {
+  window.location.replace('index.html');
+}
+
+function saveUserBalance(newBal) {
+  if (currentUser) {
+    currentUser.balance = Number(Number(newBal).toFixed(2));
+    sessionStorage.setItem('diuwin_balance', currentUser.balance); localStorage.setItem('diuwin_balance', currentUser.balance);
+    const savedUserJson = localStorage.getItem('diuwin_user');
+    if (savedUserJson) {
+      try {
+        const u = JSON.parse(savedUserJson);
+        u.balance = currentUser.balance;
+        localStorage.setItem('diuwin_user', JSON.stringify(u));
+      } catch (e) {}
+    }
+  }
+}
+
+function formatWingoPeriod(p) {
+  if (typeof p === 'string' && p.startsWith('W')) return p;
+  const n = typeof p === 'number' ? p : (parseInt(String(p || '').replace(/^\D+/, '')) || 1);
+  return 'W' + n;
+}
+
+function nextWingoPeriod(p) {
+  const n = parseInt(String(p || '').replace(/^\D+/, '')) || 1;
+  return 'W' + (n + 1);
+}
 
 // ==================== GAME STATE SYSTEM ====================
-let currentPeriod = 146;
+let currentPeriod = 'W1';
 let activeTimerDuration = 60; // 1 min = 60s
 let timeRemaining = 60;
 let roundEndTime = Date.now() + 60000;
@@ -32,16 +78,16 @@ let allUserBets = [];
 
 // Fallback Initial History Records
 const DEFAULT_INITIAL_HISTORY = [
-  { period: 145, num: 3, size: 'Small', color: 'red' },
-  { period: 144, num: 7, size: 'Big', color: 'red' },
-  { period: 143, num: 0, size: 'Small', color: 'split-violet-red' },
-  { period: 142, num: 1, size: 'Small', color: 'red' },
-  { period: 141, num: 1, size: 'Small', color: 'red' },
-  { period: 140, num: 2, size: 'Small', color: 'red' },
-  { period: 139, num: 1, size: 'Small', color: 'red' },
-  { period: 138, num: 0, size: 'Small', color: 'split-violet-red' },
-  { period: 137, num: 8, size: 'Big', color: 'red' },
-  { period: 136, num: 5, size: 'Big', color: 'split-violet-green' }
+  { period: 'W10', num: 3, size: 'Small', color: 'red' },
+  { period: 'W9', num: 7, size: 'Big', color: 'red' },
+  { period: 'W8', num: 0, size: 'Small', color: 'split-violet-red' },
+  { period: 'W7', num: 1, size: 'Small', color: 'red' },
+  { period: 'W6', num: 1, size: 'Small', color: 'red' },
+  { period: 'W5', num: 2, size: 'Small', color: 'red' },
+  { period: 'W4', num: 1, size: 'Small', color: 'red' },
+  { period: 'W3', num: 0, size: 'Small', color: 'split-violet-red' },
+  { period: 'W2', num: 8, size: 'Big', color: 'red' },
+  { period: 'W1', num: 5, size: 'Big', color: 'split-violet-green' }
 ];
 
 let gameHistoryRecords = [...DEFAULT_INITIAL_HISTORY];
@@ -132,28 +178,23 @@ function loadSavedGameState() {
 // User Session & Balance
 async function initUser() {
   const storedBal = localStorage.getItem('diuwin_balance');
-  const defaultBalance = storedBal ? parseFloat(storedBal) : 557.00;
+  const userBalance = storedBal !== null && !isNaN(parseFloat(storedBal))
+    ? parseFloat(storedBal)
+    : (currentUser && currentUser.balance !== undefined ? currentUser.balance : 1000.00);
 
-  currentUser = {
-    id: 'usr_guest_demo',
-    name: 'Demo Player',
-    balance: defaultBalance
-  };
-
-  if (!currentToken) {
-    try {
-      const gRes = await fetch(`${API_BASE}/api/auth/guest`, { method: 'POST' });
-      const gData = await gRes.json();
-      if (gData && gData.success && gData.token) {
-        currentToken = gData.token;
-        localStorage.setItem('diuwin_token', currentToken);
-        if (gData.user) {
-          currentUser = gData.user;
-          localStorage.setItem('diuwin_balance', currentUser.balance);
-        }
-      }
-    } catch (e) {}
+  if (currentUser) {
+    currentUser.balance = userBalance;
   } else {
+    currentUser = {
+      id: currentToken ? 'usr_guest_demo' : 'usr_guest_demo',
+      name: 'Demo Player',
+      balance: userBalance
+    };
+  }
+
+  updateBalanceDisplay(currentUser.balance);
+
+  if (currentToken) {
     try {
       const res = await fetch(`${API_BASE}/api/user/profile`, {
         headers: { 'Authorization': `Bearer ${currentToken}` }
@@ -161,12 +202,12 @@ async function initUser() {
       const data = await res.json();
       if (data && data.success && data.user) {
         currentUser = data.user;
-        localStorage.setItem('diuwin_balance', currentUser.balance);
+        saveUserBalance(currentUser.balance);
+        updateBalanceDisplay(currentUser.balance);
       }
     } catch (e) {}
   }
 
-  updateBalanceDisplay(currentUser.balance);
   loadMyBetsFromServer();
 }
 
@@ -179,7 +220,7 @@ function updateBalanceDisplay(bal) {
 
 function updatePeriodDisplay() {
   const el = document.getElementById('currentPeriodNumber');
-  if (el) el.textContent = currentPeriod;
+  if (el) el.textContent = formatWingoPeriod(currentPeriod);
 }
 
 // Server State Synchronization
@@ -192,7 +233,7 @@ async function syncWingoState(forceSync = false) {
 
     if (data.history && Array.isArray(data.history) && data.history.length > 0) {
       gameHistoryRecords = data.history.map(h => ({
-        period: h.period,
+        period: formatWingoPeriod(h.period),
         num: h.number !== undefined ? h.number : (h.num !== undefined ? h.num : 0),
         size: h.size || (h.number >= 5 ? 'Big' : 'Small'),
         color: h.color || (h.number === 0 ? 'split-violet-red' : (h.number === 5 ? 'split-violet-green' : ([2,4,6,8].includes(h.number) ? 'red' : 'green')))
@@ -204,7 +245,7 @@ async function syncWingoState(forceSync = false) {
     }
 
     if (data.period) {
-      currentPeriod = data.period;
+      currentPeriod = formatWingoPeriod(data.period);
       updatePeriodDisplay();
     }
 
@@ -317,13 +358,13 @@ async function executeRoundSettlement() {
         colorClass = (luckyNum === 0) ? 'split-violet-red' : ((luckyNum === 5) ? 'split-violet-green' : ([2,4,6,8].includes(luckyNum) ? 'red' : 'green'));
       }
       if (data.period) {
-        currentPeriod = data.period;
+        currentPeriod = formatWingoPeriod(data.period);
       } else {
-        currentPeriod = finishedPeriod + 1;
+        currentPeriod = nextWingoPeriod(finishedPeriod);
       }
       if (data.history) {
         gameHistoryRecords = data.history.map(h => ({
-          period: h.period,
+          period: formatWingoPeriod(h.period),
           num: h.number !== undefined ? h.number : (h.num !== undefined ? h.num : 0),
           size: h.size || (h.number >= 5 ? 'Big' : 'Small'),
           color: h.color || (h.number === 0 ? 'split-violet-red' : (h.number === 5 ? 'split-violet-green' : ([2,4,6,8].includes(h.number) ? 'red' : 'green')))
@@ -341,9 +382,9 @@ async function executeRoundSettlement() {
     else if ([2, 4, 6, 8].includes(luckyNum)) { colorClass = 'red'; colorName = 'Red'; }
     else { colorClass = 'green'; colorName = 'Green'; }
 
-    currentPeriod = finishedPeriod + 1;
+    currentPeriod = nextWingoPeriod(finishedPeriod);
     gameHistoryRecords.unshift({
-      period: finishedPeriod,
+      period: formatWingoPeriod(finishedPeriod),
       num: luckyNum,
       size,
       color: colorClass
@@ -433,8 +474,7 @@ async function executeRoundSettlement() {
     });
 
     if (userWonAnyBet) {
-      currentUser.balance = Number((currentUser.balance + totalWonAmount).toFixed(2));
-      localStorage.setItem('diuwin_balance', currentUser.balance);
+      saveUserBalance(currentUser.balance + totalWonAmount);
       updateBalanceDisplay(currentUser.balance);
       playSound('win');
 
@@ -584,9 +624,8 @@ async function syncBetWithBackend(gameId, gameName, bet) {
     });
     const data = await res.json();
     if (data && data.success && data.newBalance !== undefined && currentUser) {
-      currentUser.balance = data.newBalance;
+      saveUserBalance(data.newBalance);
       updateBalanceDisplay(currentUser.balance);
-      localStorage.setItem('diuwin_balance', currentUser.balance);
     }
   } catch (e) {}
 
@@ -660,8 +699,7 @@ function confirmBetPlacement() {
   }
 
   // Deduct balance locally
-  currentUser.balance = Number((currentUser.balance - totalAmount).toFixed(2));
-  localStorage.setItem('diuwin_balance', currentUser.balance);
+  saveUserBalance(currentUser.balance - totalAmount);
   updateBalanceDisplay(currentUser.balance);
 
   // Record bet

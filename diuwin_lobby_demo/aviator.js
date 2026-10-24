@@ -1,13 +1,67 @@
 // DiuWin Official Aviator - Flight Engine & Real-Time Multiplayer
 const IS_FILE_PROTOCOL = window.location.protocol === 'file:';
-const IS_LOCAL_DEV = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && 
-                     (window.location.port === '5500' || window.location.port === '5501' || IS_FILE_PROTOCOL);
-const API_BASE = IS_LOCAL_DEV ? 'http://localhost:3000' : '';
+const IS_DEV_PORT = window.location.port && window.location.port !== '3000';
+const IS_LOCAL_HOST = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE = (IS_FILE_PROTOCOL || (IS_LOCAL_HOST && IS_DEV_PORT))
+  ? `http://${window.location.hostname || 'localhost'}:3000`
+  : '';
 
-let currentToken = localStorage.getItem('diuwin_token') || null;
 let currentUser = null;
+try {
+  const savedUserJson = sessionStorage.getItem('diuwin_user') || localStorage.getItem('diuwin_user');
+  if (savedUserJson) {
+    currentUser = JSON.parse(savedUserJson);
+    const storedBal = sessionStorage.getItem('diuwin_balance') || localStorage.getItem('diuwin_balance');
+    if (storedBal !== null && !isNaN(parseFloat(storedBal))) {
+      currentUser.balance = parseFloat(storedBal);
+    }
+  }
+} catch (e) {
+  currentUser = null;
+}
+
+let currentToken = sessionStorage.getItem('diuwin_token') || localStorage.getItem('diuwin_token') || (currentUser ? currentUser.token : null);
+
+// If not logged in, redirect to main page (index.html) so visitor always starts at clean lobby
+if (!currentToken || !currentUser) {
+  window.location.replace('index.html');
+}
+
+function saveUserBalance(newBal) {
+  if (currentUser) {
+    currentUser.balance = Number(Number(newBal).toFixed(2));
+    sessionStorage.setItem('diuwin_balance', currentUser.balance); localStorage.setItem('diuwin_balance', currentUser.balance);
+    const savedUserJson = localStorage.getItem('diuwin_user');
+    if (savedUserJson) {
+      try {
+        const u = JSON.parse(savedUserJson);
+        u.balance = currentUser.balance;
+        localStorage.setItem('diuwin_user', JSON.stringify(u));
+      } catch (e) {}
+    }
+  }
+}
 
 // Game State Variables
+let currentAviatorPeriod = 'A1';
+
+function formatAviatorPeriod(p) {
+  if (typeof p === 'string' && p.startsWith('A')) return p;
+  const n = typeof p === 'number' ? p : (parseInt(String(p || '').replace(/^\D+/, '')) || 1);
+  return 'A' + n;
+}
+
+function nextAviatorPeriod(p) {
+  const n = parseInt(String(p || '').replace(/^\D+/, '')) || 1;
+  return 'A' + (n + 1);
+}
+
+function updateAviatorPeriodUI(p) {
+  if (p) currentAviatorPeriod = formatAviatorPeriod(p);
+  const el = document.getElementById('aviatorPeriodText');
+  if (el) el.textContent = `Round ${currentAviatorPeriod}`;
+}
+
 let gameState = 'WAITING'; // 'WAITING', 'FLYING', 'CRASHED'
 let currentMultiplier = 1.00;
 let crashPoint = 2.45;
@@ -87,10 +141,13 @@ async function syncAviatorStateWithServer() {
     const res = await fetch(`${API_BASE}/api/aviator/state`);
     if (!res.ok) return;
     const data = await res.json();
-    if (data.success && data.history && data.history.length > 0) {
-      aviatorPills = data.history.map(h => typeof h === 'number' ? h : (h.crashMultiplier || h.multiplier || 1.00));
-      localStorage.setItem('diuwin_aviator_pills', JSON.stringify(aviatorPills));
-      renderPillsBar();
+    if (data.success) {
+      if (data.period) updateAviatorPeriodUI(data.period);
+      if (data.history && data.history.length > 0) {
+        aviatorPills = data.history.map(h => typeof h === 'number' ? h : (h.crashMultiplier || h.multiplier || 1.00));
+        localStorage.setItem('diuwin_aviator_pills', JSON.stringify(aviatorPills));
+        renderPillsBar();
+      }
     }
   } catch (e) {}
 }
@@ -100,30 +157,32 @@ async function initUser() {
   loadCachedMyBets();
   syncAviatorStateWithServer();
 
-  if (!currentToken) {
-    try {
-      const gRes = await fetch(`${API_BASE}/api/auth/guest`, { method: 'POST' });
-      const gData = await gRes.json();
-      if (gData && gData.success && gData.token) {
-        currentToken = gData.token;
-        localStorage.setItem('diuwin_token', currentToken);
-        if (gData.user) {
-          currentUser = gData.user;
-          localStorage.setItem('diuwin_balance', currentUser.balance);
-          updateBalanceDisplay(currentUser.balance);
-          loadMyBetsFromServer();
-          return;
-        }
-      }
-    } catch (e) {}
+  const storedBal = localStorage.getItem('diuwin_balance');
+  const userBalance = storedBal !== null && !isNaN(parseFloat(storedBal))
+    ? parseFloat(storedBal)
+    : (currentUser && currentUser.balance !== undefined ? currentUser.balance : 1000.00);
+
+  if (currentUser) {
+    currentUser.balance = userBalance;
   } else {
+    currentUser = {
+      id: currentToken ? 'usr_guest_demo' : 'usr_guest_demo',
+      name: 'Demo Player',
+      balance: userBalance
+    };
+  }
+
+  updateBalanceDisplay(currentUser.balance);
+
+  if (currentToken) {
     try {
       const res = await fetch(`${API_BASE}/api/user/profile`, {
         headers: { 'Authorization': `Bearer ${currentToken}` }
       });
       const data = await res.json();
-      if (data.success && data.user) {
+      if (data && data.success && data.user) {
         currentUser = data.user;
+        saveUserBalance(currentUser.balance);
         updateBalanceDisplay(currentUser.balance);
         loadMyBetsFromServer();
         return;
@@ -131,10 +190,6 @@ async function initUser() {
     } catch (e) {}
   }
 
-  // Fallback guest session
-  const storedBal = localStorage.getItem('diuwin_balance');
-  currentUser = { id: 'usr_guest_demo', name: 'Demo Player', balance: storedBal ? parseFloat(storedBal) : 1173.70 };
-  updateBalanceDisplay(currentUser.balance);
   loadMyBetsFromServer();
 }
 
@@ -423,10 +478,11 @@ function startNextRoundCountdown(seconds = 5) {
   const barWrap = document.getElementById('countdownBarWrap');
   const barFill = document.getElementById('countdownFill');
 
+  updateAviatorPeriodUI(currentAviatorPeriod);
   numEl.className = 'big-mult-number';
   numEl.textContent = '1.00x';
   subEl.className = 'flight-status-subtext';
-  subEl.textContent = 'WAITING FOR NEXT ROUND';
+  subEl.textContent = `WAITING FOR ROUND ${currentAviatorPeriod}`;
   barWrap.style.display = 'block';
 
   // Reset Stations
@@ -451,6 +507,10 @@ function startNextRoundCountdown(seconds = 5) {
     .then(res => res.json())
     .then(d => {
       if (d && d.success) {
+        if (d.period) {
+          updateAviatorPeriodUI(d.period);
+          subEl.textContent = `WAITING FOR ROUND ${currentAviatorPeriod}`;
+        }
         if (d.forcedCrashPoint) {
           crashPoint = parseFloat(d.forcedCrashPoint);
         } else if (d.crashPoint) {
@@ -488,7 +548,7 @@ function launchFlight() {
 
   const subEl = document.getElementById('flightStatusText');
   const barWrap = document.getElementById('countdownBarWrap');
-  subEl.textContent = 'FLYING';
+  subEl.textContent = `ROUND ${currentAviatorPeriod} - FLYING`;
   barWrap.style.display = 'none';
 
   // Deduct bets for active stations
@@ -538,7 +598,7 @@ function triggerCrash() {
   numEl.className = 'big-mult-number crashed';
   numEl.textContent = `${crashPoint.toFixed(2)}x`;
   subEl.className = 'flight-status-subtext crashed';
-  subEl.textContent = `FLEW AWAY!`;
+  subEl.textContent = `ROUND ${currentAviatorPeriod} FLEW AWAY!`;
 
   // Multiplier history pill
   addHistoryPill(crashPoint);
@@ -548,11 +608,15 @@ function triggerCrash() {
     if (stations[st].hasBet && !stations[st].cashedOut) {
       showToast(`Station #${st}: Plane flew away!`);
       recordAviatorBet(stations[st].betAmount, crashPoint, 0, false);
-      addMyBetRecord(stations[st].betAmount, crashPoint, 0, false);
+      addMyBetRecord(stations[st].betAmount, crashPoint, 0, false, currentAviatorPeriod);
       stations[st].hasBet = false;
     }
     updateStationButtonUI(st);
   });
+
+  // Advance period sequentially (A1 -> A2 -> A3...)
+  currentAviatorPeriod = nextAviatorPeriod(currentAviatorPeriod);
+  updateAviatorPeriodUI(currentAviatorPeriod);
 
   // Wait 3 seconds and start next round
   setTimeout(() => {
@@ -601,10 +665,8 @@ async function cashoutStation(st) {
   stations[st].payout = winAmount;
 
   // Credit winnings
-  currentUser.balance += winAmount;
-  currentUser.balance = Number(currentUser.balance.toFixed(2));
+  saveUserBalance(currentUser.balance + winAmount);
   updateBalanceDisplay(currentUser.balance);
-  localStorage.setItem('diuwin_balance', currentUser.balance);
 
   // Send to backend API
   recordAviatorBet(stations[st].betAmount, winMultiplier, winAmount, true);
@@ -613,16 +675,14 @@ async function cashoutStation(st) {
   showToast(`🎉 Station #${st} Cashed Out! Won ₹${winAmount.toFixed(2)} (${winMultiplier}x)`);
 
   // Add to My Bets list
-  addMyBetRecord(stations[st].betAmount, winMultiplier, winAmount, true);
+  addMyBetRecord(stations[st].betAmount, winMultiplier, winAmount, true, currentAviatorPeriod);
 }
 
 // Deduct & Credit Helpers
 async function deductBetFromUser(amt) {
   if (currentUser) {
-    currentUser.balance = Math.max(0, currentUser.balance - amt);
-    currentUser.balance = Number(currentUser.balance.toFixed(2));
+    saveUserBalance(Math.max(0, currentUser.balance - amt));
     updateBalanceDisplay(currentUser.balance);
-    localStorage.setItem('diuwin_balance', currentUser.balance);
   }
 }
 
@@ -639,6 +699,7 @@ async function recordAviatorBet(betAmount, multiplier, winAmount, isWin) {
         userId,
         gameId: 'aviator',
         gameName: 'Aviator Crash',
+        period: currentAviatorPeriod,
         betAmount,
         winAmount,
         isWin,
@@ -651,7 +712,7 @@ async function recordAviatorBet(betAmount, multiplier, winAmount, isWin) {
     if (data && data.success && data.newBalance !== undefined && currentUser) {
       currentUser.balance = data.newBalance;
       updateBalanceDisplay(currentUser.balance);
-      localStorage.setItem('diuwin_balance', currentUser.balance);
+      sessionStorage.setItem('diuwin_balance', currentUser.balance); localStorage.setItem('diuwin_balance', currentUser.balance);
     }
   } catch (e) {}
 }
@@ -883,6 +944,7 @@ async function loadMyBetsFromServer() {
     if (data && data.success && data.bets && data.bets.length > 0) {
       myBetHistory = data.bets.map(b => ({
         time: new Date(b.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        period: b.period ? formatAviatorPeriod(b.period) : null,
         bet: b.betAmount,
         mult: b.multiplier || (b.choice ? parseFloat(b.choice) : 1.0),
         payout: b.winAmount,
@@ -896,9 +958,10 @@ async function loadMyBetsFromServer() {
   } catch (e) {}
 }
 
-function addMyBetRecord(bet, mult, payout, isWin = (payout > 0)) {
+function addMyBetRecord(bet, mult, payout, isWin = (payout > 0), period = currentAviatorPeriod) {
   myBetHistory.unshift({
     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    period: formatAviatorPeriod(period),
     bet,
     mult,
     payout,
@@ -927,8 +990,9 @@ function renderMyBets() {
     const row = document.createElement('div');
     row.className = 'bet-row-item';
     const won = b.isWin !== undefined ? b.isWin : (b.payout > 0);
+    const roundTag = b.period ? `<span style="font-size:10px; color:#94a3b8; margin-left:4px;">#${b.period}</span>` : '';
     row.innerHTML = `
-      <div class="row-user"><span class="row-user-dot" style="background:${won ? '#22c55e' : '#ef4444'};"></span> You (${b.time})</div>
+      <div class="row-user"><span class="row-user-dot" style="background:${won ? '#22c55e' : '#ef4444'};"></span> You (${b.time})${roundTag}</div>
       <div class="row-bet">₹${Number(b.bet || 0).toFixed(2)}</div>
       <div class="row-mult">${Number(b.mult || 0).toFixed(2)}x</div>
       <div class="row-payout ${won ? 'win' : 'loss'}" style="color:${won ? '#22c55e' : '#ef4444'}; font-weight:700;">₹${Number(b.payout || 0).toFixed(2)}</div>

@@ -1,11 +1,46 @@
 // DiuWin Official Chicken Road - Cross The Highway Engine
 const IS_FILE_PROTOCOL = window.location.protocol === 'file:';
-const IS_LOCAL_DEV = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && 
-                     (window.location.port === '5500' || window.location.port === '5501' || IS_FILE_PROTOCOL);
-const API_BASE = IS_LOCAL_DEV ? 'http://localhost:3000' : '';
+const IS_DEV_PORT = window.location.port && window.location.port !== '3000';
+const IS_LOCAL_HOST = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE = (IS_FILE_PROTOCOL || (IS_LOCAL_HOST && IS_DEV_PORT))
+  ? `http://${window.location.hostname || 'localhost'}:3000`
+  : '';
 
-let currentToken = localStorage.getItem('diuwin_token') || null;
 let currentUser = null;
+try {
+  const savedUserJson = sessionStorage.getItem('diuwin_user') || localStorage.getItem('diuwin_user');
+  if (savedUserJson) {
+    currentUser = JSON.parse(savedUserJson);
+    const storedBal = sessionStorage.getItem('diuwin_balance') || localStorage.getItem('diuwin_balance');
+    if (storedBal !== null && !isNaN(parseFloat(storedBal))) {
+      currentUser.balance = parseFloat(storedBal);
+    }
+  }
+} catch (e) {
+  currentUser = null;
+}
+
+let currentToken = sessionStorage.getItem('diuwin_token') || localStorage.getItem('diuwin_token') || (currentUser ? currentUser.token : null);
+
+// If not logged in, redirect to main page (index.html) so visitor always starts at clean lobby
+if (!currentToken || !currentUser) {
+  window.location.replace('index.html');
+}
+
+function saveUserBalance(newBal) {
+  if (currentUser) {
+    currentUser.balance = Number(Number(newBal).toFixed(2));
+    sessionStorage.setItem('diuwin_balance', currentUser.balance); localStorage.setItem('diuwin_balance', currentUser.balance);
+    const savedUserJson = localStorage.getItem('diuwin_user');
+    if (savedUserJson) {
+      try {
+        const u = JSON.parse(savedUserJson);
+        u.balance = currentUser.balance;
+        localStorage.setItem('diuwin_user', JSON.stringify(u));
+      } catch (e) {}
+    }
+  }
+}
 
 // Multipliers for 20 Steps
 const STEP_MULTIPLIERS = [
@@ -25,7 +60,25 @@ let soundEnabled = true;
 let turboMode = false;
 
 // History State Variables
-let currentChickenPeriod = 1;
+let currentChickenPeriod = 'C1';
+
+function formatChickenPeriod(p) {
+  if (typeof p === 'string' && p.startsWith('C')) return p;
+  const n = typeof p === 'number' ? p : (parseInt(String(p || '').replace(/^\D+/, '')) || 1);
+  return 'C' + n;
+}
+
+function nextChickenPeriod(p) {
+  const n = parseInt(String(p || '').replace(/^\D+/, '')) || 1;
+  return 'C' + (n + 1);
+}
+
+function updateChickenPeriodUI(p) {
+  if (p) currentChickenPeriod = formatChickenPeriod(p);
+  const el = document.getElementById('chickenPeriodBadge');
+  if (el) el.textContent = `ROUND ${currentChickenPeriod}`;
+}
+
 let chickenHistoryRecords = [];
 let myChickenRuns = [];
 let adminForceCrashStep = null;
@@ -45,12 +98,12 @@ async function syncChickenHistoryFromServer() {
     if (res.ok) {
       const data = await res.json();
       if (data.success) {
-        if (data.period) currentChickenPeriod = data.period;
+        if (data.period) updateChickenPeriodUI(data.period);
         if (data.forceCrashStep !== undefined) adminForceCrashStep = data.forceCrashStep;
         else if (data.adminSettings && data.adminSettings.forceCrashStep !== undefined) adminForceCrashStep = data.adminSettings.forceCrashStep;
         if (data.history && data.history.length > 0) {
           chickenHistoryRecords = data.history.map(h => ({
-            period: h.period,
+            period: formatChickenPeriod(h.period),
             isWin: h.isWin,
             mult: h.mult || 1.0,
             step: h.step || 0,
@@ -202,39 +255,37 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // User Session & Balance Sync
 async function initUser() {
-  if (!currentToken) {
-    try {
-      const gRes = await fetch(`${API_BASE}/api/auth/guest`, { method: 'POST' });
-      const gData = await gRes.json();
-      if (gData && gData.success && gData.token) {
-        currentToken = gData.token;
-        localStorage.setItem('diuwin_token', currentToken);
-        if (gData.user) {
-          currentUser = gData.user;
-          localStorage.setItem('diuwin_balance', currentUser.balance);
-          updateBalanceDisplay(currentUser.balance);
-          return;
-        }
-      }
-    } catch (e) {}
+  const storedBal = localStorage.getItem('diuwin_balance');
+  const userBalance = storedBal !== null && !isNaN(parseFloat(storedBal))
+    ? parseFloat(storedBal)
+    : (currentUser && currentUser.balance !== undefined ? currentUser.balance : 1000.00);
+
+  if (currentUser) {
+    currentUser.balance = userBalance;
   } else {
+    currentUser = {
+      id: currentToken ? 'usr_guest_demo' : 'usr_guest_demo',
+      name: 'Demo Player',
+      balance: userBalance
+    };
+  }
+
+  updateBalanceDisplay(currentUser.balance);
+
+  if (currentToken) {
     try {
       const res = await fetch(`${API_BASE}/api/user/profile`, {
         headers: { 'Authorization': `Bearer ${currentToken}` }
       });
       const data = await res.json();
-      if (data.success && data.user) {
+      if (data && data.success && data.user) {
         currentUser = data.user;
+        saveUserBalance(currentUser.balance);
         updateBalanceDisplay(currentUser.balance);
         return;
       }
     } catch (e) {}
   }
-
-  // Fallback guest session
-  const storedBal = localStorage.getItem('diuwin_balance');
-  currentUser = { id: 'usr_guest_demo', name: 'Demo Player', balance: storedBal ? parseFloat(storedBal) : 973.70 };
-  updateBalanceDisplay(currentUser.balance);
 }
 
 function updateBalanceDisplay(bal) {
@@ -614,8 +665,7 @@ function startNewChickenGame() {
 
   // Deduct stake from wallet
   if (currentUser) {
-    currentUser.balance = Math.max(0, currentUser.balance - stakeAmount);
-    currentUser.balance = Number(currentUser.balance.toFixed(2));
+    saveUserBalance(Math.max(0, currentUser.balance - stakeAmount));
     updateBalanceDisplay(currentUser.balance);
   }
 
@@ -728,7 +778,7 @@ function stepForward() {
 }
 
 async function recordChickenOutcome(isWin, mult, step, winAmount, stake) {
-  const period = currentChickenPeriod;
+  const period = formatChickenPeriod(currentChickenPeriod);
   const numWin = parseFloat(winAmount) || 0;
   const numBet = parseFloat(stake) || 0;
   const profit = Number((numWin - numBet).toFixed(2));
@@ -797,7 +847,8 @@ async function recordChickenOutcome(isWin, mult, step, winAmount, stake) {
     });
   } catch (e) {}
 
-  currentChickenPeriod++;
+  currentChickenPeriod = nextChickenPeriod(currentChickenPeriod);
+  updateChickenPeriodUI(currentChickenPeriod);
 }
 
 function cashoutChickenGame() {
@@ -809,10 +860,8 @@ function cashoutChickenGame() {
 
   // Credit user balance
   if (currentUser) {
-    currentUser.balance += winAmount;
-    currentUser.balance = Number(currentUser.balance.toFixed(2));
+    saveUserBalance(currentUser.balance + winAmount);
     updateBalanceDisplay(currentUser.balance);
-    localStorage.setItem('diuwin_balance', currentUser.balance);
   }
 
   // Record outcome to history and backend

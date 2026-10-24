@@ -1,9 +1,11 @@
 // DiuWin Official UPI Recharge Gateway & QR Scanner
 (function() {
   const IS_FILE_PROTOCOL = window.location.protocol === 'file:';
-  const IS_LOCAL_DEV = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && 
-                       (window.location.port === '5500' || window.location.port === '5501' || IS_FILE_PROTOCOL);
-  const API_BASE = IS_LOCAL_DEV ? 'http://localhost:3000' : '';
+  const IS_DEV_PORT = window.location.port && window.location.port !== '3000';
+  const IS_LOCAL_HOST = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const API_BASE = (IS_FILE_PROTOCOL || (IS_LOCAL_HOST && IS_DEV_PORT))
+    ? `http://${window.location.hostname || 'localhost'}:3000`
+    : '';
 
   let upiSelectedAmount = 500;
   let upiSelectedChannel = 'qr_scanner';
@@ -188,6 +190,9 @@
             <div class="upi-success-utr" id="upiSuccessUtrTxt">UTR: 423891028374</div>
             <p style="font-size:12px; color:#64748b; margin:4px 0 10px;">Amount credited instantly to your Main Wallet Balance.</p>
             <button class="upi-btn-primary" id="btnFinishUpiRecharge">Done & Return</button>
+            <button type="button" id="btnUpiViewRechargeHistory" style="width:100%; margin-top:8px; padding:9px; background:#f0fdf4; border:1px solid #86efac; border-radius:8px; color:#166534; font-size:12px; font-weight:700; cursor:pointer;">
+              📋 View Recharge History & Status &rarr;
+            </button>
           </div>
         </div>
       </div>
@@ -246,6 +251,12 @@
   function setupUpiModalEventListeners() {
     document.getElementById('btnCloseUpiModal')?.addEventListener('click', window.closeUpiRechargeModal);
     document.getElementById('btnFinishUpiRecharge')?.addEventListener('click', window.closeUpiRechargeModal);
+    document.getElementById('btnUpiViewRechargeHistory')?.addEventListener('click', () => {
+      window.closeUpiRechargeModal();
+      if (typeof openModal === 'function') openModal('walletModal');
+      if (typeof switchWTab === 'function') switchWTab('history', 'RECHARGE');
+      if (typeof loadTransactions === 'function') loadTransactions('RECHARGE');
+    });
 
     document.getElementById('upiRechargeModal')?.addEventListener('click', (e) => {
       if (e.target.id === 'upiRechargeModal') window.closeUpiRechargeModal();
@@ -361,14 +372,31 @@
     let utr = utrInput?.value.trim();
 
     if (!utr || utr.length < 8) {
-      utr = 'UTR' + Date.now().toString().slice(-8) + Math.floor(Math.random() * 9000 + 1000);
+      alert('Please enter a valid 12-digit UTR / Reference number from your payment app.');
+      return;
     }
 
     const btn = document.getElementById('btnSubmitUtr');
     btn.disabled = true;
-    btn.textContent = 'Verifying UPI with Bank...';
+    btn.textContent = 'Submitting Request to Admin...';
 
-    const token = localStorage.getItem('diuwin_token');
+    let token = localStorage.getItem('diuwin_token');
+    if (!token) {
+      try {
+        const guestRes = await fetch(`${API_BASE}/api/auth/guest`, { method: 'POST' });
+        const guestData = await guestRes.json();
+        if (guestData && guestData.token) {
+          token = guestData.token;
+          localStorage.setItem('diuwin_token', token);
+          if (guestData.user) {
+            localStorage.setItem('diuwin_user', JSON.stringify(guestData.user));
+            localStorage.setItem('diuwin_balance', guestData.user.balance);
+          }
+        }
+      } catch (e) {
+        console.warn('Guest token fetch error:', e);
+      }
+    }
 
     try {
       const res = await fetch(`${API_BASE}/api/wallet/deposit`, {
@@ -387,41 +415,79 @@
       const data = await res.json();
 
       if (data.success) {
-        // Sync balance to local view & localStorage
-        localStorage.setItem('diuwin_balance', data.newBalance);
+        // If status is PENDING (waiting for admin acceptance)
+        if (data.status === 'PENDING') {
+          // Do NOT add to balance yet! User's balance stays as it is.
+          document.getElementById('upiStepScanner').style.display = 'none';
+          document.getElementById('upiStepSuccess').style.display = 'flex';
+          
+          const successCircle = document.querySelector('#upiStepSuccess .upi-success-circle');
+          if (successCircle) {
+            successCircle.textContent = '⏳';
+            successCircle.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+            successCircle.style.boxShadow = '0 0 15px rgba(245, 158, 11, 0.4)';
+          }
+          const successTitle = document.querySelector('#upiStepSuccess .upi-success-title');
+          if (successTitle) {
+            successTitle.textContent = 'Recharge Request Submitted!';
+            successTitle.style.color = '#d97706';
+          }
+          document.getElementById('upiSuccessAmtTxt').textContent = `₹${upiSelectedAmount.toFixed(2)}`;
+          document.getElementById('upiSuccessUtrTxt').innerHTML = `<b>UTR:</b> ${utr} &bull; <span style="color:#d97706; font-weight:700;">AWAITING ADMIN APPROVAL</span>`;
+          const subText = document.querySelector('#upiStepSuccess p');
+          if (subText) {
+            subText.innerHTML = 'Your recharge request has been sent to Admin.<br><b>Amount will be credited to your balance as soon as Admin accepts the request.</b>';
+          }
+        } else {
+          // If auto-approved (e.g. test environment)
+          localStorage.setItem('diuwin_balance', data.newBalance);
+          try {
+            const savedUserJson = localStorage.getItem('diuwin_user');
+            if (savedUserJson) {
+              const u = JSON.parse(savedUserJson);
+              u.balance = Number(data.newBalance);
+              localStorage.setItem('diuwin_user', JSON.stringify(u));
+            }
+          } catch (e) {}
 
-        // Update any live balance displays on current page
-        const balEls = ['userWalletBalance', 'walletModalBalance', 'headerBalance', 'accBalanceVal'];
-        balEls.forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.textContent = Number(data.newBalance).toLocaleString('en-IN', { minimumFractionDigits: 2 });
-        });
+          const balEls = ['userWalletBalance', 'walletModalBalance', 'headerBalance', 'headerBalanceDisplay', 'accBalanceVal', 'arenaBalance', 'withdrawAvailBal', 'accViewBalance'];
+          balEls.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = (id === 'headerBalanceDisplay' ? '₹' : '') + Number(data.newBalance).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+          });
 
-        // Show step 3 success
-        document.getElementById('upiStepScanner').style.display = 'none';
-        document.getElementById('upiStepSuccess').style.display = 'flex';
-        document.getElementById('upiSuccessAmtTxt').textContent = `+₹${upiSelectedAmount.toFixed(2)}`;
-        document.getElementById('upiSuccessUtrTxt').textContent = `UTR: ${utr}`;
+          document.getElementById('upiStepScanner').style.display = 'none';
+          document.getElementById('upiStepSuccess').style.display = 'flex';
+          document.getElementById('upiSuccessAmtTxt').textContent = `+₹${upiSelectedAmount.toFixed(2)}`;
+          document.getElementById('upiSuccessUtrTxt').textContent = `UTR: ${utr}`;
+        }
         if (upiCountdownTimer) clearInterval(upiCountdownTimer);
+        if (typeof loadTransactions === 'function') {
+          loadTransactions('RECHARGE');
+        }
       } else {
         alert(data.message || 'Verification failed. Please check UTR.');
       }
     } catch (err) {
-      // Offline / guest simulation fallback
-      const curBal = parseFloat(localStorage.getItem('diuwin_balance') || '973.70');
-      const newBal = curBal + upiSelectedAmount;
-      localStorage.setItem('diuwin_balance', newBal);
-
-      const balEls = ['userWalletBalance', 'walletModalBalance', 'headerBalance', 'accBalanceVal'];
-      balEls.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = Number(newBal).toLocaleString('en-IN', { minimumFractionDigits: 2 });
-      });
-
+      // Offline fallback: Do NOT credit balance directly, show pending request sent!
       document.getElementById('upiStepScanner').style.display = 'none';
       document.getElementById('upiStepSuccess').style.display = 'flex';
-      document.getElementById('upiSuccessAmtTxt').textContent = `+₹${upiSelectedAmount.toFixed(2)}`;
-      document.getElementById('upiSuccessUtrTxt').textContent = `UTR: ${utr}`;
+      const successCircle = document.querySelector('#upiStepSuccess .upi-success-circle');
+      if (successCircle) {
+        successCircle.textContent = '⏳';
+        successCircle.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+      }
+      const successTitle = document.querySelector('#upiStepSuccess .upi-success-title');
+      if (successTitle) {
+        successTitle.textContent = 'Recharge Request Sent!';
+        successTitle.style.color = '#d97706';
+      }
+      document.getElementById('upiSuccessAmtTxt').textContent = `₹${upiSelectedAmount.toFixed(2)}`;
+      document.getElementById('upiSuccessUtrTxt').innerHTML = `<b>UTR:</b> ${utr} &bull; <span style="color:#d97706; font-weight:700;">AWAITING ADMIN APPROVAL</span>`;
+      const subText = document.querySelector('#upiStepSuccess p');
+      if (subText) {
+        subText.innerHTML = 'Recharge request sent for Admin verification.<br><b>Amount will be added once accepted by Admin.</b>';
+      }
     } finally {
       btn.disabled = false;
       btn.textContent = 'Submit UTR & Verify';

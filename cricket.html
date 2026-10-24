@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="prevent-reload.js"></script>
+  <title>DiuWin Cricket Exchange - Live Match Odds, Back/Lay & Fancy Sessions</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="outcome-modal.css">
+  <link rel="stylesheet" href="upi-recharge.css">
+  <link rel="stylesheet" href="cricket.css">
+</head>
+<body>
+  <div class="cricket-app-shell">
+    <!-- Top Header -->
+    <header class="cricket-header">
+      <div class="header-left">
+        <button class="lobby-btn" id="btnBackToLobby" onclick="location.href='index.html'">
+          <i class="fa fa-angle-left"></i> Lobby
+        </button>
+        <div class="brand-title-wrap">
+          <div class="brand-icon-box">🏏</div>
+          <div>
+            <div class="brand-name">CRICKET <span>EXCH</span></div>
+            <span class="live-period-tag" id="cricketPeriodBadge">ROUND CR1</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="wallet-balance-box">
+          <div class="wallet-label-row">
+            <span>MAIN WALLET</span>
+            <button class="refresh-bal-btn" id="btnRefreshBalance" title="Refresh Balance">
+              <i class="fa fa-refresh"></i>
+            </button>
+          </div>
+          <div class="wallet-amount" id="headerUserBalance">₹1,000.00</div>
+        </div>
+        <button class="deposit-btn" id="btnHeaderDeposit">
+          <i class="fa fa-plus-circle"></i> Deposit
+        </button>
+        <button class="icon-nav-btn" id="btnOpenMyBets" title="My Cricket Bets">
+          <i class="fa fa-list-alt"></i>
+          <span class="badge-count" id="activeBetsCountBadge">0</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="cricket-main">
+      <!-- Match Info Banner -->
+      <section class="match-hero-card">
+        <div class="match-meta-top">
+          <span class="tourney-tag" id="matchTournament">ICC Men's T20 Championship</span>
+          <span class="live-status-pill">
+            <span class="pulse-dot"></span> LIVE IN-PLAY
+          </span>
+        </div>
+
+        <div class="match-teams-row">
+          <div class="team-side team-left">
+            <div class="team-flag-icon" id="teamAFlag">🇮🇳</div>
+            <div class="team-details">
+              <div class="team-name" id="teamAName">India</div>
+              <div class="team-role-tag" id="teamARole">Batting (2nd Inn)</div>
+            </div>
+          </div>
+          <div class="vs-divider">VS</div>
+          <div class="team-side team-right">
+            <div class="team-details text-right">
+              <div class="team-name" id="teamBName">Australia</div>
+              <div class="team-role-tag" id="teamBRole">Bowling</div>
+            </div>
+            <div class="team-flag-icon" id="teamBFlag">🇦🇺</div>
+          </div>
+        </div>
+
+        <!-- Live Scoreboard Strip -->
+        <div class="live-scoreboard-strip">
+          <div class="score-main">
+            <span class="batting-team-code" id="scoreTeamCode">IND</span>
+            <span class="runs-wickets" id="scoreRunsWickets">126/3</span>
+            <span class="overs-bracket">(<span id="scoreOvers">14.0</span> Ov)</span>
+          </div>
+          <div class="crr-rrr-info">
+            <div class="stat-bubble">CRR: <strong id="valCRR">9.00</strong></div>
+            <div class="stat-bubble highlight">RRR: <strong id="valRRR">9.67</strong></div>
+            <div class="stat-bubble target">Target: <strong id="valTarget">184</strong></div>
+          </div>
+        </div>
+
+        <div class="target-equation-bar">
+          <i class="fa fa-bolt"></i>
+          <span id="equationText">India need 58 runs in 36 balls to win</span>
+        </div>
+      </section>
+
+      <!-- Live Radar TV & Pitch Animation -->
+      <section class="radar-tv-card">
+        <div class="radar-tv-header">
+          <div class="radar-tv-title">
+            <i class="fa fa-television"></i> LIVE RADAR TV
+          </div>
+          <div class="radar-event-badge" id="radarEventBadge">
+            <span class="radar-status-text">🔴 Ball in play</span>
+          </div>
+        </div>
+
+        <!-- 3D Stadium Radar Viewport -->
+        <div class="radar-viewport">
+          <div class="pitch-grass">
+            <div class="pitch-strip">
+              <div class="crease bowling-crease"></div>
+              <div class="crease batting-crease"></div>
+              <div class="stumps stumps-bowling"></div>
+              <div class="stumps stumps-batting"></div>
+              <div class="animated-ball" id="radarBall"></div>
+              <div class="ball-trajectory" id="radarTrajectory"></div>
+            </div>
+          </div>
+
+          <!-- Radar Overlay Score HUD -->
+          <div class="radar-hud">
+            <div class="batsman-stat-row">
+              <div class="batsman-line" id="strikerRow">
+                <span class="strike-star">*</span>
+                <span class="b-name" id="strikerName">V. Kohli</span>
+                <span class="b-score" id="strikerScore">58 (36)</span>
+                <span class="b-boundary" id="strikerBoundaries">4s: 5 | 6s: 2</span>
+              </div>
+              <div class="batsman-line" id="nonStrikerRow">
+                <span class="strike-space"> </span>
+                <span class="b-name" id="nonStrikerName">H. Pandya</span>
+                <span class="b-score" id="nonStrikerScore">24 (14)</span>
+                <span class="b-boundary" id="nonStrikerBoundaries">4s: 2 | 6s: 1</span>
+              </div>
+            </div>
+            <div class="bowler-stat-pill">
+              <span class="bowler-icon">⚾</span>
+              <span class="bowler-name" id="bowlerName">M. Starc</span>: 
+              <span class="bowler-fig" id="bowlerFigs">3.0-0-26-2</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Over Balls Trail -->
+        <div class="recent-balls-bar">
+          <span class="recent-label">THIS OVER:</span>
+          <div class="ball-badges-row" id="recentBallsRow">
+            <span class="ball-pill pill-single">1</span>
+            <span class="ball-pill pill-four">4</span>
+            <span class="ball-pill pill-dot">0</span>
+            <span class="ball-pill pill-two">2</span>
+            <span class="ball-pill pill-six">6</span>
+            <span class="ball-pill pill-single">1</span>
+          </div>
+        </div>
+
+        <!-- Live Commentary Ticker -->
+        <div class="commentary-strip">
+          <div class="comm-icon"><i class="fa fa-microphone"></i></div>
+          <div class="comm-text-wrap">
+            <div class="comm-text" id="liveCommentaryText">Play in progress. Mitchell Starc running in...</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Cash Out Banner Bar -->
+      <section class="cashout-banner" id="cashoutBanner">
+        <div class="cashout-left">
+          <div class="cashout-title">
+            <i class="fa fa-shield"></i> INSTANT CASHOUT & BOOK LOCK
+          </div>
+          <div class="cashout-desc">Lock guaranteed green profit on both teams before next ball!</div>
+        </div>
+        <div class="cashout-right">
+          <button class="btn-cashout" id="btnExecuteCashout">
+            <i class="fa fa-lock"></i> CASH OUT
+          </button>
+        </div>
+      </section>
+
+      <!-- Betting Markets Section -->
+      <section class="markets-container">
+        <!-- Market Tabs -->
+        <div class="market-nav-tabs">
+          <button class="m-tab active" data-tab="matchOdds">
+            <i class="fa fa-line-chart"></i> Match Odds
+          </button>
+          <button class="m-tab" data-tab="bookmaker">
+            <i class="fa fa-handshake-o"></i> Bookmaker 0%
+          </button>
+          <button class="m-tab" data-tab="fancy">
+            <i class="fa fa-fire"></i> Fancy Sessions
+          </button>
+        </div>
+
+        <!-- TAB 1: MATCH ODDS (Back & Lay) -->
+        <div class="market-tab-content active" id="tabMatchOdds">
+          <div class="market-header-row">
+            <div class="col-title">Match Odds (Decimal Rate)</div>
+            <div class="col-rates-header">
+              <div class="rate-hdr back-hdr">BACK (Lagai)</div>
+              <div class="rate-hdr lay-hdr">LAY (Khai)</div>
+            </div>
+          </div>
+
+          <!-- Team A Odds Row -->
+          <div class="market-rate-row" id="rowMatchOddsTeamA">
+            <div class="selection-name-col">
+              <span class="sel-flag" id="oddsTeamAFlag">🇮🇳</span>
+              <strong id="oddsTeamAName">India</strong>
+              <span class="user-position-tag" id="posTeamA">+₹0.00</span>
+            </div>
+            <div class="rates-cell-col">
+              <button class="rate-box btn-back" id="btnBackTeamA" data-market="matchOdds" data-selection="teamA" data-type="back" data-odds="1.68">
+                <span class="rate-val" id="valBackTeamA">1.68</span>
+                <span class="rate-size" id="sizeBackTeamA">3.4L</span>
+              </button>
+              <button class="rate-box btn-lay" id="btnLayTeamA" data-market="matchOdds" data-selection="teamA" data-type="lay" data-odds="1.70">
+                <span class="rate-val" id="valLayTeamA">1.70</span>
+                <span class="rate-size" id="sizeLayTeamA">2.1L</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Team B Odds Row -->
+          <div class="market-rate-row" id="rowMatchOddsTeamB">
+            <div class="selection-name-col">
+              <span class="sel-flag" id="oddsTeamBFlag">🇦🇺</span>
+              <strong id="oddsTeamBName">Australia</strong>
+              <span class="user-position-tag" id="posTeamB">+₹0.00</span>
+            </div>
+            <div class="rates-cell-col">
+              <button class="rate-box btn-back" id="btnBackTeamB" data-market="matchOdds" data-selection="teamB" data-type="back" data-odds="2.44">
+                <span class="rate-val" id="valBackTeamB">2.44</span>
+                <span class="rate-size" id="sizeBackTeamB">1.8L</span>
+              </button>
+              <button class="rate-box btn-lay" id="btnLayTeamB" data-market="matchOdds" data-selection="teamB" data-type="lay" data-odds="2.48">
+                <span class="rate-val" id="valLayTeamB">2.48</span>
+                <span class="rate-size" id="sizeLayTeamB">1.2L</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: BOOKMAKER (0% Commission) -->
+        <div class="market-tab-content" id="tabBookmaker">
+          <div class="market-header-row">
+            <div class="col-title">Bookmaker Market (Zero Commission)</div>
+            <div class="col-rates-header">
+              <div class="rate-hdr back-hdr">BACK (100)</div>
+              <div class="rate-hdr lay-hdr">LAY (100)</div>
+            </div>
+          </div>
+
+          <div class="market-rate-row" id="rowBmTeamA">
+            <div class="selection-name-col">
+              <span class="sel-flag" id="bmTeamAFlag">🇮🇳</span>
+              <strong id="bmTeamAName">India</strong>
+            </div>
+            <div class="rates-cell-col">
+              <button class="rate-box btn-back" id="btnBmBackTeamA" data-market="bookmaker" data-selection="teamA" data-type="back" data-odds="1.68">
+                <span class="rate-val" id="valBmBackTeamA">68</span>
+                <span class="rate-size">100</span>
+              </button>
+              <button class="rate-box btn-lay" id="btnBmLayTeamA" data-market="bookmaker" data-selection="teamA" data-type="lay" data-odds="1.70">
+                <span class="rate-val" id="valBmLayTeamA">70</span>
+                <span class="rate-size">100</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="market-rate-row" id="rowBmTeamB">
+            <div class="selection-name-col">
+              <span class="sel-flag" id="bmTeamBFlag">🇦🇺</span>
+              <strong id="bmTeamBName">Australia</strong>
+            </div>
+            <div class="rates-cell-col">
+              <button class="rate-box btn-back" id="btnBmBackTeamB" data-market="bookmaker" data-selection="teamB" data-type="back" data-odds="2.44">
+                <span class="rate-val" id="valBmBackTeamB">144</span>
+                <span class="rate-size">100</span>
+              </button>
+              <button class="rate-box btn-lay" id="btnBmLayTeamB" data-market="bookmaker" data-selection="teamB" data-type="lay" data-odds="2.48">
+                <span class="rate-val" id="valBmLayTeamB">148</span>
+                <span class="rate-size">100</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: FANCY / SESSIONS -->
+        <div class="market-tab-content" id="tabFancy">
+          <div class="market-header-row">
+            <div class="col-title">Fancy / Session Line Markets</div>
+            <div class="col-rates-header">
+              <div class="rate-hdr lay-hdr">NO (Under)</div>
+              <div class="rate-hdr back-hdr">YES (Over)</div>
+            </div>
+          </div>
+
+          <div class="fancy-markets-list" id="fancyMarketsList">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Match History & Results Table -->
+      <section class="cricket-history-card">
+        <div class="history-card-header">
+          <div class="history-title">
+            <i class="fa fa-history"></i> Recent Match Outcomes
+          </div>
+          <button class="refresh-history-btn" id="btnRefreshHistory">
+            <i class="fa fa-refresh"></i> Refresh
+          </button>
+        </div>
+
+        <div class="history-table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Period</th>
+                <th>Match</th>
+                <th>Winner</th>
+                <th>Score</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+              <tr>
+                <td colspan="5" class="text-center text-muted">Loading match history...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <!-- Interactive Bottom Bet Slip Drawer -->
+    <div class="betslip-drawer" id="betSlipDrawer">
+      <div class="betslip-header">
+        <div class="betslip-title-info">
+          <span class="betslip-tag" id="slipBetTypeTag">BACK</span>
+          <strong id="slipSelectionName">India</strong>
+        </div>
+        <button class="betslip-close-btn" id="btnBetSlipClose">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+
+      <div class="betslip-body">
+        <div class="betslip-field-row">
+          <div class="field-col">
+            <label>Rate / Odds</label>
+            <div class="odds-display-box" id="slipOddsVal">1.68</div>
+          </div>
+          <div class="field-col">
+            <label>Stake (₹)</label>
+            <div class="stake-input-wrap">
+              <input type="number" id="slipStakeInput" value="100" min="10" step="10">
+              <button class="btn-clear-stake" id="btnClearStake">×</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Stake Chips -->
+        <div class="stake-chips-row">
+          <button class="chip-btn" data-stake="100">+100</button>
+          <button class="chip-btn" data-stake="500">+500</button>
+          <button class="chip-btn" data-stake="1000">+1K</button>
+          <button class="chip-btn" data-stake="5000">+5K</button>
+          <button class="chip-btn" data-stake="10000">+10K</button>
+          <button class="chip-btn chip-max" id="btnChipMax">MAX</button>
+        </div>
+
+        <!-- Profit / Liability Display -->
+        <div class="betslip-calc-row">
+          <div class="calc-label" id="slipCalcLabel">Profit to Win:</div>
+          <div class="calc-value" id="slipCalcVal">+₹68.00</div>
+        </div>
+
+        <button class="btn-confirm-bet" id="btnConfirmBet">
+          <i class="fa fa-check-circle"></i> PLACE BET
+        </button>
+      </div>
+    </div>
+
+    <!-- My Open Bets Modal -->
+    <div class="cricket-modal-overlay" id="myBetsModal">
+      <div class="cricket-modal-content">
+        <div class="modal-header">
+          <div class="modal-title">
+            <i class="fa fa-list"></i> My Cricket Bets
+          </div>
+          <button class="modal-close-btn" id="btnCloseMyBetsModal">
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-tabs">
+            <button class="modal-tab-btn active" id="tabOpenBets">Active Bets (<span id="modalActiveCount">0</span>)</button>
+            <button class="modal-tab-btn" id="tabSettledBets">Settled Bets</button>
+          </div>
+          <div class="bets-list-container" id="myBetsListContainer">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Effects -->
+  <audio id="sndFour" src="asset/sound/win.mp3" preload="auto"></audio>
+  <audio id="sndSix" src="asset/sound/win.mp3" preload="auto"></audio>
+  <audio id="sndWicket" src="asset/sound/btn.mp3" preload="auto"></audio>
+
+  <!-- External DiuWin Outcome & Recharge Modals -->
+  <script src="outcome-modal.js"></script>
+  <script src="upi-recharge.js"></script>
+  <script src="cricket.js"></script>
+</body>
+</html>

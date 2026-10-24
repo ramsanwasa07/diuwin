@@ -1,20 +1,31 @@
 // DiuWin Official Admin Control Panel Engine
 (function () {
-  // Global Admin Fetch Interceptor: Inject Bearer Authentication token into all /api/admin/ requests
+  const IS_FILE_PROTOCOL = window.location.protocol === 'file:';
+  const IS_DEV_PORT = window.location.port && window.location.port !== '3000';
+  const IS_LOCAL_HOST = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const API_BASE = (IS_FILE_PROTOCOL || (IS_LOCAL_HOST && IS_DEV_PORT))
+    ? `http://${window.location.hostname || 'localhost'}:3000`
+    : '';
+
+  // Global Admin Fetch Interceptor: Inject Bearer Authentication token and resolve API_BASE into all /api/ requests
   const _origFetch = window.fetch;
   window.fetch = async function (url, options = {}) {
-    const adminToken = sessionStorage.getItem('diuwin_admin_auth') || 'admin_token_master_2026';
+    let resolvedUrl = url;
+    if (typeof resolvedUrl === 'string' && resolvedUrl.startsWith('/api/') && API_BASE) {
+      resolvedUrl = `${API_BASE}${resolvedUrl}`;
+    }
+    const adminToken = sessionStorage.getItem('diuwin_admin_auth');
     let opts = options || {};
-    if (typeof url === 'string' && url.includes('/api/admin/') && !url.includes('/api/admin/login')) {
+    if (typeof resolvedUrl === 'string' && resolvedUrl.includes('/api/admin/') && !resolvedUrl.includes('/api/admin/login')) {
       const headers = new Headers(opts.headers || {});
       if (adminToken && !headers.has('Authorization')) {
         headers.set('Authorization', `Bearer ${adminToken}`);
       }
       opts = { ...opts, headers };
     }
-    const res = await _origFetch(url, opts);
-    if ((res.status === 401 || res.status === 403) && typeof url === 'string' && url.includes('/api/admin/') && !url.includes('/api/admin/login') && !url.includes('/api/admin/verify-token')) {
-      console.warn('Admin session unauthorized or expired for:', url);
+    const res = await _origFetch(resolvedUrl, opts);
+    if ((res.status === 401 || res.status === 403) && typeof resolvedUrl === 'string' && resolvedUrl.includes('/api/admin/') && !resolvedUrl.includes('/api/admin/login') && !resolvedUrl.includes('/api/admin/verify-token')) {
+      console.warn('Admin session unauthorized or expired for:', resolvedUrl);
       sessionStorage.removeItem('diuwin_admin_auth');
       const gate = document.getElementById('adminLoginGate');
       if (gate) {
@@ -242,11 +253,15 @@
     });
   }
 
-  // ==================== LIVE MULTI-GAME POLLING ====================
+  // ==================== LIVE MULTI-GAME & FINANCE POLLING ====================
   function startLivePolling() {
     fetchMultiGameSummary();
+    fetchTransactionsList();
     if (pollTimer) clearInterval(pollTimer);
-    pollTimer = setInterval(fetchMultiGameSummary, 1500);
+    pollTimer = setInterval(() => {
+      fetchMultiGameSummary();
+      fetchTransactionsList();
+    }, 2000);
   }
 
   async function fetchMultiGameSummary() {
@@ -794,17 +809,32 @@
   // ==================== FINANCE & TRANSACTIONS ====================
   async function fetchTransactionsList() {
     const tbody = document.getElementById('txTableBody');
-    if (!tbody) return;
-
     try {
       const res = await fetch('/api/admin/transactions');
       if (!res.ok) return;
       const data = await res.json();
       const txs = data.transactions || (Array.isArray(data) ? data : []);
-      renderTransactionsTable(txs);
+      if (tbody) renderTransactionsTable(txs);
+
+      // Update badge count for pending recharges and withdrawals in sidebar
+      const pendingDeposits = txs.filter(t => (t.type === 'DEPOSIT' || t.type === 'RECHARGE') && (t.status === 'PENDING' || t.status === 'pending')).length;
+      const pendingWithdraws = txs.filter(t => t.type === 'WITHDRAW' && (t.status === 'PENDING' || t.status === 'PENDING_REVIEW' || t.status === 'UNDER_REVIEW')).length;
+      const totalPending = pendingDeposits + pendingWithdraws;
+      const badge = document.getElementById('pendingWithdrawCountBadge');
+      if (badge) {
+        if (totalPending > 0) {
+          badge.style.display = 'inline-block';
+          badge.textContent = `${totalPending} PENDING`;
+          badge.style.background = pendingDeposits > 0 ? '#f59e0b' : '#ef4444';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
     } catch (err) {
       console.error('Failed to load transactions:', err);
-      tbody.innerHTML = `<tr><td colspan="8" class="text-center text-red">Failed to load transactions.</td></tr>`;
+      if (tbody && (!tbody.children || tbody.children.length === 0)) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center text-red">Failed to load transactions.</td></tr>`;
+      }
     }
   }
 
@@ -818,31 +848,63 @@
     }
 
     tbody.innerHTML = txs.map(t => {
-      const isPending = t.status === 'PENDING' || t.status === 'pending';
-      const isSuccess = t.status === 'SUCCESS' || t.status === 'completed';
+      const isDeposit = t.type === 'DEPOSIT' || t.type === 'RECHARGE';
+      const isPending = t.status === 'PENDING' || t.status === 'pending' || t.status === 'PENDING_REVIEW';
+      const isUnderReview = t.status === 'UNDER_REVIEW';
+      const isProcessing = t.status === 'PROCESSING';
+      const isSuccess = t.status === 'SUCCESS' || t.status === 'COMPLETED' || t.status === 'completed';
       const isRejected = t.status === 'REJECTED' || t.status === 'rejected';
+      const isFailed = t.status === 'FAILED' || t.status === 'failed';
 
-      let statusBadge = `<span class="status-pill active">SUCCESS</span>`;
-      if (isPending) statusBadge = `<span class="status-pill pending">PENDING</span>`;
-      else if (isRejected) statusBadge = `<span class="status-pill banned">REJECTED</span>`;
+      let statusBadge = `<span class="status-pill active">COMPLETED</span>`;
+      if (isPending) {
+        statusBadge = isDeposit
+          ? `<span class="status-pill pending" style="background:#fef3c7; color:#d97706; font-weight:800; border:1px solid #f59e0b; padding:2px 8px; border-radius:12px;">PENDING RECHARGE</span>`
+          : `<span class="status-pill pending" style="background:#fef3c7; color:#d97706; padding:2px 8px; border-radius:12px;">PENDING WITHDRAWAL</span>`;
+      }
+      else if (isUnderReview) statusBadge = `<span class="status-pill pending" style="background:#fef9c3; color:#a16207;">UNDER REVIEW</span>`;
+      else if (isProcessing) statusBadge = `<span class="status-pill active" style="background:#dbeafe; color:#2563eb;">PROCESSING</span>`;
+      else if (isRejected) statusBadge = `<span class="status-pill banned" style="background:#fee2e2; color:#dc2626;">REJECTED</span>`;
+      else if (isFailed) statusBadge = `<span class="status-pill banned" style="background:#fef2f2; color:#b91c1c;">FAILED</span>`;
 
-      const typeClass = t.type && t.type.includes('WITHDRAW') ? 'text-red' : 'text-green';
+      const typeClass = isDeposit ? 'text-green' : 'text-red';
       const timeStr = t.createdAt ? new Date(t.createdAt).toLocaleString() : 'Recent';
+      const riskBadge = (t.riskScore === 'FLAGGED')
+        ? `<span style="background:#fee2e2; color:#ef4444; font-size:10px; font-weight:800; padding:1px 4px; border-radius:4px; margin-left:4px;">⚠️ ${t.riskScore}</span>`
+        : '';
+
+      const canAct = isPending || isUnderReview || isProcessing;
+      const detailsHtml = isDeposit
+        ? `<div style="font-size:12px;"><b style="color:#0284c7;">UTR:</b> <span style="font-family:monospace; font-weight:700; color:#0f172a;">${t.utrNumber || 'N/A'}</span>${t.orderId ? `<br><small style="color:#64748b;">Order: ${t.orderId}</small>` : ''}</div>`
+        : `<span style="color:#64748b; font-size:12px;">${t.destination || t.description || 'UPI Transfer'}</span>`;
 
       return `
         <tr>
-          <td><strong>${t.id}</strong></td>
-          <td>${t.userId}</td>
+          <td><strong>${t.id}</strong>${riskBadge}</td>
+          <td>${t.userPhone || t.userId}</td>
           <td><strong class="${typeClass}">${t.type}</strong></td>
-          <td><strong>₹${Number(t.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong></td>
-          <td><span style="color:#94a3b8; font-size:12px;">${t.description || t.paymentMethod || 'UPI Transfer'}</span></td>
+          <td><strong style="color:${isDeposit ? '#10b981' : '#f87171'}; font-size:14px;">₹${Number(t.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong></td>
+          <td>${detailsHtml}</td>
           <td><span style="color:#94a3b8; font-size:12px;">${timeStr}</span></td>
           <td>${statusBadge}</td>
           <td>
-            ${isPending ? `
-              <button class="btn-action approve" onclick="window.adminProcessTx('${t.id}', 'approve')">Approve</button>
-              <button class="btn-action reject" onclick="window.adminProcessTx('${t.id}', 'reject')">Reject</button>
-            ` : `<span style="color:#64748b; font-size:12px;">Completed</span>`}
+            ${canAct ? `
+              <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                ${isDeposit ? `
+                  <button class="btn-action approve" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; font-weight:700; border:none; padding:4px 9px; border-radius:6px; cursor:pointer;" onclick="window.adminProcessTx('${t.id}', 'approve')">
+                    <i class="fa fa-check"></i> Accept & Add Balance
+                  </button>
+                  <button class="btn-action reject" style="background:#ef4444; color:#fff; font-weight:700; border:none; padding:4px 9px; border-radius:6px; cursor:pointer;" onclick="window.adminProcessTx('${t.id}', 'reject')">
+                    <i class="fa fa-times"></i> Reject
+                  </button>
+                ` : `
+                  ${isPending ? `<button class="btn-action" style="background:#f59e0b; color:#fff;" onclick="window.adminProcessTx('${t.id}', 'review')">Review</button>` : ''}
+                  ${(isPending || isUnderReview) ? `<button class="btn-action" style="background:#3b82f6; color:#fff;" onclick="window.adminProcessTx('${t.id}', 'process')">Process</button>` : ''}
+                  <button class="btn-action approve" onclick="window.adminProcessTx('${t.id}', 'approve')">Approve</button>
+                  <button class="btn-action reject" onclick="window.adminProcessTx('${t.id}', 'reject')">Reject</button>
+                `}
+              </div>
+            ` : `<span style="color:#64748b; font-size:12px;">Finalized${t.referenceId ? `<br><small>Ref: ${t.referenceId}</small>` : ''}</span>`}
           </td>
         </tr>
       `;
@@ -851,16 +913,27 @@
 
   window.adminProcessTx = async function (txId, action) {
     playClick();
+    let reason = null;
+    let referenceId = null;
+
+    if (action === 'reject') {
+      reason = prompt('Enter rejection reason (User will be notified):', 'Invalid or unverified UTR number / Payment not received');
+      if (reason === null) return; // User cancelled
+    } else if (action === 'process') {
+      referenceId = prompt('Enter payment gateway or bank reference ID (or leave blank to auto-generate):', 'TXN' + Date.now());
+      if (referenceId === null) return;
+    }
+
     try {
       const res = await fetch('/api/admin/transactions/action', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ txId, action })
+        body: JSON.stringify({ txId, action, reason, referenceId })
       });
 
       const data = await res.json();
       if (data.success) {
-        showAdminToast(`Transaction ${action}d successfully`);
+        showAdminToast(`Transaction ${txId} marked as ${data.transaction ? data.transaction.status : action}`);
         fetchTransactionsList();
         fetchAdminOverview();
       } else {
@@ -1357,19 +1430,28 @@
   }
 
   async function fetchMasterHistory() {
+    const tbody = document.getElementById('masterHistoryTableBody');
     try {
       const url = currentHistoryFilter && currentHistoryFilter !== 'ALL'
         ? `/api/admin/games/history?game=${encodeURIComponent(currentHistoryFilter)}`
         : '/api/admin/games/history';
 
       const res = await fetch(url);
-      if (!res.ok) return;
+      if (!res.ok) {
+        if (tbody && (!tbody.children || tbody.children.length === 0 || tbody.textContent.includes('Loading'))) {
+          tbody.innerHTML = `<tr><td colspan="8" class="text-center text-red">Failed to load game history (${res.status}). Ensure server is running on port 3000.</td></tr>`;
+        }
+        return;
+      }
       const data = await res.json();
       if (!data.success) return;
 
       renderMasterHistoryTable(data.history || []);
     } catch (e) {
       console.warn('Failed to fetch master history:', e);
+      if (tbody && (!tbody.children || tbody.children.length === 0 || tbody.textContent.includes('Loading'))) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center text-red">Connection error fetching game history. Ensure backend server is running.</td></tr>`;
+      }
     }
   }
 

@@ -14,8 +14,10 @@ npm-debug.log*
 Thumbs.db
 .DS_Store
 
-# Local SQLite Storage
+# Local Database & State Storage
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
-.data/*.sqlite*
+.data/
+data/
+*.json.bak

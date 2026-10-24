@@ -1363,6 +1363,75 @@ input[type="number"] {
   color: var(--primary-green);
 }
 
+.tx-filter-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.tx-filter-bar::-webkit-scrollbar {
+  display: none;
+}
+.tx-filter-btn {
+  flex: 1;
+  white-space: nowrap;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+.tx-filter-btn:hover {
+  background: #f1f5f9;
+}
+.tx-filter-btn.active {
+  background: #ecfdf5;
+  border-color: #059669;
+  color: #065f46;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.15);
+}
+.history-section-box {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 14px;
+}
+.history-box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  border-bottom: 1px dashed #e2e8f0;
+  padding-bottom: 6px;
+}
+.history-box-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.history-box-link {
+  background: none;
+  border: none;
+  color: #059669;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .tx-list {
   max-height: 240px;
   overflow-y: auto;
@@ -1707,4 +1776,102 @@ input[type="number"] {
 .account-menu-item i.fa-chevron-right {
   font-size: 12px;
   color: #94a3b8;
+}
+
+/* ==================== TRUST, COMPLIANCE & LEGAL FOOTER ==================== */
+.trust-footer {
+  margin: 24px 12px 90px;
+  padding: 18px 14px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+.trust-badges-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.trust-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #f1f5f9;
+  font-size: 11px;
+  font-weight: 700;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.trust-age-badge {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fca5a5;
+  font-weight: 900;
+}
+
+.trust-disclaimer {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.45;
+  margin-bottom: 12px;
+}
+
+.trust-legal-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 11.5px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.trust-legal-links a {
+  color: #471488;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.trust-legal-links span {
+  color: #94a3b8;
+}
+
+.trust-copyright {
+  font-size: 10.5px;
+  color: #94a3b8;
+}
+
+.legal-content-body {
+  max-height: 60vh;
+  overflow-y: auto;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #334155;
+  text-align: left;
+  padding: 6px 4px 10px;
+}
+
+.legal-content-body h4 {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 12px 0 4px;
+}
+
+.legal-content-body p, .legal-content-body ul {
+  margin: 0 0 8px;
+}
+
+.legal-content-body ul {
+  padding-left: 18px;
 }

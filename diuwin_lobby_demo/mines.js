@@ -1,11 +1,46 @@
 // DiuWin Official Mines - 5x5 Diamond Grid Engine
 const IS_FILE_PROTOCOL = window.location.protocol === 'file:';
-const IS_LOCAL_DEV = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && 
-                     (window.location.port === '5500' || window.location.port === '5501' || IS_FILE_PROTOCOL);
-const API_BASE = IS_LOCAL_DEV ? 'http://localhost:3000' : '';
+const IS_DEV_PORT = window.location.port && window.location.port !== '3000';
+const IS_LOCAL_HOST = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE = (IS_FILE_PROTOCOL || (IS_LOCAL_HOST && IS_DEV_PORT))
+  ? `http://${window.location.hostname || 'localhost'}:3000`
+  : '';
 
-let currentToken = localStorage.getItem('diuwin_token') || null;
 let currentUser = null;
+try {
+  const savedUserJson = sessionStorage.getItem('diuwin_user') || localStorage.getItem('diuwin_user');
+  if (savedUserJson) {
+    currentUser = JSON.parse(savedUserJson);
+    const storedBal = sessionStorage.getItem('diuwin_balance') || localStorage.getItem('diuwin_balance');
+    if (storedBal !== null && !isNaN(parseFloat(storedBal))) {
+      currentUser.balance = parseFloat(storedBal);
+    }
+  }
+} catch (e) {
+  currentUser = null;
+}
+
+let currentToken = sessionStorage.getItem('diuwin_token') || localStorage.getItem('diuwin_token') || (currentUser ? currentUser.token : null);
+
+// If not logged in, redirect to main page (index.html) so visitor always starts at clean lobby
+if (!currentToken || !currentUser) {
+  window.location.replace('index.html');
+}
+
+function saveUserBalance(newBal) {
+  if (currentUser) {
+    currentUser.balance = Number(Number(newBal).toFixed(2));
+    sessionStorage.setItem('diuwin_balance', currentUser.balance); localStorage.setItem('diuwin_balance', currentUser.balance);
+    const savedUserJson = localStorage.getItem('diuwin_user');
+    if (savedUserJson) {
+      try {
+        const u = JSON.parse(savedUserJson);
+        u.balance = currentUser.balance;
+        localStorage.setItem('diuwin_user', JSON.stringify(u));
+      } catch (e) {}
+    }
+  }
+}
 
 // Game State Variables
 let gameState = 'IDLE'; // 'IDLE', 'PLAYING', 'GAMEOVER'
@@ -71,7 +106,24 @@ function showToast(msg, duration = 3000) {
 }
 
 // Period and History Variables
-let currentMinesPeriod = 1;
+let currentMinesPeriod = 'M1';
+
+function formatMinesPeriod(p) {
+  if (typeof p === 'string' && p.startsWith('M')) return p;
+  const n = typeof p === 'number' ? p : (parseInt(String(p || '').replace(/^\D+/, '')) || 1);
+  return 'M' + n;
+}
+
+function nextMinesPeriod(p) {
+  const n = parseInt(String(p || '').replace(/^\D+/, '')) || 1;
+  return 'M' + (n + 1);
+}
+
+function updateMinesPeriodUI(p) {
+  if (p) currentMinesPeriod = formatMinesPeriod(p);
+  const el = document.getElementById('minesPeriodBadge');
+  if (el) el.textContent = `ROUND ${currentMinesPeriod}`;
+}
 
 function loadCachedMinesHistory() {
   try {
@@ -89,12 +141,12 @@ async function syncMinesHistoryFromServer() {
     if (res.ok) {
       const data = await res.json();
       if (data.success) {
-        if (data.period) currentMinesPeriod = data.period;
+        if (data.period) updateMinesPeriodUI(data.period);
         if (data.trapMode) adminTrapMode = data.trapMode;
         else if (data.adminSettings && data.adminSettings.trapMode) adminTrapMode = data.adminSettings.trapMode;
         if (data.history && data.history.length > 0) {
           gamesHistory = data.history.slice(0, 10).map(h => ({
-            period: h.period,
+            period: formatMinesPeriod(h.period),
             isWin: h.isWin,
             mult: h.mult || 1.0,
             mines: h.mines || 5,
@@ -120,22 +172,24 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // User Session & Balance Sync
 async function initUser() {
-  if (!currentToken) {
-    try {
-      const gRes = await fetch(`${API_BASE}/api/auth/guest`, { method: 'POST' });
-      const gData = await gRes.json();
-      if (gData && gData.success && gData.token) {
-        currentToken = gData.token;
-        localStorage.setItem('diuwin_token', currentToken);
-        if (gData.user) {
-          currentUser = gData.user;
-          localStorage.setItem('diuwin_balance', currentUser.balance);
-          updateBalanceDisplay(currentUser.balance);
-          return;
-        }
-      }
-    } catch (e) {}
+  const storedBal = localStorage.getItem('diuwin_balance');
+  const userBalance = storedBal !== null && !isNaN(parseFloat(storedBal))
+    ? parseFloat(storedBal)
+    : (currentUser && currentUser.balance !== undefined ? currentUser.balance : 1000.00);
+
+  if (currentUser) {
+    currentUser.balance = userBalance;
   } else {
+    currentUser = {
+      id: currentToken ? 'usr_guest_demo' : 'usr_guest_demo',
+      name: 'Demo Player',
+      balance: userBalance
+    };
+  }
+
+  updateBalanceDisplay(currentUser.balance);
+
+  if (currentToken) {
     try {
       const res = await fetch(`${API_BASE}/api/user/profile`, {
         headers: { 'Authorization': `Bearer ${currentToken}` }
@@ -143,16 +197,12 @@ async function initUser() {
       const data = await res.json();
       if (data.success && data.user) {
         currentUser = data.user;
+        saveUserBalance(currentUser.balance);
         updateBalanceDisplay(currentUser.balance);
         return;
       }
     } catch (e) {}
   }
-
-  // Fallback guest session
-  const storedBal = localStorage.getItem('diuwin_balance');
-  currentUser = { id: 'usr_guest_demo', name: 'Demo Player', balance: storedBal ? parseFloat(storedBal) : 973.70 };
-  updateBalanceDisplay(currentUser.balance);
 }
 
 function updateBalanceDisplay(bal) {
@@ -188,8 +238,7 @@ function startNewGame() {
 
   // Deduct Bet from user
   if (currentUser) {
-    currentUser.balance = Math.max(0, currentUser.balance - betAmount);
-    currentUser.balance = Number(currentUser.balance.toFixed(2));
+    saveUserBalance(Math.max(0, currentUser.balance - betAmount));
     updateBalanceDisplay(currentUser.balance);
   }
 
@@ -291,7 +340,7 @@ async function recordMinesOutcome(isWin, mult, count, gems, winAmt, betAmt) {
   const finalMult = parseFloat(mult) || 0;
 
   // Add to badges and local storage
-  addHistoryBadge(isWin, finalMult, count, isWin ? numWin : numBet);
+  addHistoryBadge(isWin, finalMult, count, isWin ? numWin : numBet, period);
 
   // Save to backend APIs
   try {
@@ -335,7 +384,8 @@ async function recordMinesOutcome(isWin, mult, count, gems, winAmt, betAmt) {
     });
   } catch (e) {}
 
-  currentMinesPeriod++;
+  currentMinesPeriod = nextMinesPeriod(currentMinesPeriod);
+  updateMinesPeriodUI(currentMinesPeriod);
 }
 
 function cashoutWinnings(isAllGems = false) {
@@ -346,10 +396,8 @@ function cashoutWinnings(isAllGems = false) {
 
   // Credit user balance
   if (currentUser) {
-    currentUser.balance += winAmount;
-    currentUser.balance = Number(currentUser.balance.toFixed(2));
+    saveUserBalance(currentUser.balance + winAmount);
     updateBalanceDisplay(currentUser.balance);
-    localStorage.setItem('diuwin_balance', currentUser.balance);
   }
 
   // Record outcome and send to backend
@@ -607,8 +655,8 @@ let gamesHistory = [
   { isWin: false, mult: 1.00, mines: 5, amt: 100.00 }
 ];
 
-function addHistoryBadge(isWin, mult, mines, amt) {
-  gamesHistory.unshift({ isWin, mult, mines, amt });
+function addHistoryBadge(isWin, mult, mines, amt, period = currentMinesPeriod) {
+  gamesHistory.unshift({ isWin, mult, mines, amt, period: formatMinesPeriod(period) });
   if (gamesHistory.length > 10) gamesHistory.pop();
   try {
     localStorage.setItem('diuwin_mines_history', JSON.stringify(gamesHistory));
@@ -627,8 +675,10 @@ function renderHistoryBadges() {
   gamesHistory.forEach(h => {
     const badge = document.createElement('div');
     badge.className = `history-badge ${h.isWin ? 'win' : 'loss'}`;
+    const roundTag = h.period ? `<span style="font-size:10px; opacity:0.8; margin-right:4px;">#${h.period}</span>` : '';
     badge.innerHTML = `
       <i class="fa ${h.isWin ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+      ${roundTag}
       <span class="badge-mult">${h.mult.toFixed(2)}x (${h.mines}M)</span>
       <span class="badge-sep">|</span>
       <span class="badge-amt">${h.isWin ? '+' : ''}₹${h.amt.toFixed(2)}</span>

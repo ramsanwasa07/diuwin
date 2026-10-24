@@ -7,7 +7,7 @@
     const OriginalWebSocket = window.WebSocket;
     if (OriginalWebSocket) {
       window.WebSocket = function(url, protocols) {
-        if (typeof url === 'string' && (url.includes('/ws') || url.includes(':5500') || url.includes(':5501') || url.includes('live-server') || url.includes('livepreview'))) {
+        if (typeof url === 'string' && (url.includes('/ws') || url.includes(':550') || url.includes('live-server') || url.includes('livepreview'))) {
           // Return an inert mock socket that absorbs Live Server signals
           return {
             onmessage: null,

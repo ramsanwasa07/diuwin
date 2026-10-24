@@ -1,3 +1,4 @@
+process.env.NODE_ENV = 'test';
 const http = require('http');
 const app = require('../server');
 
@@ -74,7 +75,7 @@ async function runTests() {
       path: '/api/wallet/deposit',
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-    }, { amount: 500, method: 'UPI' });
+    }, { amount: 500, method: 'UPI', autoApprove: true });
     assert(depositRes.status === 200 && depositRes.body.newBalance === initialBalance + 500, 'Wallet deposit ₹500 credited correctly');
 
     // 4. Play Aviator
