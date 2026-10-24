@@ -3,10 +3,10 @@
   const IS_FILE_PROTOCOL = window.location.protocol === 'file:';
   const IS_DEV_PORT = window.location.port && window.location.port !== '3000';
   const IS_LOCAL_HOST = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  let savedBackend = (localStorage.getItem('diuwin_backend_url') || '').trim().replace(/\/+$/, '');
+  let savedBackend = (localStorage.getItem('diuwin_backend_url') || 'https://diuwin-gaming-server.onrender.com').trim().replace(/\/+$/, '');
   let API_BASE = (IS_FILE_PROTOCOL || (IS_LOCAL_HOST && IS_DEV_PORT))
     ? `http://${window.location.hostname || 'localhost'}:3000`
-    : (window.location.hostname.includes('github.io') && savedBackend ? savedBackend : '');
+    : (window.location.hostname.includes('github.io') ? savedBackend : '');
 
   // Global Admin Fetch Interceptor: Inject Bearer Authentication token and resolve API_BASE into all /api/ requests
   const _origFetch = window.fetch;
