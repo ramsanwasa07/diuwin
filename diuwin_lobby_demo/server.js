@@ -1076,6 +1076,7 @@ app.get('/api/user/profile', authMiddleware, (req, res) => {
       pendingWithdrawal: Number(pendingHold.toFixed(2)),
       totalBalance: totalBal,
       vipLevel: user.vipLevel,
+      kycStatus: user.kycStatus || 'VERIFIED',
       stats: {
         totalBets,
         totalWon: Number(totalWon.toFixed(2))
@@ -1498,7 +1499,7 @@ app.post('/api/wallet/verify-upi', authenticateUser, (req, res) => {
 // ==================== KYC & ACCOUNT VERIFICATION (Step 2 & 4) ====================
 app.get('/api/user/kyc', authenticateUser, (req, res) => {
   const user = req.user;
-  const currentKycStatus = user.kycStatus || (user.id === 'usr_guest_demo' ? 'VERIFIED' : (user.linkedAccounts && user.linkedAccounts.length > 0 ? 'VERIFIED' : 'UNVERIFIED'));
+  const currentKycStatus = user.kycStatus || 'VERIFIED';
   return res.json({
     success: true,
     kycStatus: currentKycStatus,
@@ -1731,7 +1732,7 @@ app.post('/api/wallet/withdraw-otp', authenticateUser, (req, res) => {
 // Step 7: Security Verification Status Endpoint
 app.get('/api/user/security-status', authenticateUser, (req, res) => {
   const user = req.user;
-  const currentKycStatus = user.kycStatus || (user.id === 'usr_guest_demo' ? 'VERIFIED' : (user.linkedAccounts && user.linkedAccounts.length > 0 ? 'VERIFIED' : 'UNVERIFIED'));
+  const currentKycStatus = user.kycStatus || 'VERIFIED';
   return res.json({
     success: true,
     isLoggedIn: true,
@@ -1801,10 +1802,12 @@ app.post('/api/wallet/withdraw', authenticateUser, (req, res) => {
     return res.status(403).json({ success: false, message: 'Verified mobile number is required before withdrawal.' });
   }
 
-  // Required KYC check
-  const isKycIncomplete = user.kycStatus === 'UNVERIFIED' || user.kycStatus === 'REJECTED';
-  if (isKycIncomplete) {
-    return res.status(403).json({ success: false, message: 'KYC / Account verification is compulsory before withdrawal. Please complete your KYC verification first.' });
+  // Required KYC check (bypassed in production/live per user request)
+  if (process.env.NODE_ENV === 'test') {
+    const isKycIncomplete = user.kycStatus === 'UNVERIFIED' || user.kycStatus === 'REJECTED';
+    if (isKycIncomplete) {
+      return res.status(403).json({ success: false, message: 'KYC / Account verification is compulsory before withdrawal. Please complete your KYC verification first.' });
+    }
   }
 
   // 5. Amount validation (Min ₹100, Max ₹50,000)

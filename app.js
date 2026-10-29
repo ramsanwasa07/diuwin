@@ -19,6 +19,7 @@ try {
   const savedUserJson = sessionStorage.getItem('diuwin_user');
   if (savedUserJson) {
     currentUser = JSON.parse(savedUserJson);
+    if (currentUser) currentUser.kycStatus = 'VERIFIED';
     const storedBal = sessionStorage.getItem('diuwin_balance');
     if (storedBal !== null && !isNaN(parseFloat(storedBal))) {
       currentUser.balance = parseFloat(storedBal);
@@ -164,7 +165,7 @@ function fallbackHandler(endpoint, method, data) {
     return { success: false, message: 'Not logged in' };
   }
   if (endpoint.includes('/api/auth/guest')) {
-    currentUser = { id: 'usr_guest_demo', name: 'Demo Player', phone: '9876543210', balance: 1000.00, vipLevel: 1, token: 'token_guest_demo' };
+    currentUser = { id: 'usr_guest_demo', name: 'Demo Player', phone: '9876543210', balance: 1000.00, vipLevel: 1, token: 'token_guest_demo', kycStatus: 'VERIFIED' };
     localStorage.setItem('diuwin_token', currentUser.token);
     localStorage.setItem('diuwin_user', JSON.stringify(currentUser));
     localStorage.setItem('diuwin_balance', currentUser.balance);
@@ -174,7 +175,7 @@ function fallbackHandler(endpoint, method, data) {
     const phone = data?.phone || '9876543210';
     const lastDigits = phone.slice(-4);
     const storedBal = parseFloat(localStorage.getItem('diuwin_balance') || '1000.00');
-    currentUser = { id: 'usr_' + phone, name: 'Player ' + lastDigits, phone: phone, balance: storedBal, vipLevel: 1, token: 'tok_' + phone };
+    currentUser = { id: 'usr_' + phone, name: 'Player ' + lastDigits, phone: phone, balance: storedBal, vipLevel: 1, token: 'tok_' + phone, kycStatus: 'VERIFIED' };
     localStorage.setItem('diuwin_token', currentUser.token);
     localStorage.setItem('diuwin_user', JSON.stringify(currentUser));
     localStorage.setItem('diuwin_balance', currentUser.balance);
@@ -183,7 +184,7 @@ function fallbackHandler(endpoint, method, data) {
   if (endpoint.includes('/api/auth/register')) {
     const phone = data?.phone || '9876543210';
     const lastDigits = phone.slice(-4);
-    currentUser = { id: 'usr_' + phone, name: 'Player ' + lastDigits, phone: phone, balance: 500.00, vipLevel: 1, token: 'tok_' + phone };
+    currentUser = { id: 'usr_' + phone, name: 'Player ' + lastDigits, phone: phone, balance: 500.00, vipLevel: 1, token: 'tok_' + phone, kycStatus: 'VERIFIED' };
     localStorage.setItem('diuwin_token', currentUser.token);
     localStorage.setItem('diuwin_user', JSON.stringify(currentUser));
     localStorage.setItem('diuwin_balance', currentUser.balance);
@@ -191,7 +192,7 @@ function fallbackHandler(endpoint, method, data) {
   }
   if (endpoint.includes('/api/wallet/deposit')) {
     const amt = parseFloat(data?.amount || 200);
-    if (!currentUser) currentUser = { id: 'usr_guest_demo', name: 'Demo Player', phone: '9876543210', balance: 1000, vipLevel: 1 };
+    if (!currentUser) currentUser = { id: 'usr_guest_demo', name: 'Demo Player', phone: '9876543210', balance: 1000, vipLevel: 1, kycStatus: 'VERIFIED' };
     currentUser.balance += amt;
     localStorage.setItem('diuwin_balance', currentUser.balance);
     localStorage.setItem('diuwin_user', JSON.stringify(currentUser));
@@ -2070,13 +2071,12 @@ function validateWithdrawalForm() {
 
   if (!btn) return false;
 
-  // 1. KYC Check
-  const isKycOk = Boolean(currentUser && currentUser.kycStatus === 'VERIFIED');
+  // KYC is removed - keep chkKyc hidden
   if (chkKyc) {
-    chkKyc.innerHTML = isKycOk ? '<span style="color:#059669;">✓</span> <span style="color:#059669;">1. KYC Verified</span>' : '<span style="color:#ea580c;">⚠️</span> <span style="color:#ea580c;">1. KYC Required</span>';
+    chkKyc.style.display = 'none';
   }
 
-  // 2. Payout Destination Check
+  // 1. Payout Destination Check
   let isDestOk = false;
   if (selectedWithdrawMethod === 'UPI') {
     const upiVal = (document.getElementById('withdrawUpiInput')?.value || '').trim();
@@ -2093,30 +2093,30 @@ function validateWithdrawalForm() {
     isDestOk = Boolean(holder.length >= 3 && /^\d{9,18}$/.test(acc) && acc === accConfirm && /^[A-Za-z]{4}0[A-Za-z0-9]{6}$/.test(ifsc));
   }
   if (chkDest) {
-    chkDest.innerHTML = isDestOk ? '<span style="color:#059669;">✓</span> <span style="color:#059669;">2. Payout Account</span>' : '<span style="color:#ea580c;">⚠️</span> <span style="color:#ea580c;">2. Payout Account</span>';
+    chkDest.innerHTML = isDestOk ? '<span style="color:#059669;">✓</span> <span style="color:#059669;">1. Payout Account</span>' : '<span style="color:#ea580c;">⚠️</span> <span style="color:#ea580c;">1. Payout Account</span>';
   }
 
-  // 3. Amount Check
+  // 2. Amount Check
   const amtVal = parseFloat(document.getElementById('withdrawAmountInput')?.value);
   const userBal = Number(currentUser?.balance || 0);
   const isAmtOk = Boolean(!isNaN(amtVal) && amtVal >= 100 && amtVal <= 50000 && amtVal <= userBal);
   if (chkAmt) {
-    chkAmt.innerHTML = isAmtOk ? '<span style="color:#059669;">✓</span> <span style="color:#059669;">3. Valid Amount</span>' : '<span style="color:#ea580c;">⚠️</span> <span style="color:#ea580c;">3. Valid Amount</span>';
+    chkAmt.innerHTML = isAmtOk ? '<span style="color:#059669;">✓</span> <span style="color:#059669;">2. Valid Amount</span>' : '<span style="color:#ea580c;">⚠️</span> <span style="color:#ea580c;">2. Valid Amount</span>';
   }
 
-  // 4. OTP Check (Must be 6 digits)
+  // 3. OTP Check (Must be 6 digits)
   const otpVal = (document.getElementById('withdrawOtpInput')?.value || '').trim();
   const isOtpOk = /^\d{6}$/.test(otpVal);
   if (chkOtp) {
-    chkOtp.innerHTML = isOtpOk ? '<span style="color:#059669;">✓</span> <span style="color:#059669;">4. 6-Digit OTP</span>' : '<span style="color:#ea580c;">⚠️</span> <span style="color:#ea580c;">4. 6-Digit OTP</span>';
+    chkOtp.innerHTML = isOtpOk ? '<span style="color:#059669;">✓</span> <span style="color:#059669;">3. 6-Digit OTP</span>' : '<span style="color:#ea580c;">⚠️</span> <span style="color:#ea580c;">3. 6-Digit OTP</span>';
   }
 
-  // 5. Withdrawal PIN Check (if user has configured a withdrawal PIN)
+  // 4. Withdrawal PIN Check (if user has configured a withdrawal PIN)
   const pinInput = document.getElementById('withdrawPinInput');
   const hasPinConfigured = Boolean(currentUser && currentUser.hasWithdrawalPin);
   const isPinOk = !hasPinConfigured || ((pinInput?.value || '').trim().length >= 4);
 
-  const allPassed = isKycOk && isDestOk && isAmtOk && isOtpOk && isPinOk;
+  const allPassed = isDestOk && isAmtOk && isOtpOk && isPinOk;
 
   if (allPassed) {
     btn.disabled = false;
@@ -2145,9 +2145,7 @@ function validateWithdrawalForm() {
     }
     if (hintEl) {
       hintEl.style.display = 'block';
-      if (!isKycOk) {
-        hintEl.textContent = '⚠️ KYC verification is compulsory. Click KYC REQUIRED to verify.';
-      } else if (!isDestOk) {
+      if (!isDestOk) {
         hintEl.textContent = '⚠️ Please enter valid payout details (UPI ID or Bank Account).';
       } else if (!isAmtOk) {
         if (amtVal > userBal) {
@@ -2158,7 +2156,7 @@ function validateWithdrawalForm() {
       } else if (!isOtpOk) {
         hintEl.textContent = '⚠️ Enter 6-digit SMS OTP (Click "Send OTP" to receive code).';
       } else if (!isPinOk) {
-        hintEl.textContent = '⚠️ Enter your 4-6 digit Withdrawal PIN.';
+        hintEl.textContent = '⚠️ Enter your 4-digit Withdrawal PIN or account password.';
       } else {
         hintEl.textContent = '⚠️ Please fill all required fields to unlock withdrawal.';
       }
@@ -2484,10 +2482,7 @@ on('confirmWithdrawBtn', 'click', async () => {
     return showToast('Please verify your mobile number before requesting withdrawal');
   }
 
-  if (currentUser.kycStatus !== 'VERIFIED') {
-    openKycModal();
-    return showToast('KYC / Account verification required before withdrawal. Please complete your KYC.');
-  }
+  // KYC requirement removed per user request
 
   const amt = parseFloat(document.getElementById('withdrawAmountInput')?.value);
   if (!amt || isNaN(amt) || amt < 100) return showToast('Minimum withdrawal is ₹100');
@@ -2891,6 +2886,7 @@ on('tabHistoryBtn', 'click', () => {
 
 function updateWithdrawKycUI() {
   if (!currentUser) return;
+  currentUser.kycStatus = 'VERIFIED';
   const balEl = document.getElementById('withdrawAvailBal');
   if (balEl) balEl.textContent = Number(currentUser.balance || 0).toFixed(2);
 
@@ -2899,45 +2895,9 @@ function updateWithdrawKycUI() {
   const badgeEl = document.getElementById('withdrawKycBadge');
   const bannerEl = document.getElementById('withdrawKycBanner');
 
-  const isPhoneOk = currentUser.isPhoneVerified !== false && (currentUser.phone || currentUser.id === 'usr_guest_demo');
-  const isKycOk = currentUser.kycStatus === 'VERIFIED';
-
-  const inlinePhone = document.getElementById('inlineKycPhone');
-  if (inlinePhone) {
-    inlinePhone.value = '+91 ' + (currentUser.phone || '9876543210');
-  }
-  const modalPhone = document.getElementById('kycPhoneInput');
-  if (modalPhone) {
-    modalPhone.value = '+91 ' + (currentUser.phone || '9876543210');
-  }
-
-  if (phoneEl) {
-    if (isPhoneOk) {
-      phoneEl.textContent = currentUser.phone ? `+91 ${currentUser.phone} Verified ✓` : 'Demo Mobile Verified ✓';
-      phoneEl.style.color = '#64748b';
-    } else {
-      phoneEl.textContent = 'Mobile Number Not Verified ⚠️';
-      phoneEl.style.color = '#dc2626';
-    }
-  }
-
-  if (statusEl && badgeEl) {
-    if (isKycOk && isPhoneOk) {
-      statusEl.textContent = 'Verified ✓';
-      statusEl.style.color = '#059669';
-      badgeEl.textContent = 'KYC READY';
-      badgeEl.style.background = '#10b981';
-      if (bannerEl) bannerEl.style.borderColor = 'rgba(16, 185, 129, 0.2)';
-      const inlinePanel = document.getElementById('inlineKycPanel');
-      if (inlinePanel) inlinePanel.style.display = 'none';
-    } else {
-      statusEl.textContent = !isPhoneOk ? 'Phone Unverified ⚠️' : 'KYC Required ⚠️';
-      statusEl.style.color = '#dc2626';
-      badgeEl.textContent = 'KYC REQUIRED';
-      badgeEl.style.background = '#ea580c';
-      if (bannerEl) bannerEl.style.borderColor = 'rgba(239, 68, 68, 0.4)';
-    }
-  }
+  if (bannerEl) bannerEl.style.display = 'none';
+  const inlinePanel = document.getElementById('inlineKycPanel');
+  if (inlinePanel) inlinePanel.style.display = 'none';
 
   // Prepopulate account details if user has linked accounts
   if (currentUser.linkedAccounts && currentUser.linkedAccounts.length > 0) {
